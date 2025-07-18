@@ -139,7 +139,7 @@ const ReportModal: React.FC<ReportModalProps> = ({ onClose, companyName }) => {
             {/* Type de rapport */}
             <div>
               <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-                <FileText className="w-5 h-5 mr-2 text-purple-600" />
+                <FileText className="w-5 h-5 mr-2 text-gray-600" />
                 Type de rapport
               </h3>
               <div className="grid grid-cols-1 gap-3">
@@ -148,7 +148,7 @@ const ReportModal: React.FC<ReportModalProps> = ({ onClose, companyName }) => {
                     key={type.value}
                     className={`flex items-center p-4 border-2 rounded-xl cursor-pointer transition-all ${
                       filters.type === type.value
-                        ? 'border-purple-500 bg-purple-50'
+                        ? 'border-gray-500 bg-gray-50'
                         : 'border-gray-200 hover:border-gray-300'
                     }`}
                   >
@@ -173,7 +173,7 @@ const ReportModal: React.FC<ReportModalProps> = ({ onClose, companyName }) => {
             {/* Période */}
             <div>
               <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-                <Calendar className="w-5 h-5 mr-2 text-purple-600" />
+                <Calendar className="w-5 h-5 mr-2 text-gray-600" />
                 Période d'analyse
               </h3>
               
@@ -185,7 +185,7 @@ const ReportModal: React.FC<ReportModalProps> = ({ onClose, companyName }) => {
                     <button
                       key={preset.days}
                       onClick={() => setPeriodPreset(preset.days)}
-                      className="px-3 py-1 text-sm border border-gray-300 rounded-full hover:border-purple-500 hover:text-purple-600 transition-colors"
+                      className="px-3 py-1 text-sm border border-gray-300 rounded-full hover:border-gray-500 hover:text-gray-700 transition-colors"
                     >
                       {preset.label}
                     </button>
@@ -203,7 +203,7 @@ const ReportModal: React.FC<ReportModalProps> = ({ onClose, companyName }) => {
                     type="date"
                     value={filters.startDate}
                     onChange={(e) => handleFilterChange('startDate', e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-transparent"
                   />
                 </div>
                 <div>
@@ -214,7 +214,7 @@ const ReportModal: React.FC<ReportModalProps> = ({ onClose, companyName }) => {
                     type="date"
                     value={filters.endDate}
                     onChange={(e) => handleFilterChange('endDate', e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-transparent"
                   />
                 </div>
               </div>
@@ -228,7 +228,7 @@ const ReportModal: React.FC<ReportModalProps> = ({ onClose, companyName }) => {
               <button
                 onClick={generatePreview}
                 disabled={isGenerating}
-                className="flex items-center space-x-2 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors disabled:opacity-50"
+                className="flex items-center space-x-2 px-4 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition-colors disabled:opacity-50"
               >
                 {isGenerating ? (
                   <Loader className="w-4 h-4 animate-spin" />

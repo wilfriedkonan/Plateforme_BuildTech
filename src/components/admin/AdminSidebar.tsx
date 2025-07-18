@@ -1,7 +1,7 @@
 import React from 'react';
 import { 
   BarChart3, Users, CreditCard, Download, TrendingUp, Settings, 
-  LogOut, Menu, X, Shield, Eye, Database
+  LogOut, Menu, X, Shield, Eye, Database, ShoppingBag
 } from 'lucide-react';
 
 interface AdminSidebarProps {
@@ -24,6 +24,7 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({
     { id: 'users', label: 'Utilisateurs', icon: Users },
     { id: 'subscriptions', label: 'Abonnements', icon: CreditCard },
     { id: 'downloads', label: 'Téléchargements', icon: Download },
+    { id: 'store', label: 'Boutique', icon: ShoppingBag },
     { id: 'analytics', label: 'Statistiques', icon: TrendingUp },
     { id: 'otp', label: 'Historique OTP', icon: Shield },
     { id: 'settings', label: 'Paramètres', icon: Settings }
@@ -66,7 +67,7 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({
                 onClick={() => onSectionChange(item.id)}
                 className={`w-full flex items-center space-x-3 px-3 py-3 rounded-lg transition-all ${
                   activeSection === item.id
-                    ? 'bg-gradient-to-r from-purple-600 to-orange-500 text-white shadow-lg'
+                    ? 'bg-gray-800 text-white shadow-lg'
                     : 'text-gray-700 hover:bg-gray-100'
                 }`}
                 title={isCollapsed ? item.label : undefined}

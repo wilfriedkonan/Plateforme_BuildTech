@@ -67,7 +67,7 @@ const OTPModal: React.FC<OTPModalProps> = ({ onVerify, onClose, email, phone, de
 
         <div className="text-center mb-8">
           <div className="flex justify-center mb-4">
-            <div className="w-16 h-16 bg-gradient-to-r from-purple-600 to-orange-500 rounded-full flex items-center justify-center">
+            <div className="w-16 h-16 bg-gray-800 rounded-full flex items-center justify-center">
               {deliveryMethod === 'email' ? (
                 <Mail className="w-8 h-8 text-white" />
               ) : (
@@ -97,7 +97,7 @@ const OTPModal: React.FC<OTPModalProps> = ({ onVerify, onClose, email, phone, de
                 value={digit}
                 onChange={(e) => handleChange(index, e.target.value)}
                 onKeyDown={(e) => handleBackspace(index, e)}
-                className="w-12 h-12 text-center text-xl font-bold border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
+                className="w-12 h-12 text-center text-xl font-bold border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-transparent transition-all"
                 maxLength={1}
               />
             ))}
@@ -111,7 +111,7 @@ const OTPModal: React.FC<OTPModalProps> = ({ onVerify, onClose, email, phone, de
 
           <button
             type="submit"
-            className="w-full bg-gradient-to-r from-purple-600 to-orange-500 text-white py-3 px-6 rounded-lg font-semibold hover:shadow-lg transition-all duration-300"
+            className="w-full bg-gray-800 text-white py-3 px-6 rounded-lg font-semibold hover:shadow-lg transition-all duration-300"
           >
             Vérifier le code
           </button>
@@ -123,7 +123,7 @@ const OTPModal: React.FC<OTPModalProps> = ({ onVerify, onClose, email, phone, de
           </p>
           <button 
             onClick={resendOTP}
-            className="text-purple-600 hover:text-purple-700 font-medium text-sm"
+            className="text-gray-700 hover:text-gray-900 font-medium text-sm"
           >
             Renvoyer via {deliveryMethod === 'email' ? 'Email' : 'WhatsApp'}
           </button>

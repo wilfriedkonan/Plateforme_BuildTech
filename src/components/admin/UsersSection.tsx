@@ -42,8 +42,8 @@ const UserDetailsModal: React.FC<UserDetailsModalProps> = ({ user, onClose }) =>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Nom de l'entreprise
               </label>
-              <div className="flex items-center space-x-2 p-3 bg-gray-50 rounded-lg">
-                <Building className="w-5 h-5 text-gray-400" />
+              <div className="flex items-center space-x-2 p-3 bg-gray-50 rounded-xl">
+                <Building className="w-5 h-5 text-gray-600" />
                 <span className="text-gray-900">{user.companyName}</span>
               </div>
             </div>
@@ -52,8 +52,8 @@ const UserDetailsModal: React.FC<UserDetailsModalProps> = ({ user, onClose }) =>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Email
               </label>
-              <div className="flex items-center space-x-2 p-3 bg-gray-50 rounded-lg">
-                <Mail className="w-5 h-5 text-gray-400" />
+              <div className="flex items-center space-x-2 p-3 bg-gray-50 rounded-xl">
+                <Mail className="w-5 h-5 text-gray-600" />
                 <span className="text-gray-900">{user.email}</span>
               </div>
             </div>
@@ -62,8 +62,8 @@ const UserDetailsModal: React.FC<UserDetailsModalProps> = ({ user, onClose }) =>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Téléphone
               </label>
-              <div className="flex items-center space-x-2 p-3 bg-gray-50 rounded-lg">
-                <Phone className="w-5 h-5 text-gray-400" />
+              <div className="flex items-center space-x-2 p-3 bg-gray-50 rounded-xl">
+                <Phone className="w-5 h-5 text-gray-600" />
                 <span className="text-gray-900">{user.phone}</span>
               </div>
             </div>
@@ -72,7 +72,7 @@ const UserDetailsModal: React.FC<UserDetailsModalProps> = ({ user, onClose }) =>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Plan d'abonnement
               </label>
-              <div className="p-3 bg-gray-50 rounded-lg">
+              <div className="p-3 bg-gray-50 rounded-xl">
                 <span className={`px-3 py-1 rounded-full text-sm font-medium ${
                   user.plan === 'Pro' ? 'bg-purple-100 text-purple-800' :
                   user.plan === 'Standard' ? 'bg-blue-100 text-blue-800' :
@@ -90,7 +90,7 @@ const UserDetailsModal: React.FC<UserDetailsModalProps> = ({ user, onClose }) =>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Statut
               </label>
-              <div className="p-3 bg-gray-50 rounded-lg">
+              <div className="p-3 bg-gray-50 rounded-xl">
                 <span className={`px-3 py-1 rounded-full text-sm font-medium ${
                   user.status === 'active' ? 'bg-green-100 text-green-800' :
                   user.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
@@ -106,7 +106,7 @@ const UserDetailsModal: React.FC<UserDetailsModalProps> = ({ user, onClose }) =>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Date d'inscription
               </label>
-              <div className="p-3 bg-gray-50 rounded-lg">
+              <div className="p-3 bg-gray-50 rounded-xl">
                 <span className="text-gray-900">{user.registrationDate}</span>
               </div>
             </div>
@@ -115,7 +115,7 @@ const UserDetailsModal: React.FC<UserDetailsModalProps> = ({ user, onClose }) =>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Dernière activité
               </label>
-              <div className="p-3 bg-gray-50 rounded-lg">
+              <div className="p-3 bg-gray-50 rounded-xl">
                 <span className="text-gray-900">{user.lastActivity}</span>
               </div>
             </div>
@@ -126,7 +126,7 @@ const UserDetailsModal: React.FC<UserDetailsModalProps> = ({ user, onClose }) =>
             <label className="block text-sm font-medium text-gray-700 mb-2">
               Vérification OTP
             </label>
-            <div className="p-3 bg-gray-50 rounded-lg">
+            <div className="p-3 bg-gray-50 rounded-xl">
               <span className={`px-3 py-1 rounded-full text-sm font-medium ${
                 user.otpVerified ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
               }`}>

@@ -34,7 +34,7 @@ const SignUpForm: React.FC<SignUpFormProps> = ({ onSignUp, selectedPlan }) => {
         <div className="text-center mb-12">
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
             {selectedPlan ? `Finaliser votre abonnement` : 'Créez votre compte'}{' '}
-            <span className="bg-gradient-to-r from-purple-600 to-orange-500 bg-clip-text text-transparent">
+            <span className="text-gray-800">
               {selectedPlan ? selectedPlan.plan : 'professionnel'}
             </span>
           </h2>
@@ -77,7 +77,7 @@ const SignUpForm: React.FC<SignUpFormProps> = ({ onSignUp, selectedPlan }) => {
                     value={formData.companyName}
                     onChange={handleChange}
                     required
-                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
+                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-transparent transition-all"
                     placeholder="Votre entreprise"
                   />
                 </div>
@@ -96,7 +96,7 @@ const SignUpForm: React.FC<SignUpFormProps> = ({ onSignUp, selectedPlan }) => {
                     value={formData.phone}
                     onChange={handleChange}
                     required
-                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
+                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-transparent transition-all"
                     placeholder="+33 6 12 34 56 78"
                   />
                 </div>
@@ -116,7 +116,7 @@ const SignUpForm: React.FC<SignUpFormProps> = ({ onSignUp, selectedPlan }) => {
                   value={formData.email}
                   onChange={handleChange}
                   required
-                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
+                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-transparent transition-all"
                   placeholder="contact@votre-entreprise.com"
                 />
               </div>
@@ -132,7 +132,7 @@ const SignUpForm: React.FC<SignUpFormProps> = ({ onSignUp, selectedPlan }) => {
                 value={formData.otpMethod}
                 onChange={handleChange}
                 required
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-transparent transition-all"
               >
                 <option value="email">Email</option>
                 <option value="whatsapp">WhatsApp</option>
@@ -143,15 +143,17 @@ const SignUpForm: React.FC<SignUpFormProps> = ({ onSignUp, selectedPlan }) => {
             </div>
 
             <div className="bg-purple-50 border border-purple-200 rounded-lg p-4">
-              <p className="text-sm text-purple-700">
-                <strong>Vérification requise :</strong> Après inscription, vous recevrez un code de vérification 
-                via la méthode sélectionnée pour valider votre compte.
-              </p>
+              <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
+                <p className="text-sm text-gray-700">
+                  <strong>Vérification requise :</strong> Après inscription, vous recevrez un code de vérification 
+                  via la méthode sélectionnée pour valider votre compte.
+                </p>
+              </div>
             </div>
 
             <button
               type="submit"
-              className="w-full bg-gradient-to-r from-purple-600 to-orange-500 text-white py-4 px-6 rounded-lg font-semibold hover:shadow-lg transition-all duration-300 flex items-center justify-center group"
+              className="w-full bg-gray-800 text-white py-4 px-6 rounded-lg font-semibold hover:shadow-lg transition-all duration-300 flex items-center justify-center group"
             >
               {selectedPlan ? 'Finaliser l\'abonnement' : 'S\'inscrire maintenant'}
               <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
@@ -161,11 +163,11 @@ const SignUpForm: React.FC<SignUpFormProps> = ({ onSignUp, selectedPlan }) => {
           <div className="mt-8 text-center">
             <p className="text-sm text-gray-600">
               En vous inscrivant, vous acceptez nos{' '}
-              <a href="#" className="text-purple-600 hover:text-purple-700">
+              <a href="#" className="text-gray-700 hover:text-gray-900">
                 conditions d'utilisation
               </a>{' '}
               et notre{' '}
-              <a href="#" className="text-purple-600 hover:text-purple-700">
+              <a href="#" className="text-gray-700 hover:text-gray-900">
                 politique de confidentialité
               </a>
               .

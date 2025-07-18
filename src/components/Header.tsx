@@ -24,10 +24,10 @@ const Header: React.FC<HeaderProps> = ({ isAuthenticated, onLogout, onLogin }) =
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <div className="flex items-center space-x-2">
-            <div className="w-10 h-10 bg-gradient-to-r from-purple-600 to-orange-500 rounded-full flex items-center justify-center">
+            <div className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center">
               <Zap className="w-6 h-6 text-white" />
             </div>
-            <span className="text-xl font-bold bg-gradient-to-r from-purple-600 to-orange-500 bg-clip-text text-transparent">
+            <span className="text-xl font-bold text-gray-900">
               Build Tech Solutions
             </span>
           </div>
@@ -36,21 +36,27 @@ const Header: React.FC<HeaderProps> = ({ isAuthenticated, onLogout, onLogin }) =
           <nav className="hidden md:flex items-center space-x-8">
             <button
               onClick={() => scrollToSection('hero')}
-              className="text-gray-700 hover:text-purple-600 transition-colors"
+              className="text-gray-700 hover:text-purple-600 transition-colors text-left"
             >
               Accueil
             </button>
             <button
               onClick={() => scrollToSection('features')}
-              className="text-gray-700 hover:text-purple-600 transition-colors"
+              className="text-gray-700 hover:text-purple-600 transition-colors text-left"
             >
               Fonctionnalités
             </button>
             <button
               onClick={() => scrollToSection('pricing')}
-              className="text-gray-700 hover:text-purple-600 transition-colors"
+              className="text-gray-700 hover:text-purple-600 transition-colors text-left"
             >
               Tarifs
+            </button>
+            <button
+              onClick={() => window.location.href = '/boutique'}
+              className="text-gray-700 hover:text-purple-600 transition-colors text-left"
+            >
+              Boutique
             </button>
             {isAuthenticated ? (
               <button
@@ -129,7 +135,7 @@ const Header: React.FC<HeaderProps> = ({ isAuthenticated, onLogout, onLogin }) =
                   </button>
                   <button
                     onClick={() => scrollToSection('pricing')}
-                    className="bg-gradient-to-r from-purple-600 to-orange-500 text-white px-6 py-2 rounded-full hover:shadow-lg transition-all duration-300 text-center"
+                    className="bg-gray-800 text-white px-6 py-2 rounded-full hover:shadow-lg transition-all duration-300 text-center"
                   >
                     Choisir un plan
                   </button>

@@ -137,7 +137,7 @@ const Pricing: React.FC<PricingProps> = ({ onPlanSelect }) => {
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
             Choisissez votre{' '}
-            <span className="bg-gradient-to-r from-purple-600 to-orange-500 bg-clip-text text-transparent">
+            <span className="text-gray-800">
               plan d'abonnement
             </span>
           </h2>
@@ -155,7 +155,7 @@ const Pricing: React.FC<PricingProps> = ({ onPlanSelect }) => {
                 onClick={() => setActiveTab(key)}
                 className={`flex items-center space-x-3 px-6 py-4 rounded-xl transition-all duration-300 ${
                   activeTab === key
-                    ? `bg-gradient-to-r ${app.color} text-white shadow-lg`
+                    ? 'bg-gray-800 text-white shadow-lg'
                     : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
                 }`}
               >
@@ -173,7 +173,7 @@ const Pricing: React.FC<PricingProps> = ({ onPlanSelect }) => {
 
         {/* Current Application Header */}
         <div className="text-center mb-12">
-          <div className={`inline-flex items-center space-x-3 px-6 py-3 rounded-full bg-gradient-to-r ${currentApp.color} text-white mb-4`}>
+          <div className="inline-flex items-center space-x-3 px-6 py-3 rounded-full bg-gray-800 text-white mb-4">
             <currentApp.icon className="w-6 h-6" />
             <span className="font-semibold">{currentApp.name}</span>
           </div>
@@ -186,12 +186,12 @@ const Pricing: React.FC<PricingProps> = ({ onPlanSelect }) => {
             <div
               key={index}
               className={`relative bg-white rounded-2xl shadow-lg p-8 transition-all duration-300 hover:shadow-xl ${
-                plan.popular ? 'ring-2 ring-purple-500 scale-105' : ''
+                plan.popular ? 'ring-2 ring-gray-400 scale-105' : ''
               }`}
             >
               {plan.popular && (
                 <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
-                  <span className={`bg-gradient-to-r ${currentApp.color} text-white px-4 py-2 rounded-full text-sm font-medium`}>
+                  <span className="bg-gray-800 text-white px-4 py-2 rounded-full text-sm font-medium">
                     Le plus populaire
                   </span>
                 </div>
@@ -222,7 +222,7 @@ const Pricing: React.FC<PricingProps> = ({ onPlanSelect }) => {
               <button
                 className={`w-full py-3 px-6 rounded-lg font-semibold transition-all duration-300 ${
                   plan.popular
-                    ? `bg-gradient-to-r ${currentApp.color} text-white hover:shadow-lg`
+                    ? 'bg-gray-800 text-white hover:shadow-lg'
                     : 'bg-gray-100 text-gray-900 hover:bg-gray-200'
                 }`}
                 onClick={() => onPlanSelect(currentApp.name, plan.name)}

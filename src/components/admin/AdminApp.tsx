@@ -5,6 +5,7 @@ import AdminDashboard from './AdminDashboard';
 import UsersSection from './UsersSection';
 import SubscriptionsSection from './SubscriptionsSection';
 import DownloadsSection from './DownloadsSection';
+import StoreSection from './StoreSection';
 
 interface AdminUser {
   email: string;
@@ -42,6 +43,8 @@ const AdminApp: React.FC = () => {
         return <SubscriptionsSection />;
       case 'downloads':
         return <DownloadsSection />;
+      case 'store':
+        return <StoreSection />;
       case 'analytics':
         return (
           <div className="p-8">

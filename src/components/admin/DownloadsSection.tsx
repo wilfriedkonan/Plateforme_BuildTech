@@ -178,8 +178,8 @@ const DownloadsSection: React.FC = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <div className="bg-white rounded-xl p-6 shadow-lg">
           <div className="flex items-center justify-between mb-4">
-            <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-              <Download className="w-6 h-6 text-blue-600" />
+            <div className="w-12 h-12 bg-gray-100 rounded-xl flex items-center justify-center">
+              <Download className="w-6 h-6 text-gray-700" />
             </div>
           </div>
           <h3 className="text-2xl font-bold text-gray-900 mb-1">
@@ -190,8 +190,8 @@ const DownloadsSection: React.FC = () => {
 
         <div className="bg-white rounded-xl p-6 shadow-lg">
           <div className="flex items-center justify-between mb-4">
-            <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
-              <Calendar className="w-6 h-6 text-green-600" />
+            <div className="w-12 h-12 bg-gray-100 rounded-xl flex items-center justify-center">
+              <Calendar className="w-6 h-6 text-gray-700" />
             </div>
           </div>
           <h3 className="text-2xl font-bold text-gray-900 mb-1">
@@ -202,8 +202,8 @@ const DownloadsSection: React.FC = () => {
 
         <div className="bg-white rounded-xl p-6 shadow-lg">
           <div className="flex items-center justify-between mb-4">
-            <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
-              <FileText className="w-6 h-6 text-purple-600" />
+            <div className="w-12 h-12 bg-gray-100 rounded-xl flex items-center justify-center">
+              <FileText className="w-6 h-6 text-gray-700" />
             </div>
           </div>
           <h3 className="text-2xl font-bold text-gray-900 mb-1">
@@ -214,8 +214,8 @@ const DownloadsSection: React.FC = () => {
 
         <div className="bg-white rounded-xl p-6 shadow-lg">
           <div className="flex items-center justify-between mb-4">
-            <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center">
-              <FileText className="w-6 h-6 text-orange-600" />
+            <div className="w-12 h-12 bg-gray-100 rounded-xl flex items-center justify-center">
+              <FileText className="w-6 h-6 text-gray-700" />
             </div>
           </div>
           <h3 className="text-2xl font-bold text-gray-900 mb-1">

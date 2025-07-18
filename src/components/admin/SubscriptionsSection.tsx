@@ -227,8 +227,8 @@ const SubscriptionsSection: React.FC = () => {
             <div key={plan} className="text-center p-4 bg-gray-50 rounded-lg">
               <div className="text-2xl font-bold text-gray-900">{count}</div>
               <div className="text-sm text-gray-600">{plan}</div>
-              <div className="text-xs text-gray-500">
-                {((count / stats.total) * 100).toFixed(1)}%
+              <div className="w-12 h-12 bg-gray-100 rounded-xl flex items-center justify-center">
+                <Calendar className="w-6 h-6 text-gray-700" />
               </div>
             </div>
           ))}

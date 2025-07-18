@@ -10,6 +10,7 @@ import Footer from './components/Footer';
 import OTPModal from './components/OTPModal';
 import LoginModal from './components/LoginModal';
 import AdminApp from './components/admin/AdminApp';
+import StorePage from './components/store/StorePage';
 
 export interface User {
   id: string;
@@ -28,6 +29,7 @@ export interface User {
 
 function App() {
   const [isAdminMode, setIsAdminMode] = useState(false);
+  const [isStoreMode, setIsStoreMode] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [showOTPModal, setShowOTPModal] = useState(false);
@@ -41,12 +43,19 @@ function App() {
     const path = window.location.pathname;
     if (path === '/admin' || path.startsWith('/admin/')) {
       setIsAdminMode(true);
+    } else if (path === '/boutique' || path.startsWith('/boutique/')) {
+      setIsStoreMode(true);
     }
   }, []);
 
   // Si on est en mode admin, afficher l'interface admin
   if (isAdminMode) {
     return <AdminApp />;
+  }
+
+  // Si on est en mode boutique, afficher la boutique
+  if (isStoreMode) {
+    return <StorePage />;
   }
 
   const handleSignUp = (userData: { companyName: string; email: string; phone: string; otpMethod: 'email' | 'whatsapp' }, planData?: {app: string, plan: string}) => {

@@ -1,5 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { ArrowRight, Download, Shield, Zap, ChevronLeft, ChevronRight } from 'lucide-react';
+import blackSmallImage from './assets/black-small.webp';
+import coffeeshop from './assets/coffee-shop.jpg';
+import mediumShot from './assets/medium-shot-black-woman-.avif';
+import pexelsolly from './assets/pexels-olly-3801439.jpg';
+import portrai from './assets/portrait-of-store-owner-in-his-store.jpg';
 
 const Hero: React.FC = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -9,35 +14,35 @@ const Hero: React.FC = () => {
       id: 1,
       title: "Boutique de mode",
       description: "Gestion complète des stocks et ventes",
-      image: "https://images.pexels.com/photos/6205509/pexels-photo-6205509.jpeg?auto=compress&cs=tinysrgb&w=800",
+      image: blackSmallImage,
       features: ["Gestion des stocks", "Point de vente", "Fidélisation client"]
     },
     {
       id: 2,
       title: "Restaurant",
       description: "Solution de gestion restauration",
-      image: "https://images.pexels.com/photos/5632402/pexels-photo-5632402.jpeg?auto=compress&cs=tinysrgb&w=800",
+      image: coffeeshop,
       features: ["Commandes", "Inventaire", "Facturation"]
     },
     {
       id: 3,
       title: "Pressing",
       description: "Suivi des vêtements et planning",
-      image: "https://images.pexels.com/photos/6205471/pexels-photo-6205471.jpeg?auto=compress&cs=tinysrgb&w=800",
+      image: mediumShot,
       features: ["Suivi commandes", "Planning", "Gestion clients"]
     },
     {
       id: 4,
       title: "Salon de beauté",
       description: "Rendez-vous et gestion clientèle",
-      image: "https://images.pexels.com/photos/5632371/pexels-photo-5632371.jpeg?auto=compress&cs=tinysrgb&w=800",
+      image: pexelsolly,
       features: ["Réservations", "Produits", "Historique client"]
     },
     {
       id: 5,
       title: "Bureau d'affaires",
       description: "Gestion d'entreprise moderne",
-      image: "https://images.pexels.com/photos/5632298/pexels-photo-5632298.jpeg?auto=compress&cs=tinysrgb&w=800",
+      image: portrai,
       features: ["Comptabilité", "RH", "Projets"]
     }
   ];
@@ -94,26 +99,26 @@ const Hero: React.FC = () => {
                     element.scrollIntoView({ behavior: 'smooth' });
                   }
                 }}
-                className="bg-gradient-to-r from-purple-600 to-orange-500 text-white px-8 py-4 rounded-full font-semibold hover:shadow-lg transition-all duration-300 flex items-center justify-center group"
+                className="bg-gray-800 text-white px-8 py-4 rounded-full font-semibold hover:shadow-lg transition-all duration-300 flex items-center justify-center group"
               >
                 Choisir un plan
                 <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </button>
-              <button className="border border-purple-600 text-purple-600 px-8 py-4 rounded-full font-semibold hover:bg-purple-50 transition-all duration-300">
+              <button className="border border-gray-300 text-gray-700 px-8 py-4 rounded-full font-semibold hover:bg-gray-50 transition-all duration-300">
                 Voir la démo
               </button>
             </div>
             <div className="flex items-center space-x-6 text-sm text-gray-600">
               <div className="flex items-center">
-                <Shield className="w-5 h-5 text-green-500 mr-2" />
+                <Shield className="w-5 h-5 text-gray-600 mr-2" />
                 Sécurisé
               </div>
               <div className="flex items-center">
-                <Zap className="w-5 h-5 text-purple-500 mr-2" />
+                <Zap className="w-5 h-5 text-gray-600 mr-2" />
                 Rapide
               </div>
               <div className="flex items-center">
-                <Download className="w-5 h-5 text-orange-500 mr-2" />
+                <Download className="w-5 h-5 text-gray-600 mr-2" />
                 Facile
               </div>
             </div>
@@ -195,12 +200,12 @@ const Hero: React.FC = () => {
             <div className="relative bg-white rounded-2xl shadow-xl p-6">
               <div className="flex items-center justify-between mb-6">
                 <h3 className="text-lg font-semibold text-gray-900">Applications disponibles</h3>
-                <span className="bg-green-100 text-green-800 text-xs px-3 py-1 rounded-full">2 Apps</span>
+                <span className="bg-green-100 text-gray-700 text-xs px-3 py-1 rounded-full">2 Apps</span>
               </div>
               <div className="space-y-4">
                 <div className="flex items-center space-x-4 p-4 bg-gray-50 rounded-lg">
-                  <div className="w-12 h-12 bg-gradient-to-r from-purple-600 to-orange-500 rounded-lg flex items-center justify-center">
-                    <Zap className="w-6 h-6 text-white" />
+                  <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center">
+                    <Zap className="w-6 h-6 text-gray-700" />
                   </div>
                   <div>
                     <h4 className="font-semibold text-gray-900">Business Manager Pro</h4>
@@ -208,8 +213,8 @@ const Hero: React.FC = () => {
                   </div>
                 </div>
                 <div className="flex items-center space-x-4 p-4 bg-gray-50 rounded-lg">
-                  <div className="w-12 h-12 bg-gradient-to-r from-purple-600 to-orange-500 rounded-lg flex items-center justify-center">
-                    <Shield className="w-6 h-6 text-white" />
+                  <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center">
+                    <Shield className="w-6 h-6 text-gray-700" />
                   </div>
                   <div>
                     <h4 className="font-semibold text-gray-900">Security Suite</h4>

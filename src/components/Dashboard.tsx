@@ -300,7 +300,7 @@ const Dashboard: React.FC<DashboardProps> = ({ user }) => {
         <div className="bg-white rounded-2xl shadow-lg p-8 mb-8">
           <div className="flex flex-col md:flex-row items-start md:items-center justify-between">
             <div className="flex items-center space-x-4 mb-4 md:mb-0">
-              <div className="w-16 h-16 bg-gradient-to-r from-purple-600 to-orange-500 rounded-full flex items-center justify-center">
+              <div className="w-16 h-16 bg-gray-800 rounded-full flex items-center justify-center">
                 <User className="w-8 h-8 text-white" />
               </div>
               <div>
@@ -339,7 +339,7 @@ const Dashboard: React.FC<DashboardProps> = ({ user }) => {
             onClick={() => setActiveTab('overview')}
             className={`flex-1 flex items-center justify-center space-x-2 px-4 py-3 rounded-lg font-medium transition-all ${
               activeTab === 'overview'
-                ? 'bg-gradient-to-r from-purple-600 to-orange-500 text-white shadow-lg'
+                ? 'bg-gray-800 text-white shadow-lg'
                 : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
             }`}
           >
@@ -350,7 +350,7 @@ const Dashboard: React.FC<DashboardProps> = ({ user }) => {
             onClick={() => setActiveTab('reports')}
             className={`flex-1 flex items-center justify-center space-x-2 px-4 py-3 rounded-lg font-medium transition-all ${
               activeTab === 'reports'
-                ? 'bg-gradient-to-r from-purple-600 to-orange-500 text-white shadow-lg'
+                ? 'bg-gray-800 text-white shadow-lg'
                 : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
             }`}
           >
@@ -538,18 +538,18 @@ const Dashboard: React.FC<DashboardProps> = ({ user }) => {
                       <Line 
                         type="monotone" 
                         dataKey="sales" 
-                        stroke="#8b5cf6" 
+                        stroke="#64748b" 
                         strokeWidth={3}
-                        dot={{ fill: '#8b5cf6', strokeWidth: 2, r: 4 }}
-                        activeDot={{ r: 6, stroke: '#8b5cf6', strokeWidth: 2 }}
+                        dot={{ fill: '#64748b', strokeWidth: 2, r: 4 }}
+                        activeDot={{ r: 6, stroke: '#64748b', strokeWidth: 2 }}
                       />
                       <Line 
                         type="monotone" 
                         dataKey="revenue" 
-                        stroke="#f97316" 
+                        stroke="#94a3b8" 
                         strokeWidth={3}
-                        dot={{ fill: '#f97316', strokeWidth: 2, r: 4 }}
-                        activeDot={{ r: 6, stroke: '#f97316', strokeWidth: 2 }}
+                        dot={{ fill: '#94a3b8', strokeWidth: 2, r: 4 }}
+                        activeDot={{ r: 6, stroke: '#94a3b8', strokeWidth: 2 }}
                       />
                     </LineChart>
                   ) : (
@@ -579,8 +579,8 @@ const Dashboard: React.FC<DashboardProps> = ({ user }) => {
                           name === 'sales' ? 'Ventes' : 'Revenus'
                         ]}
                       />
-                      <Bar dataKey="sales" fill="#8b5cf6" radius={[4, 4, 0, 0]} />
-                      <Bar dataKey="revenue" fill="#f97316" radius={[4, 4, 0, 0]} />
+                      <Bar dataKey="sales" fill="#64748b" radius={[4, 4, 0, 0]} />
+                      <Bar dataKey="revenue" fill="#94a3b8" radius={[4, 4, 0, 0]} />
                     </BarChart>
                   )}
                 </ResponsiveContainer>
@@ -589,11 +589,11 @@ const Dashboard: React.FC<DashboardProps> = ({ user }) => {
               {/* Légende */}
               <div className="flex items-center justify-center space-x-8 mt-6 pt-6 border-t border-gray-200">
                 <div className="flex items-center space-x-2">
-                  <div className="w-3 h-3 bg-purple-500 rounded-full"></div>
+                  <div className="w-3 h-3 bg-slate-500 rounded-full"></div>
                   <span className="text-sm text-gray-600">Nombre de ventes</span>
                 </div>
                 <div className="flex items-center space-x-2">
-                  <div className="w-3 h-3 bg-orange-500 rounded-full"></div>
+                  <div className="w-3 h-3 bg-slate-400 rounded-full"></div>
                   <span className="text-sm text-gray-600">Revenus (€)</span>
                 </div>
               </div>
@@ -613,8 +613,8 @@ const Dashboard: React.FC<DashboardProps> = ({ user }) => {
                       <div key={app.id} className="border border-gray-200 rounded-xl p-6 hover:shadow-md transition-shadow">
                         <div className="flex items-start justify-between">
                           <div className="flex items-center space-x-4">
-                            <div className="w-12 h-12 bg-gradient-to-r from-purple-600 to-orange-500 rounded-lg flex items-center justify-center">
-                              <app.icon className="w-6 h-6 text-white" />
+                            <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center">
+                              <app.icon className="w-6 h-6 text-gray-700" />
                             </div>
                             <div>
                               <h3 className="font-semibold text-gray-900">{app.name}</h3>
@@ -628,7 +628,7 @@ const Dashboard: React.FC<DashboardProps> = ({ user }) => {
                           </div>
                           <button
                             onClick={() => handleDownload(app.name)}
-                            className="bg-gradient-to-r from-purple-600 to-orange-500 text-white px-4 py-2 rounded-lg hover:shadow-lg transition-all duration-300 flex items-center space-x-2"
+                            className="bg-gray-800 text-white px-4 py-2 rounded-lg hover:shadow-lg transition-all duration-300 flex items-center space-x-2"
                           >
                             <Download className="w-4 h-4" />
                             <span>Télécharger</span>
@@ -645,13 +645,13 @@ const Dashboard: React.FC<DashboardProps> = ({ user }) => {
                 {/* Statut abonnement */}
                 <div className="bg-white rounded-2xl shadow-lg p-6">
                   <div className="flex items-center space-x-3 mb-4">
-                    <Crown className="w-6 h-6 text-purple-600" />
+                    <Crown className="w-6 h-6 text-gray-700" />
                     <h3 className="font-semibold text-gray-900">Abonnement</h3>
                   </div>
                   {user.isSubscribed ? (
                     <div>
                       <p className="text-sm text-gray-600 mb-2">Plan actuel</p>
-                      <p className="font-semibold text-purple-600">{user.subscriptionPlan}</p>
+                      <p className="font-semibold text-gray-800">{user.subscriptionPlan}</p>
                       <p className="text-xs text-gray-500 mt-2">Expire le 15 février 2024</p>
                     </div>
                   ) : (
@@ -659,7 +659,7 @@ const Dashboard: React.FC<DashboardProps> = ({ user }) => {
                       <p className="text-sm text-gray-600 mb-4">
                         Vous n'avez pas d'abonnement actif
                       </p>
-                      <button className="w-full bg-gradient-to-r from-purple-600 to-orange-500 text-white py-2 px-4 rounded-lg text-sm hover:shadow-lg transition-all duration-300">
+                      <button className="w-full bg-gray-800 text-white py-2 px-4 rounded-lg text-sm hover:shadow-lg transition-all duration-300">
                         Choisir un plan
                       </button>
                     </div>
@@ -669,7 +669,7 @@ const Dashboard: React.FC<DashboardProps> = ({ user }) => {
                 {/* Activité récente */}
                 <div className="bg-white rounded-2xl shadow-lg p-6">
                   <div className="flex items-center space-x-3 mb-4">
-                    <Activity className="w-6 h-6 text-orange-600" />
+                    <Activity className="w-6 h-6 text-gray-700" />
                     <h3 className="font-semibold text-gray-900">Activité récente</h3>
                   </div>
                   <div className="space-y-3">
@@ -704,7 +704,7 @@ const Dashboard: React.FC<DashboardProps> = ({ user }) => {
                 <div className="flex items-center space-x-4 mt-4 md:mt-0">
                   <button
                     onClick={() => setShowReportModal(true)}
-                    className="bg-gradient-to-r from-purple-600 to-orange-500 text-white px-6 py-3 rounded-lg hover:shadow-lg transition-all duration-300 flex items-center space-x-2"
+                    className="bg-gray-800 text-white px-6 py-3 rounded-lg hover:shadow-lg transition-all duration-300 flex items-center space-x-2"
                   >
                     <Plus className="w-5 h-5" />
                     <span>Générer un rapport</span>
@@ -712,7 +712,7 @@ const Dashboard: React.FC<DashboardProps> = ({ user }) => {
                   <select
                     value={selectedReportType}
                     onChange={(e) => setSelectedReportType(e.target.value)}
-                    className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                    className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-transparent"
                   >
                     <option value="all">Tous les rapports</option>
                     <option value="sales">Ventes</option>
@@ -727,31 +727,31 @@ const Dashboard: React.FC<DashboardProps> = ({ user }) => {
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <button
                   onClick={() => generateNewReport('sales')}
-                  className="flex items-center justify-center space-x-2 p-4 border-2 border-dashed border-green-300 rounded-lg hover:border-green-500 hover:bg-green-50 transition-all"
+                  className="flex items-center justify-center space-x-2 p-4 border-2 border-dashed border-gray-300 rounded-lg hover:border-gray-500 hover:bg-gray-50 transition-all"
                 >
-                  <TrendingUp className="w-5 h-5 text-green-600" />
-                  <span className="text-sm font-medium text-green-600">Rapport Ventes</span>
+                  <TrendingUp className="w-5 h-5 text-gray-600" />
+                  <span className="text-sm font-medium text-gray-600">Rapport Ventes</span>
                 </button>
                 <button
                   onClick={() => generateNewReport('inventory')}
-                  className="flex items-center justify-center space-x-2 p-4 border-2 border-dashed border-blue-300 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition-all"
+                  className="flex items-center justify-center space-x-2 p-4 border-2 border-dashed border-gray-300 rounded-lg hover:border-gray-500 hover:bg-gray-50 transition-all"
                 >
-                  <Package className="w-5 h-5 text-blue-600" />
-                  <span className="text-sm font-medium text-blue-600">Rapport Stock</span>
+                  <Package className="w-5 h-5 text-gray-600" />
+                  <span className="text-sm font-medium text-gray-600">Rapport Stock</span>
                 </button>
                 <button
                   onClick={() => generateNewReport('customers')}
-                  className="flex items-center justify-center space-x-2 p-4 border-2 border-dashed border-purple-300 rounded-lg hover:border-purple-500 hover:bg-purple-50 transition-all"
+                  className="flex items-center justify-center space-x-2 p-4 border-2 border-dashed border-gray-300 rounded-lg hover:border-gray-500 hover:bg-gray-50 transition-all"
                 >
-                  <Users className="w-5 h-5 text-purple-600" />
-                  <span className="text-sm font-medium text-purple-600">Rapport Clients</span>
+                  <Users className="w-5 h-5 text-gray-600" />
+                  <span className="text-sm font-medium text-gray-600">Rapport Clients</span>
                 </button>
                 <button
                   onClick={() => generateNewReport('financial')}
-                  className="flex items-center justify-center space-x-2 p-4 border-2 border-dashed border-orange-300 rounded-lg hover:border-orange-500 hover:bg-orange-50 transition-all"
+                  className="flex items-center justify-center space-x-2 p-4 border-2 border-dashed border-gray-300 rounded-lg hover:border-gray-500 hover:bg-gray-50 transition-all"
                 >
-                  <DollarSign className="w-5 h-5 text-orange-600" />
-                  <span className="text-sm font-medium text-orange-600">Rapport Financier</span>
+                  <DollarSign className="w-5 h-5 text-gray-600" />
+                  <span className="text-sm font-medium text-gray-600">Rapport Financier</span>
                 </button>
               </div>
             </div>
@@ -793,7 +793,7 @@ const Dashboard: React.FC<DashboardProps> = ({ user }) => {
                               </button>
                               <button
                                 onClick={() => handleReportDownload(report.id)}
-                                className="bg-gradient-to-r from-purple-600 to-orange-500 text-white px-4 py-2 rounded-lg hover:shadow-lg transition-all duration-300 flex items-center space-x-2"
+                                className="bg-gray-800 text-white px-4 py-2 rounded-lg hover:shadow-lg transition-all duration-300 flex items-center space-x-2"
                               >
                                 <Download className="w-4 h-4" />
                                 <span>Télécharger</span>

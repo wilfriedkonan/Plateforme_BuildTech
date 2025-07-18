@@ -41,7 +41,7 @@ const FAQ: React.FC = () => {
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
             Questions{' '}
-            <span className="bg-gradient-to-r from-purple-600 to-orange-500 bg-clip-text text-transparent">
+            <span className="text-gray-800">
               fréquentes
             </span>
           </h2>
@@ -62,9 +62,9 @@ const FAQ: React.FC = () => {
               >
                 <span className="font-semibold text-gray-900">{faq.question}</span>
                 {openIndex === index ? (
-                  <Minus className="w-5 h-5 text-purple-600 flex-shrink-0" />
+                  <Minus className="w-5 h-5 text-gray-600 flex-shrink-0" />
                 ) : (
-                  <Plus className="w-5 h-5 text-purple-600 flex-shrink-0" />
+                  <Plus className="w-5 h-5 text-gray-600 flex-shrink-0" />
                 )}
               </button>
               {openIndex === index && (
@@ -80,7 +80,7 @@ const FAQ: React.FC = () => {
           <p className="text-gray-600 mb-4">
             Vous ne trouvez pas la réponse à votre question ?
           </p>
-          <button className="bg-gradient-to-r from-purple-600 to-orange-500 text-white px-8 py-3 rounded-full font-semibold hover:shadow-lg transition-all duration-300">
+          <button className="bg-gray-800 text-white px-8 py-3 rounded-full font-semibold hover:shadow-lg transition-all duration-300">
             Contactez le support
           </button>
         </div>

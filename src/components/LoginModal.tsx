@@ -46,7 +46,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ onLogin, onClose, onSwitchToSig
         </div>
 
         <div className="text-center mb-8">
-          <div className="w-16 h-16 bg-gradient-to-r from-purple-600 to-orange-500 rounded-full flex items-center justify-center mx-auto mb-4">
+          <div className="w-16 h-16 bg-gray-800 rounded-full flex items-center justify-center mx-auto mb-4">
             <Mail className="w-8 h-8 text-white" />
           </div>
           <h3 className="text-lg font-semibold text-gray-900 mb-2">
@@ -71,7 +71,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ onLogin, onClose, onSwitchToSig
                 value={formData.email}
                 onChange={handleChange}
                 required
-                className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
+                className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-transparent transition-all"
                 placeholder="votre@email.com"
               />
             </div>
@@ -90,7 +90,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ onLogin, onClose, onSwitchToSig
                 value={formData.password}
                 onChange={handleChange}
                 required
-                className="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
+                className="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-transparent transition-all"
                 placeholder="Votre mot de passe"
               />
               <button
@@ -115,7 +115,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ onLogin, onClose, onSwitchToSig
 
           <button
             type="submit"
-            className="w-full bg-gradient-to-r from-purple-600 to-orange-500 text-white py-3 px-6 rounded-lg font-semibold hover:shadow-lg transition-all duration-300"
+            className="w-full bg-gray-800 text-white py-3 px-6 rounded-lg font-semibold hover:shadow-lg transition-all duration-300"
           >
             Se connecter
           </button>
@@ -127,7 +127,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ onLogin, onClose, onSwitchToSig
           </p>
           <button 
             onClick={onSwitchToSignup}
-            className="text-purple-600 hover:text-purple-700 font-medium"
+            className="text-gray-700 hover:text-gray-900 font-medium"
           >
             Choisir un plan et créer un compte
           </button>

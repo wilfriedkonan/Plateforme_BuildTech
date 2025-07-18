@@ -47,7 +47,7 @@ const Features: React.FC = () => {
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
             Pourquoi choisir{' '}
-            <span className="bg-gradient-to-r from-purple-600 to-orange-500 bg-clip-text text-transparent">
+            <span className="text-gray-800">
               Build Tech Solutions
             </span>
           </h2>
@@ -61,10 +61,10 @@ const Features: React.FC = () => {
           {features.map((feature, index) => (
             <div
               key={index}
-              className="group p-8 bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 hover:border-purple-200"
+              className="group p-8 bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100"
             >
-              <div className={`w-16 h-16 bg-gradient-to-r ${feature.color} rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300`}>
-                <feature.icon className="w-8 h-8 text-white" />
+              <div className="w-16 h-16 bg-gray-100 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                <feature.icon className="w-8 h-8 text-gray-700" />
               </div>
               <h3 className="text-xl font-semibold text-gray-900 mb-4">
                 {feature.title}
@@ -77,7 +77,7 @@ const Features: React.FC = () => {
         </div>
 
         <div className="mt-16 text-center">
-          <button className="bg-gradient-to-r from-purple-600 to-orange-500 text-white px-8 py-4 rounded-full font-semibold hover:shadow-lg transition-all duration-300">
+          <button className="bg-gray-800 text-white px-8 py-4 rounded-full font-semibold hover:shadow-lg transition-all duration-300">
             En savoir plus
           </button>
         </div>

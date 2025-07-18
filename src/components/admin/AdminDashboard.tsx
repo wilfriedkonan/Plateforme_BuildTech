@@ -32,9 +32,9 @@ const AdminDashboard: React.FC = () => {
 
   // Données pour le graphique en secteurs des plans
   const planData = [
-    { name: 'Découverte', value: 45, color: '#8b5cf6' },
-    { name: 'Standard', value: 35, color: '#f97316' },
-    { name: 'Pro', value: 20, color: '#06b6d4' }
+    { name: 'Découverte', value: 45, color: '#94a3b8' },
+    { name: 'Standard', value: 35, color: '#64748b' },
+    { name: 'Pro', value: 20, color: '#475569' }
   ];
 
   // Simulation de récupération des données
@@ -146,8 +146,8 @@ const AdminDashboard: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <div className="bg-white rounded-xl p-6 shadow-lg">
             <div className="flex items-center justify-between mb-4">
-              <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-                <Users className="w-6 h-6 text-blue-600" />
+              <div className="w-12 h-12 bg-gray-100 rounded-xl flex items-center justify-center">
+                <Users className="w-6 h-6 text-gray-700" />
               </div>
               <span className="text-sm font-medium text-green-600 bg-green-100 px-2 py-1 rounded-full">
                 +{stats.newUsersToday} aujourd'hui
@@ -161,8 +161,8 @@ const AdminDashboard: React.FC = () => {
 
           <div className="bg-white rounded-xl p-6 shadow-lg">
             <div className="flex items-center justify-between mb-4">
-              <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
-                <CreditCard className="w-6 h-6 text-purple-600" />
+              <div className="w-12 h-12 bg-gray-100 rounded-xl flex items-center justify-center">
+                <CreditCard className="w-6 h-6 text-gray-700" />
               </div>
               <span className="text-sm font-medium text-purple-600 bg-purple-100 px-2 py-1 rounded-full">
                 {stats.conversionRate}%
@@ -176,8 +176,8 @@ const AdminDashboard: React.FC = () => {
 
           <div className="bg-white rounded-xl p-6 shadow-lg">
             <div className="flex items-center justify-between mb-4">
-              <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center">
-                <Download className="w-6 h-6 text-orange-600" />
+              <div className="w-12 h-12 bg-gray-100 rounded-xl flex items-center justify-center">
+                <Download className="w-6 h-6 text-gray-700" />
               </div>
               <span className="text-sm font-medium text-orange-600 bg-orange-100 px-2 py-1 rounded-full">
                 +12% ce mois
@@ -191,8 +191,8 @@ const AdminDashboard: React.FC = () => {
 
           <div className="bg-white rounded-xl p-6 shadow-lg">
             <div className="flex items-center justify-between mb-4">
-              <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
-                <DollarSign className="w-6 h-6 text-green-600" />
+              <div className="w-12 h-12 bg-gray-100 rounded-xl flex items-center justify-center">
+                <DollarSign className="w-6 h-6 text-gray-700" />
               </div>
               <span className="text-sm font-medium text-green-600 bg-green-100 px-2 py-1 rounded-full">
                 +8.5% ce mois
@@ -251,8 +251,8 @@ const AdminDashboard: React.FC = () => {
                       boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
                     }}
                   />
-                  <Line type="monotone" dataKey="users" stroke="#8b5cf6" strokeWidth={3} />
-                  <Line type="monotone" dataKey="downloads" stroke="#f97316" strokeWidth={3} />
+                  <Line type="monotone" dataKey="users" stroke="#64748b" strokeWidth={3} />
+                  <Line type="monotone" dataKey="downloads" stroke="#94a3b8" strokeWidth={3} />
                 </LineChart>
               ) : (
                 <BarChart data={chartData}>
@@ -267,8 +267,8 @@ const AdminDashboard: React.FC = () => {
                       boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
                     }}
                   />
-                  <Bar dataKey="users" fill="#8b5cf6" radius={[4, 4, 0, 0]} />
-                  <Bar dataKey="downloads" fill="#f97316" radius={[4, 4, 0, 0]} />
+                  <Bar dataKey="users" fill="#64748b" radius={[4, 4, 0, 0]} />
+                  <Bar dataKey="downloads" fill="#94a3b8" radius={[4, 4, 0, 0]} />
                 </BarChart>
               )}
             </ResponsiveContainer>
@@ -276,11 +276,11 @@ const AdminDashboard: React.FC = () => {
 
           <div className="flex items-center justify-center space-x-8 mt-6 pt-6 border-t border-gray-200">
             <div className="flex items-center space-x-2">
-              <div className="w-3 h-3 bg-purple-500 rounded-full"></div>
+              <div className="w-3 h-3 bg-slate-500 rounded-full"></div>
               <span className="text-sm text-gray-600">Nouveaux utilisateurs</span>
             </div>
             <div className="flex items-center space-x-2">
-              <div className="w-3 h-3 bg-orange-500 rounded-full"></div>
+              <div className="w-3 h-3 bg-slate-400 rounded-full"></div>
               <span className="text-sm text-gray-600">Téléchargements</span>
             </div>
           </div>
@@ -331,8 +331,8 @@ const AdminDashboard: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <div className="bg-white rounded-xl p-6 shadow-lg">
             <div className="flex items-center space-x-3 mb-4">
-              <div className="w-10 h-10 bg-indigo-100 rounded-lg flex items-center justify-center">
-                <Activity className="w-5 h-5 text-indigo-600" />
+              <div className="w-10 h-10 bg-gray-100 rounded-xl flex items-center justify-center">
+                <Activity className="w-5 h-5 text-gray-700" />
               </div>
               <div>
                 <h3 className="font-semibold text-gray-900">Tentatives OTP</h3>
@@ -344,8 +344,8 @@ const AdminDashboard: React.FC = () => {
 
           <div className="bg-white rounded-xl p-6 shadow-lg">
             <div className="flex items-center space-x-3 mb-4">
-              <div className="w-10 h-10 bg-pink-100 rounded-lg flex items-center justify-center">
-                <TrendingUp className="w-5 h-5 text-pink-600" />
+              <div className="w-10 h-10 bg-gray-100 rounded-xl flex items-center justify-center">
+                <TrendingUp className="w-5 h-5 text-gray-700" />
               </div>
               <div>
                 <h3 className="font-semibold text-gray-900">Taux de conversion</h3>
@@ -357,8 +357,8 @@ const AdminDashboard: React.FC = () => {
 
           <div className="bg-white rounded-xl p-6 shadow-lg">
             <div className="flex items-center space-x-3 mb-4">
-              <div className="w-10 h-10 bg-cyan-100 rounded-lg flex items-center justify-center">
-                <Eye className="w-5 h-5 text-cyan-600" />
+              <div className="w-10 h-10 bg-gray-100 rounded-xl flex items-center justify-center">
+                <Eye className="w-5 h-5 text-gray-700" />
               </div>
               <div>
                 <h3 className="font-semibold text-gray-900">Temps de session</h3>
@@ -370,8 +370,8 @@ const AdminDashboard: React.FC = () => {
 
           <div className="bg-white rounded-xl p-6 shadow-lg">
             <div className="flex items-center space-x-3 mb-4">
-              <div className="w-10 h-10 bg-emerald-100 rounded-lg flex items-center justify-center">
-                <UserPlus className="w-5 h-5 text-emerald-600" />
+              <div className="w-10 h-10 bg-gray-100 rounded-xl flex items-center justify-center">
+                <UserPlus className="w-5 h-5 text-gray-700" />
               </div>
               <div>
                 <h3 className="font-semibold text-gray-900">Nouveaux leads</h3>

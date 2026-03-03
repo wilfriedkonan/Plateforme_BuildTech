@@ -1,23 +1,59 @@
 import React, { useState } from 'react';
 import { Building, Mail, Phone, ArrowRight, Check } from 'lucide-react';
+import { useAuth } from '../hooks/useAuth';
 
 interface SignUpFormProps {
   onSignUp: (userData: { companyName: string; email: string; phone: string; otpMethod: 'email' | 'whatsapp' }) => void;
-  selectedPlan?: { app: string; plan: string };
+  selectedPlan?: { app: string; plan: string; idPlan: string };
 }
 
 const SignUpForm: React.FC<SignUpFormProps> = ({ onSignUp, selectedPlan }) => {
+  const { register, isLoading, error: authError } = useAuth();
   const [formData, setFormData] = useState({
     companyName: '',
     email: '',
     phone: '',
+    password: '',
     otpMethod: 'email' as 'email' | 'whatsapp'
   });
+  const [error, setError] = useState(authError || '');
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (formData.companyName && formData.email && formData.phone && formData.otpMethod) {
-      onSignUp(formData);
+    if (!formData.companyName || !formData.email || !formData.phone || !formData.password) {
+      setError('Veuillez remplir tous les champs');
+      return;
+    }
+
+    console.log('[SignUpForm] selectedPlan:', selectedPlan);
+    console.log('[SignUpForm] idPlan to send:', selectedPlan?.idPlan);
+
+    try {
+      const payload = {
+        email: formData.email,
+        telephone: formData.phone,
+        password: formData.password,
+        nom: 'User',
+        prenom: 'User',
+        entrepriseName: formData.companyName,
+        contact: formData.phone,
+        localisation: '',
+        pays: '',
+        ville: '',
+        commune: '',
+        idPlan: selectedPlan?.idPlan,
+        subscriptionDurationMonths: 1,
+      };
+      console.log('[SignUpForm] Full payload:', payload);
+      await register(payload);
+      onSignUp({
+        companyName: formData.companyName,
+        email: formData.email,
+        phone: formData.phone,
+        otpMethod: formData.otpMethod,
+      });
+    } catch (e: any) {
+      setError(e?.response?.data?.message || 'Erreur lors de l\'inscription');
     }
   };
 
@@ -123,6 +159,24 @@ const SignUpForm: React.FC<SignUpFormProps> = ({ onSignUp, selectedPlan }) => {
             </div>
 
             <div>
+              <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
+                Mot de passe *
+              </label>
+              <div className="relative">
+                <input
+                  type="password"
+                  id="password"
+                  name="password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  required
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-transparent transition-all"
+                  placeholder="Votre mot de passe sécurisé"
+                />
+              </div>
+            </div>
+
+            <div>
               <label htmlFor="otpMethod" className="block text-sm font-medium text-gray-700 mb-2">
                 Méthode de vérification *
               </label>
@@ -142,6 +196,12 @@ const SignUpForm: React.FC<SignUpFormProps> = ({ onSignUp, selectedPlan }) => {
               </p>
             </div>
 
+            {error && (
+              <div className="text-red-500 text-sm text-center bg-red-50 p-3 rounded-lg">
+                {error}
+              </div>
+            )}
+
             <div className="bg-purple-50 border border-purple-200 rounded-lg p-4">
               <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
                 <p className="text-sm text-gray-700">
@@ -153,10 +213,11 @@ const SignUpForm: React.FC<SignUpFormProps> = ({ onSignUp, selectedPlan }) => {
 
             <button
               type="submit"
-              className="w-full bg-gray-800 text-white py-4 px-6 rounded-lg font-semibold hover:shadow-lg transition-all duration-300 flex items-center justify-center group"
+              disabled={isLoading}
+              className="w-full bg-gray-800 text-white py-4 px-6 rounded-lg font-semibold hover:shadow-lg transition-all duration-300 flex items-center justify-center group disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {selectedPlan ? 'Finaliser l\'abonnement' : 'S\'inscrire maintenant'}
-              <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              {isLoading ? 'Inscription en cours...' : (selectedPlan ? 'Finaliser l\'abonnement' : 'S\'inscrire maintenant')}
+              {!isLoading && <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />}
             </button>
           </form>
 

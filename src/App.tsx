@@ -36,7 +36,7 @@ function App() {
   const [pendingUser, setPendingUser] = useState<Partial<User> | null>(null);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [otpDeliveryMethod, setOtpDeliveryMethod] = useState<'email' | 'whatsapp'>('email');
-  const [pendingPlan, setPendingPlan] = useState<{app: string, plan: string} | null>(null);
+  const [pendingPlan, setPendingPlan] = useState<{app: string, plan: string, idPlan: string} | null>(null);
 
   // Vérifier si on est en mode admin via l'URL
   React.useEffect(() => {
@@ -58,7 +58,7 @@ function App() {
     return <StorePage />;
   }
 
-  const handleSignUp = (userData: { companyName: string; email: string; phone: string; otpMethod: 'email' | 'whatsapp' }, planData?: {app: string, plan: string}) => {
+  const handleSignUp = (userData: { companyName: string; email: string; phone: string; otpMethod: 'email' | 'whatsapp' }, planData?: {app: string, plan: string, idPlan: string}) => {
     setPendingUser(userData);
     setOtpDeliveryMethod(userData.otpMethod);
     if (planData) {
@@ -90,13 +90,13 @@ function App() {
     }
   };
 
-  const handlePlanSelection = (app: string, plan: string) => {
+  const handlePlanSelection = (app: string, plan: string, idPlan: string) => {
     if (isAuthenticated) {
       // User is logged in, proceed with plan selection
       alert(`Plan ${plan} sélectionné pour ${app}`);
     } else {
       // User not logged in, show signup/login options
-      setPendingPlan({app, plan});
+      setPendingPlan({app, plan, idPlan});
       // For now, we'll show the signup form, but you could show a modal with login/signup options
       const element = document.getElementById('signup');
       if (element) {
@@ -105,27 +105,25 @@ function App() {
     }
   };
 
-  const handleOTPVerification = (otp: string) => {
-    // Simulate OTP verification
-    if (otp === '1234') {
-      const newUser: User = {
-        id: Math.random().toString(36).substr(2, 9),
-        companyName: pendingUser?.companyName || '',
-        email: pendingUser?.email || '',
-        phone: pendingUser?.phone || '',
-        isSubscribed: pendingPlan ? true : false,
-        subscriptionPlan: pendingPlan ? pendingPlan.plan : 'none',
-        selectedApp: pendingPlan?.app,
-        downloadHistory: []
-      };
-      setCurrentUser(newUser);
-      setIsAuthenticated(true);
-      setShowOTPModal(false);
-      setPendingUser(null);
-      setPendingPlan(null);
-    } else {
-      alert('Code OTP invalide. Utilisez 1234 pour cette démo.');
-    }
+  const handleOTPVerification = (_otp: string, userData?: { email: string; phone: string; companyName?: string }, planData?: { app: string; plan: string; idPlan: string }) => {
+    // OTP has been validated by the API, create user session
+    console.log('[App] OTP verified, creating user session');
+    const newUser: User = {
+      id: Math.random().toString(36).substr(2, 9),
+      companyName: userData?.companyName || pendingUser?.companyName || '',
+      email: userData?.email || pendingUser?.email || '',
+      phone: userData?.phone || pendingUser?.phone || '',
+      isSubscribed: planData ? true : false,
+      subscriptionPlan: planData ? planData.plan : 'none',
+      selectedApp: planData?.app,
+      downloadHistory: []
+    };
+    console.log('[App] Creating user:', newUser);
+    setCurrentUser(newUser);
+    setIsAuthenticated(true);
+    setShowOTPModal(false);
+    setPendingUser(null);
+    setPendingPlan(null);
   };
 
   const handleLogout = () => {
@@ -149,7 +147,7 @@ function App() {
         onLogout={handleLogout}
         onLogin={() => setShowLoginModal(true)}
       />
-      <Hero />
+      <Hero onLogin={() => setShowLoginModal(true)} />
       <Features />
       <Pricing onPlanSelect={handlePlanSelection} />
       {pendingPlan && (
@@ -182,6 +180,8 @@ function App() {
           email={pendingUser?.email || ''}
           phone={pendingUser?.phone || ''}
           deliveryMethod={otpDeliveryMethod}
+          userData={{ companyName: pendingUser?.companyName || '' }}
+          planData={pendingPlan || undefined}
         />
       )}
     </div>

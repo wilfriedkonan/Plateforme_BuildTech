@@ -6,7 +6,12 @@ import mediumShot from './assets/medium-shot-black-woman-.avif';
 import pexelsolly from './assets/pexels-olly-3801439.jpg';
 import portrai from './assets/portrait-of-store-owner-in-his-store.jpg';
 
-const Hero: React.FC = () => {
+
+interface HeroProps {
+  onLogin?: () => void;
+}
+
+const Hero: React.FC<HeroProps> = ({ onLogin }) => {
   const [currentSlide, setCurrentSlide] = useState(0);
 
   const environments = [
@@ -104,8 +109,10 @@ const Hero: React.FC = () => {
                 Choisir un plan
                 <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </button>
-              <button className="border border-gray-300 text-gray-700 px-8 py-4 rounded-full font-semibold hover:bg-gray-50 transition-all duration-300">
-                Voir la démo
+              <button
+               onClick={onLogin} 
+               className="border border-gray-300 text-gray-700 px-8 py-4 rounded-full font-semibold hover:bg-gray-50 transition-all duration-300 text-purple-600">
+                Connexion
               </button>
             </div>
             <div className="flex items-center space-x-6 text-sm text-gray-600">

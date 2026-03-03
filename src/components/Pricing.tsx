@@ -1,12 +1,26 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Check, Star, Crown, Zap, Shield } from 'lucide-react';
+import { usePlans } from '../hooks/usePlans';
 
 interface PricingProps {
-  onPlanSelect: (app: string, plan: string) => void;
+  onPlanSelect: (app: string, plan: string , idPlan: string) => void;
 }
 
 const Pricing: React.FC<PricingProps> = ({ onPlanSelect }) => {
   const [activeTab, setActiveTab] = useState('business-manager');
+  const { data: apiApplications, loading: plansLoading, error: plansError } = usePlans();
+
+  type UiPlan = {
+    id: string;
+    name: string;
+    price: string;
+    period?: string;
+    icon: any;
+    features: string[];
+    cta: string;
+    popular: boolean;
+    color: string;
+  };
 
   const applications = {
     'business-manager': {
@@ -129,7 +143,41 @@ const Pricing: React.FC<PricingProps> = ({ onPlanSelect }) => {
     }
   };
 
-  const currentApp = applications[activeTab as keyof typeof applications];
+  const applicationsFromApi = useMemo(() => {
+    if (!apiApplications || apiApplications.length === 0) return null;
+
+    const iconByKey: Record<string, any> = {
+      'business-manager': Zap,
+      'security-suite': Shield,
+    };
+
+    const result: Record<string, any> = {};
+    for (const app of apiApplications) {
+      result[app.key] = {
+        name: app.name,
+        icon: iconByKey[app.key] ?? Zap,
+        description: app.description,
+        color: app.color ?? 'from-gray-600 to-gray-700',
+        plans: (app.plans ?? []).map((p) => ({
+          id: p.id,
+          name: p.name,
+          price: p.price,
+          period: p.period,
+          icon: p.popular ? Zap : Star,
+          features: p.features ?? [],
+          cta: p.cta,
+          popular: Boolean(p.popular),
+          color: p.color ?? 'from-gray-600 to-gray-700',
+        })),
+      };
+    }
+
+    return result;
+  }, [apiApplications]);
+
+  const displayedApplications = applicationsFromApi ?? applications;
+
+  const currentApp = displayedApplications[activeTab as keyof typeof displayedApplications];
 
   return (
     <section id="pricing" className="py-20 bg-gray-50">
@@ -144,12 +192,17 @@ const Pricing: React.FC<PricingProps> = ({ onPlanSelect }) => {
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
             Des tarifs transparents et flexibles pour chaque application selon vos besoins
           </p>
+          {plansError && (
+            <p className="text-sm text-orange-600 mt-4">
+              ⚠️ Impossible de charger les plans depuis l'API. Affichage des plans par défaut.
+            </p>
+          )}
         </div>
 
         {/* Application Tabs */}
         <div className="flex justify-center mb-12">
           <div className="bg-white rounded-2xl p-2 shadow-lg">
-            {Object.entries(applications).map(([key, app]) => (
+            {Object.entries(displayedApplications).map(([key, app]) => (
               <button
                 key={key}
                 onClick={() => setActiveTab(key)}
@@ -175,14 +228,17 @@ const Pricing: React.FC<PricingProps> = ({ onPlanSelect }) => {
         <div className="text-center mb-12">
           <div className="inline-flex items-center space-x-3 px-6 py-3 rounded-full bg-gray-800 text-white mb-4">
             <currentApp.icon className="w-6 h-6" />
-            <span className="font-semibold">{currentApp.name}</span>
+            <span className="font-semibold">{currentApp.name }</span>
           </div>
           <p className="text-lg text-gray-600">{currentApp.description}</p>
         </div>
 
         {/* Pricing Plans */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-          {currentApp.plans.map((plan, index) => (
+          {plansLoading && !applicationsFromApi ? (
+            <div className="col-span-full text-center text-gray-600">Chargement des plans...</div>
+          ) : (
+            (currentApp.plans as UiPlan[]).map((plan: UiPlan, index: number) => (
             <div
               key={index}
               className={`relative bg-white rounded-2xl shadow-lg p-8 transition-all duration-300 hover:shadow-xl ${
@@ -211,7 +267,7 @@ const Pricing: React.FC<PricingProps> = ({ onPlanSelect }) => {
               </div>
 
               <ul className="space-y-4 mb-8">
-                {plan.features.map((feature, featureIndex) => (
+                {plan.features.map((feature: string, featureIndex: number) => (
                   <li key={featureIndex} className="flex items-start">
                     <Check className="w-5 h-5 text-green-500 mr-3 flex-shrink-0 mt-0.5" />
                     <span className="text-gray-700 text-sm">{feature}</span>
@@ -225,12 +281,13 @@ const Pricing: React.FC<PricingProps> = ({ onPlanSelect }) => {
                     ? 'bg-gray-800 text-white hover:shadow-lg'
                     : 'bg-gray-100 text-gray-900 hover:bg-gray-200'
                 }`}
-                onClick={() => onPlanSelect(currentApp.name, plan.name)}
+                onClick={() => onPlanSelect(currentApp.name, plan.name , plan.id)}
               >
                 {plan.cta}
               </button>
             </div>
-          ))}
+            ))
+          )}
         </div>
 
         <div className="mt-16 text-center">

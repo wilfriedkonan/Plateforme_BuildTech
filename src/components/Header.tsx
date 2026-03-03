@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Menu, X, Zap } from 'lucide-react';
 
-interface HeaderProps {
+ export interface HeaderProps {
   isAuthenticated: boolean;
   onLogout: () => void;
   onLogin?: () => void;

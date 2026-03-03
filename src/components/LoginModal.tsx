@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { X, Mail, Lock, Eye, EyeOff } from 'lucide-react';
+import { useAuth } from '../hooks/useAuth';
 
 interface LoginModalProps {
   onLogin: (email: string, password: string) => void;
@@ -8,19 +9,27 @@ interface LoginModalProps {
 }
 
 const LoginModal: React.FC<LoginModalProps> = ({ onLogin, onClose, onSwitchToSignup }) => {
+  const { login, isLoading, error: authError } = useAuth();
   const [formData, setFormData] = useState({
     email: '',
     password: ''
   });
   const [showPassword, setShowPassword] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState(authError || '');
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (formData.email && formData.password) {
-      onLogin(formData.email, formData.password);
-    } else {
+    if (!formData.email || !formData.password) {
       setError('Veuillez remplir tous les champs');
+      return;
+    }
+
+    try {
+      await login({ email: formData.email, password: formData.password });
+      onLogin(formData.email, formData.password);
+      onClose();
+    } catch (e: any) {
+      setError(e?.response?.data?.message || 'Erreur lors de la connexion');
     }
   };
 
@@ -115,9 +124,10 @@ const LoginModal: React.FC<LoginModalProps> = ({ onLogin, onClose, onSwitchToSig
 
           <button
             type="submit"
-            className="w-full bg-gray-800 text-white py-3 px-6 rounded-lg font-semibold hover:shadow-lg transition-all duration-300"
+            disabled={isLoading}
+            className="w-full bg-gray-800 text-white py-3 px-6 rounded-lg font-semibold hover:shadow-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            Se connecter
+            {isLoading ? 'Connexion en cours...' : 'Se connecter'}
           </button>
         </form>
 

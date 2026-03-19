@@ -1,0 +1,79 @@
+import { apiClient } from './apiClient';
+
+export interface Article {
+  id?: string;
+  designation: string;
+  code: string;
+  couleur: string;
+  idEntreprise: string;
+  idDomaine: string;
+  etat: string;
+  ordre: number;
+  estRestaurant: boolean;
+  estEmporte: boolean;
+  statut: boolean;
+}
+
+export interface ArticleResponse {
+  success: boolean;
+  total: number;
+  articles: Article[];
+}
+
+export interface ArticleDetailResponse {
+  success: boolean;
+  article?: Article;
+  message?: string;
+}
+
+const articleService = {
+  // Récupérer tous les articles de l'entreprise (depuis le token)
+  async getArticles(): Promise<ArticleResponse> {
+    try {
+      const response = await apiClient.get<ArticleResponse>('/Article');
+      console.log('[articleService] Get articles response:', response.data);
+      return response.data;
+    } catch (error: any) {
+      console.error('[articleService] Error fetching articles:', error);
+      throw error;
+    }
+  },
+
+  // Créer un nouvel article
+  async createArticle(article: Article): Promise<ArticleDetailResponse> {
+    try {
+      const response = await apiClient.post<ArticleDetailResponse>('/Article', article);
+      console.log('[articleService] Create article response:', response.data);
+      return response.data;
+    } catch (error: any) {
+      console.error('[articleService] Error creating article:', error);
+      throw error;
+    }
+  },
+
+  // Mettre à jour un article
+  async updateArticle(id: string, article: Partial<Article>): Promise<ArticleDetailResponse> {
+    try {
+      const response = await apiClient.put<ArticleDetailResponse>(`/Article/${id}`, article);
+      console.log('[articleService] Update article response:', response.data);
+      return response.data;
+    } catch (error: any) {
+      console.error('[articleService] Error updating article:', error);
+      throw error;
+    }
+  },
+
+  // Supprimer un article
+  async deleteArticle(id: string): Promise<ArticleDetailResponse> {
+    try {
+      const response = await apiClient.delete<ArticleDetailResponse>(`/Article/${id}`);
+      console.log('[articleService] Delete article response:', response.data);
+      return response.data;
+    } catch (error: any) {
+      console.error('[articleService] Error deleting article:', error);
+      throw error;
+    }
+  }
+};
+
+export default articleService;

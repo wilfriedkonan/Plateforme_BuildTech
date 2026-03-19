@@ -38,13 +38,14 @@ export interface LoginPayload {
 export interface LoginResponse {
   success: boolean;
   message: string;
-  token?: string;
+  accessToken?: string;
   user?: {
     id: string;
     email: string;
     nom: string;
     prenom: string;
-    entrepriseName: string;
+    nomEntreprise: string;
+    telephone?: string;
   };
   data?: any;
 }

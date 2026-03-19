@@ -56,8 +56,8 @@ export const useAuth = () => {
       
       if (response.success) {
         // Store token if provided
-        if (response.token) {
-          localStorage.setItem('authToken', response.token);
+        if (response.accessToken) {
+          localStorage.setItem('authToken', response.accessToken);
         }
         
         setState({

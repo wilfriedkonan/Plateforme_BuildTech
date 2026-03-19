@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Header from './components/Header';
 import Hero from './components/Hero';
 import Features from './components/Features';
@@ -11,10 +11,12 @@ import OTPModal from './components/OTPModal';
 import LoginModal from './components/LoginModal';
 import AdminApp from './components/admin/AdminApp';
 import StorePage from './components/store/StorePage';
+import DashboardNavbar from './components/layout/DashboardNavbar';
+import { useAuth } from './hooks/useAuth';
 
 export interface User {
   id: string;
-  companyName: string;
+  nomEntreprise: string;
   email: string;
   phone: string;
   isSubscribed: boolean;
@@ -28,6 +30,7 @@ export interface User {
 }
 
 function App() {
+  const { login } = useAuth();
   const [isAdminMode, setIsAdminMode] = useState(false);
   const [isStoreMode, setIsStoreMode] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -37,8 +40,11 @@ function App() {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [otpDeliveryMethod, setOtpDeliveryMethod] = useState<'email' | 'whatsapp'>('email');
   const [pendingPlan, setPendingPlan] = useState<{app: string, plan: string, idPlan: string} | null>(null);
+  const [loginError, setLoginError] = useState<string | null>(null);
+  const [isLoggingIn, setIsLoggingIn] = useState(false);
+  const [activeTab, setActiveTab] = useState<'overview' | 'reports' | 'articles' | 'administration' | 'pos' | 'achat' | 'client' | 'catalogue'>('overview');
 
-  // Vérifier si on est en mode admin via l'URL
+  // Vérifier si on est en mode admin via l'URL et restaurer la session depuis localStorage
   React.useEffect(() => {
     const path = window.location.pathname;
     if (path === '/admin' || path.startsWith('/admin/')) {
@@ -46,7 +52,31 @@ function App() {
     } else if (path === '/boutique' || path.startsWith('/boutique/')) {
       setIsStoreMode(true);
     }
+
+    // Restaurer la session depuis localStorage
+    const savedSession = localStorage.getItem('userSession');
+    if (savedSession) {
+      try {
+        const session = JSON.parse(savedSession);
+        setIsAuthenticated(true);
+        setCurrentUser(session.user);
+        setActiveTab(session.activeTab || 'overview');
+      } catch (error) {
+        console.error('Erreur lors de la restauration de la session:', error);
+        localStorage.removeItem('userSession');
+      }
+    }
   }, []);
+
+  // Sauvegarder l'onglet actif quand il change
+  React.useEffect(() => {
+    if (isAuthenticated && currentUser) {
+      localStorage.setItem('userSession', JSON.stringify({
+        user: currentUser,
+        activeTab: activeTab
+      }));
+    }
+  }, [activeTab, isAuthenticated, currentUser]);
 
   // Si on est en mode admin, afficher l'interface admin
   if (isAdminMode) {
@@ -57,6 +87,9 @@ function App() {
   if (isStoreMode) {
     return <StorePage />;
   }
+  useEffect(()=>{
+    console.log('pendingUser:', pendingUser)
+  },[pendingUser])
 
   const handleSignUp = (userData: { companyName: string; email: string; phone: string; otpMethod: 'email' | 'whatsapp' }, planData?: {app: string, plan: string, idPlan: string}) => {
     setPendingUser(userData);
@@ -67,26 +100,48 @@ function App() {
     setShowOTPModal(true);
   };
 
-  const handleLogin = (email: string, password: string) => {
-    // Simulate login - in real app, this would call your API
-    if (email && password) {
-      const existingUser: User = {
-        id: Math.random().toString(36).substr(2, 9),
-        companyName: 'Entreprise Demo',
-        email: email,
-        phone: '+33 6 12 34 56 78',
-        isSubscribed: true,
-        subscriptionPlan: 'Standard',
-        downloadHistory: [
-          { date: '2024-01-15', application: 'Business Manager Pro', version: '2.1.4' },
-          { date: '2024-01-10', application: 'Security Suite', version: '1.8.2' }
-        ]
-      };
-      setCurrentUser(existingUser);
-      setIsAuthenticated(true);
-      setShowLoginModal(false);
-    } else {
-      alert('Veuillez remplir tous les champs');
+  const handleLogin = async (email: string, password: string) => {
+    if (!email || !password) {
+      setLoginError('Veuillez remplir tous les champs');
+      return;
+    }
+
+    setIsLoggingIn(true);
+    setLoginError(null);
+    try {
+      console.log('[App] Logging in user:', email);
+      const response = await login({ email, password });
+      console.log('[App] Login response:', response);
+
+      if (response.success && response.user) {
+        const newUser: User = {
+          id: response.user.id || Math.random().toString(36).substr(2, 9),
+          nomEntreprise: response.user.nomEntreprise || 'Entreprise',
+          email: response.user.email,
+          phone: response.user.telephone || '',
+          isSubscribed: true,
+          subscriptionPlan: 'Standard',
+          downloadHistory: []
+        };
+        console.log('[App] Creating authenticated user:', newUser);
+        setCurrentUser(newUser);
+        setIsAuthenticated(true);
+        setShowLoginModal(false);
+        
+        // Sauvegarder la session dans localStorage
+        localStorage.setItem('userSession', JSON.stringify({
+          user: newUser,
+          activeTab: 'overview'
+        }));
+      } else {
+        setLoginError(response.message || 'Erreur lors de la connexion');
+      }
+    } catch (e: any) {
+      const errorMessage = e?.response?.data?.message || e?.message || 'Erreur lors de la connexion';
+      console.error('[App] Login error:', errorMessage);
+      setLoginError(errorMessage);
+    } finally {
+      setIsLoggingIn(false);
     }
   };
 
@@ -110,7 +165,7 @@ function App() {
     console.log('[App] OTP verified, creating user session');
     const newUser: User = {
       id: Math.random().toString(36).substr(2, 9),
-      companyName: userData?.companyName || pendingUser?.companyName || '',
+      nomEntreprise: userData?.companyName || pendingUser?.nomEntreprise || '',
       email: userData?.email || pendingUser?.email || '',
       phone: userData?.phone || pendingUser?.phone || '',
       isSubscribed: planData ? true : false,
@@ -124,29 +179,45 @@ function App() {
     setShowOTPModal(false);
     setPendingUser(null);
     setPendingPlan(null);
+    
+    // Sauvegarder la session dans localStorage
+    localStorage.setItem('userSession', JSON.stringify({
+      user: newUser,
+      activeTab: 'overview'
+    }));
   };
 
   const handleLogout = () => {
     setIsAuthenticated(false);
     setCurrentUser(null);
+    setActiveTab('overview');
+    // Supprimer la session du localStorage
+    localStorage.removeItem('userSession');
   };
 
   if (isAuthenticated && currentUser) {
     return (
       <div className="min-h-screen bg-gray-50">
-        <Header isAuthenticated={isAuthenticated} onLogout={handleLogout} />
-        <Dashboard user={currentUser} />
+        <DashboardNavbar 
+          user={currentUser} 
+          activeTab={activeTab}
+          onTabChange={setActiveTab}
+          onLogout={handleLogout}
+        />
+        <Dashboard user={currentUser} activeTab={activeTab} onTabChange={setActiveTab} />
       </div>
     );
   }
 
   return (
     <div className="min-h-screen bg-white">
-      <Header 
-        isAuthenticated={isAuthenticated} 
-        onLogout={handleLogout}
-        onLogin={() => setShowLoginModal(true)}
-      />
+      {!isAuthenticated && (
+        <Header 
+          isAuthenticated={isAuthenticated} 
+          onLogout={handleLogout}
+          onLogin={() => setShowLoginModal(true)}
+        />
+      )}
       <Hero onLogin={() => setShowLoginModal(true)} />
       <Features />
       <Pricing onPlanSelect={handlePlanSelection} />
@@ -170,6 +241,8 @@ function App() {
               element.scrollIntoView({ behavior: 'smooth' });
             }
           }}
+          isLoading={isLoggingIn}
+          error={loginError}
         />
       )}
       
@@ -180,7 +253,7 @@ function App() {
           email={pendingUser?.email || ''}
           phone={pendingUser?.phone || ''}
           deliveryMethod={otpDeliveryMethod}
-          userData={{ companyName: pendingUser?.companyName || '' }}
+          userData={{ nomEntreprise : pendingUser?.nomEntreprise || '' }}
           planData={pendingPlan || undefined}
         />
       )}

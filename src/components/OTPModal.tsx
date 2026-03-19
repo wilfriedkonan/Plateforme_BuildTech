@@ -4,12 +4,12 @@ import { useOTP } from '../hooks/useOTP';
 import { otpService } from '../services/otpService';
 
 interface OTPModalProps {
-  onVerify: (otp: string, userData?: { email: string; phone: string; companyName?: string }, planData?: { app: string; plan: string; idPlan: string }) => void;
+  onVerify: (otp: string, userData?: { email: string; phone: string; nomEntreprise?: string }, planData?: { app: string; plan: string; idPlan: string }) => void;
   onClose: () => void;
   email: string;
   phone: string;
   deliveryMethod: 'email' | 'whatsapp';
-  userData?: { companyName: string };
+  userData?: { nomEntreprise: string };
   planData?: { app: string; plan: string; idPlan: string };
 }
 
@@ -47,7 +47,7 @@ const OTPModal: React.FC<OTPModalProps> = ({ onVerify, onClose, email, phone, de
       const response = await validate({ email, code: otpValue });
       if (response.isValid) {
         console.log('[OTPModal] OTP validated successfully, connecting user');
-        onVerify(otpValue, { email, phone, companyName: userData?.companyName }, planData);
+        onVerify(otpValue, { email, phone, nomEntreprise: userData?.nomEntreprise }, planData);
       } else {
         setError(response.message || 'Code OTP invalide');
       }

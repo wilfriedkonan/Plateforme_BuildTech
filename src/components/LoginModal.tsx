@@ -1,36 +1,32 @@
 import React, { useState } from 'react';
 import { X, Mail, Lock, Eye, EyeOff } from 'lucide-react';
-import { useAuth } from '../hooks/useAuth';
 
 interface LoginModalProps {
   onLogin: (email: string, password: string) => void;
   onClose: () => void;
   onSwitchToSignup: () => void;
+  isLoading?: boolean;
+  error?: string | null;
 }
 
-const LoginModal: React.FC<LoginModalProps> = ({ onLogin, onClose, onSwitchToSignup }) => {
-  const { login, isLoading, error: authError } = useAuth();
+const LoginModal: React.FC<LoginModalProps> = ({ onLogin, onClose, onSwitchToSignup, isLoading, error: propError }) => {
   const [formData, setFormData] = useState({
     email: '',
     password: ''
   });
   const [showPassword, setShowPassword] = useState(false);
-  const [error, setError] = useState(authError || '');
+  const [localError, setLocalError] = useState('');
+  const displayError = propError || localError;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.email || !formData.password) {
-      setError('Veuillez remplir tous les champs');
+      setLocalError('Veuillez remplir tous les champs');
       return;
     }
 
-    try {
-      await login({ email: formData.email, password: formData.password });
-      onLogin(formData.email, formData.password);
-      onClose();
-    } catch (e: any) {
-      setError(e?.response?.data?.message || 'Erreur lors de la connexion');
-    }
+    setLocalError('');
+    onLogin(formData.email, formData.password);
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -38,7 +34,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ onLogin, onClose, onSwitchToSig
       ...prev,
       [e.target.name]: e.target.value
     }));
-    setError('');
+    setLocalError('');
   };
 
   return (
@@ -116,9 +112,9 @@ const LoginModal: React.FC<LoginModalProps> = ({ onLogin, onClose, onSwitchToSig
             </div>
           </div>
 
-          {error && (
-            <div className="text-red-500 text-sm text-center">
-              {error}
+          {displayError && (
+            <div className="text-red-500 text-sm text-center mb-4">
+              {displayError}
             </div>
           )}
 

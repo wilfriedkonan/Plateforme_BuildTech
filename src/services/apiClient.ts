@@ -5,10 +5,11 @@ const API_KEY = (import.meta as any).env?.VITE_API_KEY ?? 'VotreCléAPISecrète1
 // In development, use Vite proxy (/api -> http://localhost:5292/api)
 // In production, use full URL from env
 const isDev = import.meta.env.DEV;
-const SERVER_URL = isDev 
+/* const SERVER_URL = isDev 
   ? '/api/' 
-  : (import.meta as any).env?.VITE_API_SERVER_URL ?? 'http://localhost:5292/api/';
+  : (import.meta as any).env?.VITE_API_SERVER_URL ?? 'http://localhost:5292/api/'; */
 
+  const SERVER_URL =  'http://localhost:5292/api/';
 console.log('[API Client] Configured with:', { SERVER_URL, API_KEY, isDev });
 
 export const apiClient = axios.create({
@@ -23,6 +24,12 @@ if (!isDev) {
 
 apiClient.interceptors.request.use(
   (config) => {
+    // Ajouter le token d'authentification si disponible
+    const token = localStorage.getItem('authToken');
+    if (token) {
+      config.headers.Authorization = `bearer ${token}`;
+    }
+    
     console.log('[API Request]', config.method?.toUpperCase(), config.url, {
       headers: config.headers,
       data: config.data,

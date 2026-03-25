@@ -298,12 +298,14 @@ const StockSortieForm: React.FC<StockSortieFormProps> = ({ isOpen, onClose, onSa
         <div className="sticky bottom-0 bg-gray-50 border-t border-gray-200 px-6 py-4 flex items-center justify-end space-x-3">
           <button
             onClick={onClose}
+            disabled={loading}
             className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-100 transition-colors"
           >
             Annuler
           </button>
           <button
             onClick={handleSubmit}
+            disabled={loading}
             className="px-6 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors"
           >
             Valider Sortie

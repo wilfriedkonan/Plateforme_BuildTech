@@ -18,6 +18,7 @@ interface UseStockState {
     totalEnStock: number;
     totalEnAlerte: number;
     totalEnRupture: number;
+    valeurStockTotal: number;
   };
 }
 
@@ -39,6 +40,7 @@ export const useStock = () => {
       totalEnStock: 0,
       totalEnAlerte: 0,
       totalEnRupture: 0,
+      valeurStockTotal: 0,
     },
   });
 
@@ -65,6 +67,7 @@ export const useStock = () => {
           totalEnStock: response.totalEnStock || 0,
           totalEnAlerte: response.totalEnAlerte || 0,
           totalEnRupture: response.totalEnRupture || 0,
+          valeurStockTotal: response.valeurStockTotal || 0,
         },
       });
     } catch (error: any) {

@@ -65,6 +65,7 @@ const StockEntreeForm: React.FC<StockEntreeFormProps> = ({ isOpen, onClose, onSa
 
     if (!formData.articleId) {
       newErrors.articleId = 'L\'article est obligatoire';
+      
     }
     if (!formData.quantite || parseInt(formData.quantite) <= 0) {
       newErrors.quantite = 'La quantité doit être supérieure à 0';

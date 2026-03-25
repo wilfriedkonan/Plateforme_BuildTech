@@ -3,7 +3,7 @@ import { apiClient } from './apiClient';
 export interface StockItem {
   idEntreprise: string;
   idArticle: string;
-  designationArticle: string;
+  designation: string;
   designationCategorie: string;
   stockActuel: number;
   seuilStock: number;
@@ -28,6 +28,7 @@ export interface StockListResponse {
   totalEnStock: number;
   totalEnAlerte: number;
   totalEnRupture: number;
+  valeurStockTotal: number;
   pagination: PaginationInfo;
   data: StockItem[];
 }
@@ -57,7 +58,7 @@ const stockService = {
       if (filters.orderDirection) params.append('orderDirection', filters.orderDirection);
 
       const queryString = params.toString();
-      const url = `/Articles/stock/view${queryString ? '?' + queryString : ''}`;
+      const url = `/stock${queryString ? '?' + queryString : ''}`;
       
       const response = await apiClient.get<StockListResponse>(url);
       console.log('[stockService] Get stocks response:', response.data);
@@ -71,7 +72,7 @@ const stockService = {
   // GET /api/Articles/stock/view/{id} - Récupérer le détail du stock d'un article
   async getStockById(articleId: string): Promise<StockItem | null> {
     try {
-      const response = await apiClient.get<{ success: boolean; data?: StockItem }>(`/Articles/stock/view/${articleId}`);
+      const response = await apiClient.get<{ success: boolean; data?: StockItem }>(`/stock/${articleId}`);
       console.log('[stockService] Get stock by ID response:', response.data);
       return response.data.data || null;
     } catch (error: any) {
@@ -83,7 +84,7 @@ const stockService = {
   // PUT /api/Articles/stock/{id} - Mettre à jour le stock d'un article
   async updateStock(articleId: string, stockData: { stockActuel: number; seuilStock?: number }): Promise<StockItem | null> {
     try {
-      const response = await apiClient.put<{ success: boolean; data?: StockItem }>(`/Articles/stock/${articleId}`, stockData);
+      const response = await apiClient.put<{ success: boolean; data?: StockItem }>(`/stock/${articleId}`, stockData);
       console.log('[stockService] Update stock response:', response.data);
       return response.data.data || null;
     } catch (error: any) {

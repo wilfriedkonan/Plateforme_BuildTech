@@ -308,7 +308,7 @@ const StockManager: React.FC<StockManagerProps> = ({ onUpdateStock }) => {
                         {stocks.map((stock) => (
                           <tr key={stock.idArticle} className="hover:bg-gray-50 transition-colors">
                             <td className="px-4 py-3">
-                              <span className="font-semibold text-gray-900">{stock.designationArticle}</span>
+                              <span className="font-semibold text-gray-900">{stock.designation}</span>
                             </td>
                             <td className="px-4 py-3 text-sm text-gray-700">{stock.designationCategorie}</td>
                             <td className="px-4 py-3 text-center">

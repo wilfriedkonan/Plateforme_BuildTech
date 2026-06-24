@@ -60,7 +60,7 @@ function App() {
         const session = JSON.parse(savedSession);
         setIsAuthenticated(true);
         setCurrentUser(session.user);
-        setActiveTab(session.activeTab || 'overview');
+        setActiveTab(/* session.activeTab ||  */'overview');
       } catch (error) {
         console.error('Erreur lors de la restauration de la session:', error);
         localStorage.removeItem('userSession');

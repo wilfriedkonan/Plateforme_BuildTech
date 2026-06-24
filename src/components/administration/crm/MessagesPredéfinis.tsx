@@ -18,7 +18,7 @@ const MessagesPredéfinis: React.FC<MessagesPredéfinisProps> = ({ onRegisterNew
 
   useEffect(() => {
     if (onRegisterNewAction) {
-      onRegisterNewAction(handleNewMessage);
+      onRegisterNewAction(() => handleNewMessage);
     }
   }, [onRegisterNewAction]);
 

@@ -21,7 +21,7 @@ const UtilisateurManager: React.FC<UtilisateurManagerProps> = ({ onRegisterNewAc
 
   useEffect(() => {
     if (onRegisterNewAction) {
-      onRegisterNewAction(handleNewUser);
+      onRegisterNewAction(() => handleNewUser);
     }
   }, [onRegisterNewAction]);
 

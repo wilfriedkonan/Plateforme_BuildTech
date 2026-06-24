@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Minus, Plus, Trash2 } from 'lucide-react';
-import { LigneCommande, calculerLigne, formaterPrix } from '../lib/mock/pos';
+import { LigneCommande, calculerLigne} from '../lib/mock/pos';
 
 interface POSPanierLigneProps {
   ligne: LigneCommande;
@@ -101,7 +101,7 @@ const POSPanierLigne: React.FC<POSPanierLigneProps> = ({
             )}
 
             <span className="text-xs text-gray-500">
-              × {formaterPrix(ligne.prixUnitaire)}
+              × {ligne.prixUnitaire} F
             </span>
           </div>
 
@@ -116,7 +116,7 @@ const POSPanierLigne: React.FC<POSPanierLigneProps> = ({
 
         <div className="flex flex-col items-end gap-2">
           <span className="font-bold text-gray-900 text-sm">
-            {formaterPrix(total)}
+            {total} F
           </span>
 
           <button

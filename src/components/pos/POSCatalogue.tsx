@@ -1,29 +1,24 @@
 import React from 'react';
-import { Search, Scan } from 'lucide-react';
-import { CategoriePOS, ProduitPOS } from '../lib/mock/pos';
+import { Search, Scan, Loader2 } from 'lucide-react';
+import { ProduitPOS } from '../lib/mock/pos';
 import POSProduitCard from './POSProduitCard';
 
 interface POSCatalogueProps {
   produits: ProduitPOS[];
+  categories: string[];
+  loading?: boolean;
   recherche: string;
   setRecherche: (value: string) => void;
-  filtreCategorie: CategoriePOS;
-  setFiltreCategorie: (cat: CategoriePOS) => void;
+  filtreCategorie: string;
+  setFiltreCategorie: (cat: string) => void;
   onAjouterProduit: (produit: ProduitPOS) => void;
   onScanner: () => void;
 }
 
-const categories: CategoriePOS[] = [
-  "Tous",
-  "Électronique",
-  "Alimentation",
-  "Boissons",
-  "Fournitures",
-  "Vêtements"
-];
-
 const POSCatalogue: React.FC<POSCatalogueProps> = ({
   produits,
+  categories,
+  loading,
   recherche,
   setRecherche,
   filtreCategorie,
@@ -39,7 +34,7 @@ const POSCatalogue: React.FC<POSCatalogueProps> = ({
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
             <input
               type="text"
-              placeholder="Scanner ou rechercher un produit..."
+              placeholder="Rechercher un article..."
               value={recherche}
               onChange={(e) => setRecherche(e.target.value)}
               className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-transparent text-sm"
@@ -72,10 +67,15 @@ const POSCatalogue: React.FC<POSCatalogueProps> = ({
       </div>
 
       <div className="flex-1 overflow-auto">
-        {produits.length === 0 ? (
+        {loading ? (
+          <div className="flex items-center justify-center h-64 bg-white rounded-xl gap-2 text-gray-500">
+            <Loader2 className="w-5 h-5 animate-spin text-gray-700" />
+            <span>Chargement des articles...</span>
+          </div>
+        ) : produits.length === 0 ? (
           <div className="flex items-center justify-center h-64 bg-white rounded-xl">
             <div className="text-center">
-              <p className="text-gray-400 text-lg mb-2">Aucun produit trouvé</p>
+              <p className="text-gray-400 text-lg mb-2">Aucun article trouvé</p>
               <p className="text-gray-400 text-sm">Essayez de modifier vos filtres</p>
             </div>
           </div>

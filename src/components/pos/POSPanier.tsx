@@ -146,25 +146,25 @@ const POSPanier: React.FC<POSPanierProps> = ({
           <div className="space-y-2">
             <div className="flex justify-between text-sm text-gray-600">
               <span>Sous-total</span>
-              <span>{formaterPrix(totaux.sousTotal)}</span>
+              <span>{totaux.sousTotal}F</span>
             </div>
 
             {remiseGlobale > 0 && (
               <div className="flex justify-between text-sm text-red-600 font-medium">
                 <span>Remise (-{remiseGlobale}%)</span>
-                <span>-{formaterPrix(totaux.sousTotal - totaux.apresRemise)}</span>
+                <span>-{totaux.sousTotal - totaux.apresRemise} F</span>
               </div>
             )}
 
-            <div className="flex justify-between text-sm text-gray-600">
+          {/*   <div className="flex justify-between text-sm text-gray-600">
               <span>TVA (incluse)</span>
               <span>{formaterPrix(totaux.montantTVA)}</span>
-            </div>
+            </div> */}
 
             <div className="pt-2 border-t border-gray-200">
               <div className="flex justify-between items-center">
                 <span className="text-base font-bold text-gray-900">Total</span>
-                <span className="text-2xl font-bold text-gray-900">{formaterPrix(totaux.total)}</span>
+                <span className="text-2xl font-bold text-gray-900">{totaux.total.toLocaleString('fr-FR')}F</span>
               </div>
             </div>
           </div>

@@ -82,6 +82,8 @@ const POSContent: React.FC = () => {
           <div className="lg:col-span-2 h-full overflow-hidden">
             <POSCatalogue
               produits={pos.produitsFiltres}
+              categories={pos.categories}
+              loading={pos.loadingProduits}
               recherche={pos.recherche}
               setRecherche={pos.setRecherche}
               filtreCategorie={pos.filtreCategorie}

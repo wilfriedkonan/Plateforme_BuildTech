@@ -1,13 +1,12 @@
-export type CategoriePOS =
-  | "Tous" | "Électronique" | "Alimentation" | "Boissons"
-  | "Fournitures" | "Vêtements" | "Autre";
+export type CategoriePOS = string;
 
 export interface ProduitPOS {
   id: string;
   nom: string;
   prix: number;
-  categorie: CategoriePOS;
+  categorie: string;
   emoji: string;
+  imageURL?: string;
   stock: number;
   codeBarre?: string;
   tva: number;

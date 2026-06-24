@@ -21,8 +21,8 @@ const POSProduitCard: React.FC<POSProduitCardProps> = ({ produit, onAjouter }) =
   };
 
   const badge = getBadgeStock();
-  const isDisabled = !produit.disponible || produit.stock === 0;
-
+ // const isDisabled = !produit.disponible || produit.stock === 0;
+const isDisabled = false;
   return (
     <button
       onClick={() => !isDisabled && onAjouter(produit)}
@@ -34,7 +34,15 @@ const POSProduitCard: React.FC<POSProduitCardProps> = ({ produit, onAjouter }) =
         }`}
     >
       <div className="flex flex-col items-center mb-3">
-        <span className="text-4xl mb-2">{produit.emoji}</span>
+        {produit.imageURL ? (
+          <img
+            src={produit.imageURL}
+            alt={produit.nom}
+            className="w-16 h-16 object-cover rounded-lg mb-1"
+          />
+        ) : (
+          <span className="text-4xl mb-2">{produit.emoji}</span>
+        )}
       </div>
 
       <h3 className="font-semibold text-gray-900 text-sm mb-1 line-clamp-2 min-h-[2.5rem]">
@@ -42,10 +50,7 @@ const POSProduitCard: React.FC<POSProduitCardProps> = ({ produit, onAjouter }) =
       </h3>
 
       <p className="font-bold text-gray-900 text-base mb-2">
-        {new Intl.NumberFormat('fr-FR', {
-          style: 'currency',
-          currency: 'EUR'
-        }).format(produit.prix)}
+        {produit.prix.toLocaleString('fr-FR')} F
       </p>
 
       <span className={`inline-block px-2 py-1 rounded-md text-xs font-medium ${badge.color}`}>

@@ -19,7 +19,7 @@ const DomaineManager: React.FC<DomaineManagerProps> = ({ onRegisterNewAction }) 
 
   useEffect(() => {
     if (onRegisterNewAction) {
-      onRegisterNewAction(handleNewDomaine);
+      onRegisterNewAction(() => handleNewDomaine);
     }
   }, [onRegisterNewAction]);
 

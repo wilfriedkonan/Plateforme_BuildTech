@@ -21,7 +21,7 @@ const TarifLivraisonManager: React.FC<TarifLivraisonManagerProps> = ({ onRegiste
 
   useEffect(() => {
     if (onRegisterNewAction) {
-      onRegisterNewAction(handleNewTarif);
+      onRegisterNewAction(() => handleNewTarif);
     }
   }, [onRegisterNewAction]);
 

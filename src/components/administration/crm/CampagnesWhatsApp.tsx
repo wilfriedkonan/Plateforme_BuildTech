@@ -18,7 +18,7 @@ const CampagnesWhatsApp: React.FC<CampagnesWhatsAppProps> = ({ onRegisterNewActi
 
   useEffect(() => {
     if (onRegisterNewAction) {
-      onRegisterNewAction(handleNewCampagne);
+      onRegisterNewAction(() => handleNewCampagne);
     }
   }, [onRegisterNewAction]);
 

@@ -19,9 +19,9 @@ const CrmManager: React.FC<CrmManagerProps> = ({ onRegisterNewAction }) => {
   useEffect(() => {
     if (onRegisterNewAction) {
       if (activeTab === 'messages' && onNewMessage) {
-        onRegisterNewAction(onNewMessage);
+        onRegisterNewAction(() => onNewMessage);
       } else if (activeTab === 'campagnes' && onNewCampagne) {
-        onRegisterNewAction(onNewCampagne);
+        onRegisterNewAction(() => onNewCampagne);
       } else {
         // Pour l'onglet paramètres, pas de bouton "Nouveau"
         onRegisterNewAction(() => {});

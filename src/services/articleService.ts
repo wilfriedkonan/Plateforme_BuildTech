@@ -92,7 +92,8 @@ export interface ArticleListResponse {
   total: number;
   totalStockables?: number;
   totalEnAlerte?: number;
-  data: Article[];
+  data?: Article[];
+  articles?: Article[];
 }
 
 export interface ArticleDetailResponse {
@@ -108,7 +109,7 @@ const articleService = {
     try {
       const response = await apiClient.get<ArticleListResponse>('/Articles');
       console.log('[articleService] Get articles response:', response.data);
-      return response.data.data || [];
+      return response.data.data || response.data.articles || [];
     } catch (error: any) {
       console.error('[articleService] Error fetching articles:', error);
       throw error;
@@ -168,7 +169,7 @@ const articleService = {
     try {
       const response = await apiClient.get<ArticleListResponse>(`/Articles/categorie/${idCategorie}`);
       console.log('[articleService] Get articles by categorie response:', response.data);
-      return response.data.data || [];
+      return response.data.data || response.data.articles || [];
     } catch (error: any) {
       console.error('[articleService] Error fetching articles by categorie:', error);
       throw error;
@@ -180,7 +181,7 @@ const articleService = {
     try {
       const response = await apiClient.get<ArticleListResponse>('/Articles/pos');
       console.log('[articleService] Get articles POS response:', response.data);
-      return response.data.data || [];
+      return response.data.data || response.data.articles || [];
     } catch (error: any) {
       console.error('[articleService] Error fetching articles POS:', error);
       throw error;
@@ -192,7 +193,7 @@ const articleService = {
     try {
       const response = await apiClient.get<ArticleListResponse>('/Articles/promo');
       console.log('[articleService] Get articles promo response:', response.data);
-      return response.data.data || [];
+      return response.data.data || response.data.articles || [];
     } catch (error: any) {
       console.error('[articleService] Error fetching articles promo:', error);
       throw error;
@@ -204,7 +205,7 @@ const articleService = {
     try {
       const response = await apiClient.get<ArticleListResponse>('/Articles/stock');
       console.log('[articleService] Get articles stock response:', response.data);
-      return response.data.data || [];
+      return response.data.data || response.data.articles || [];
     } catch (error: any) {
       console.error('[articleService] Error fetching articles stock:', error);
       throw error;

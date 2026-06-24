@@ -21,7 +21,7 @@ const LivreurManager: React.FC<LivreurManagerProps> = ({ onRegisterNewAction }) 
 
   useEffect(() => {
     if (onRegisterNewAction) {
-      onRegisterNewAction(handleNewLivreur);
+      onRegisterNewAction(() => handleNewLivreur);
     }
   }, [onRegisterNewAction]);
 

@@ -127,11 +127,11 @@ const OverviewTab: React.FC<OverviewTabProps> = ({
               </span>
             </div>
             <h3 className="text-2xl font-bold text-gray-900 mb-1">
-              {activityData.revenue.today.toLocaleString()} €
+              {activityData.revenue.today.toLocaleString()} F
             </h3>
             <p className="text-gray-600 text-sm">Revenus aujourd'hui</p>
             <p className="text-xs text-gray-500 mt-2">
-              {activityData.revenue.thisMonth.toLocaleString()} € ce mois
+              {activityData.revenue.thisMonth.toLocaleString()} F ce mois
             </p>
           </div>
 
@@ -247,7 +247,7 @@ const OverviewTab: React.FC<OverviewTabProps> = ({
                     boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
                   }}
                   formatter={(value: any, name: string) => [
-                    name === 'sales' ? `${value} ventes` : `${value}€`,
+                    name === 'sales' ? `${value} ventes` : `${value}F`,
                     name === 'sales' ? 'Ventes' : 'Revenus'
                   ]}
                 />
@@ -291,7 +291,7 @@ const OverviewTab: React.FC<OverviewTabProps> = ({
                     boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
                   }}
                   formatter={(value: any, name: string) => [
-                    name === 'sales' ? `${value} ventes` : `${value}€`,
+                    name === 'sales' ? `${value} ventes` : `${value}F`,
                     name === 'sales' ? 'Ventes' : 'Revenus'
                   ]}
                 />
@@ -309,7 +309,7 @@ const OverviewTab: React.FC<OverviewTabProps> = ({
           </div>
           <div className="flex items-center space-x-2">
             <div className="w-3 h-3 bg-slate-400 rounded-full"></div>
-            <span className="text-sm text-gray-600">Revenus (€)</span>
+            <span className="text-sm text-gray-600">Revenus (F)</span>
           </div>
         </div>
       </div>

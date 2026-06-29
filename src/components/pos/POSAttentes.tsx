@@ -1,26 +1,41 @@
 import React from 'react';
-import { X, Clock } from 'lucide-react';
-import { CommandeEnAttente, calculerTotaux, formaterPrix } from '../lib/mock/pos';
+import { X, Clock, RefreshCw, Loader2 } from 'lucide-react';
+import { PosFacture } from '../../services/posService';
 
 interface POSAttentesProps {
-  attentes: CommandeEnAttente[];
-  onReprendre: (id: string) => void;
+  attentes: PosFacture[];
+  loading?: boolean;
+  onReprendre: (facture: PosFacture) => void;
   onAnnuler: (id: string) => void;
   onFermer: () => void;
+  onRefresh: () => void;
 }
 
 const POSAttentes: React.FC<POSAttentesProps> = ({
   attentes,
+  loading,
   onReprendre,
   onAnnuler,
-  onFermer
+  onFermer,
+  onRefresh,
 }) => {
+  const formatHeure = (dateStr?: string) => {
+    if (!dateStr) return '';
+    return new Date(dateStr).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+  };
+
+  const getResume = (details?: PosFacture['details']) => {
+    if (!details || details.length === 0) return 'Aucun article';
+    const items = details
+      .slice(0, 2)
+      .map(d => `${d.designation} × ${d.quantite ?? d.quantite ?? 1}`);
+    const plus = details.length > 2 ? ` + ${details.length - 2} autre(s)` : '';
+    return items.join(' + ') + plus;
+  };
+
   return (
     <div className="fixed inset-0 z-[70] flex items-end justify-end">
-      <div
-        className="absolute inset-0 bg-black/60"
-        onClick={onFermer}
-      />
+      <div className="absolute inset-0 bg-black/60" onClick={onFermer} />
 
       <div className="relative w-full max-w-md h-full bg-white shadow-2xl animate-in slide-in-from-right duration-300 flex flex-col">
         <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200">
@@ -31,16 +46,28 @@ const POSAttentes: React.FC<POSAttentesProps> = ({
               <p className="text-xs text-gray-500">{attentes.length} commande(s)</p>
             </div>
           </div>
-          <button
-            onClick={onFermer}
-            className="text-gray-400 hover:text-gray-600 transition-colors"
-          >
-            <X className="w-5 h-5" />
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={onRefresh}
+              disabled={loading}
+              title="Actualiser"
+              className="p-2 text-gray-400 hover:text-gray-600 transition-colors disabled:opacity-40"
+            >
+              <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
+            </button>
+            <button onClick={onFermer} className="text-gray-400 hover:text-gray-600 transition-colors">
+              <X className="w-5 h-5" />
+            </button>
+          </div>
         </div>
 
         <div className="flex-1 overflow-auto p-6">
-          {attentes.length === 0 ? (
+          {loading ? (
+            <div className="flex items-center justify-center h-full gap-2 text-gray-400">
+              <Loader2 className="w-5 h-5 animate-spin" />
+              <span>Chargement...</span>
+            </div>
+          ) : attentes.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-full text-center">
               <Clock className="w-16 h-16 text-gray-300 mb-4" />
               <p className="text-gray-400 text-lg font-medium mb-1">Aucune commande en attente</p>
@@ -48,27 +75,27 @@ const POSAttentes: React.FC<POSAttentesProps> = ({
             </div>
           ) : (
             <div className="space-y-4">
-              {attentes.map(attente => {
-                const totaux = calculerTotaux(attente.lignes);
-                const resumeProduits = attente.lignes
-                  .map(l => `${l.produit.nom} × ${l.quantite}`)
-                  .slice(0, 2)
-                  .join(' + ');
-                const plusDeProduits = attente.lignes.length > 2;
+              {attentes.map(facture => {
+                const nom = facture.designation || facture.numeroFacture || 'Sans nom';
+                const total = facture.total_final ?? facture.montant ?? 0;
+                const totalArticles = (facture.details || []).reduce(
+                  (sum, d) => sum + (d.quantite ?? d.quantite ?? 1),
+                  0
+                );
 
                 return (
                   <div
-                    key={attente.id}
+                    key={facture.id}
                     className="bg-white border-2 border-gray-200 rounded-xl p-4 hover:border-gray-300 transition-all"
                   >
                     <div className="flex items-start justify-between mb-3">
                       <div className="flex items-center gap-2">
                         <span className="text-2xl">
-                          {attente.nom.toLowerCase().includes('table') ? '📋' : '👤'}
+                          {nom.toLowerCase().includes('table') ? '📋' : '👤'}
                         </span>
                         <div>
-                          <h4 className="font-bold text-gray-900">{attente.nom}</h4>
-                          <p className="text-xs text-gray-500">{attente.createdAt}</p>
+                          <h4 className="font-bold text-gray-900">{nom}</h4>
+                          <p className="text-xs text-gray-500">{formatHeure(facture.dateCreation)}</p>
                         </div>
                       </div>
                       <span className="px-2 py-1 bg-orange-100 text-orange-700 rounded-md text-xs font-medium">
@@ -78,30 +105,27 @@ const POSAttentes: React.FC<POSAttentesProps> = ({
 
                     <div className="mb-3">
                       <p className="text-sm text-gray-600 line-clamp-1">
-                        {resumeProduits}
-                        {plusDeProduits && <span className="text-gray-400"> + {attente.lignes.length - 2} autre(s)</span>}
+                        {getResume(facture.details)}
                       </p>
-                      <p className="text-xs text-gray-500 mt-1">
-                        {attente.lignes.reduce((sum, l) => sum + l.quantite, 0)} article(s)
-                      </p>
+                      <p className="text-xs text-gray-500 mt-1">{totalArticles} article(s)</p>
                     </div>
 
                     <div className="flex items-center justify-between mb-3 pb-3 border-b border-gray-100">
                       <span className="text-sm text-gray-600">Total</span>
                       <span className="text-lg font-bold text-gray-900">
-                        {formaterPrix(totaux.total)}
+                        {total.toLocaleString('fr-FR')} F
                       </span>
                     </div>
 
                     <div className="flex gap-2">
                       <button
-                        onClick={() => onReprendre(attente.id)}
+                        onClick={() => onReprendre(facture)}
                         className="flex-1 px-3 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors font-medium text-sm"
                       >
                         Reprendre
                       </button>
                       <button
-                        onClick={() => onAnnuler(attente.id)}
+                        onClick={() => facture.id && onAnnuler(facture.id)}
                         className="px-3 py-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition-colors font-medium text-sm"
                       >
                         Annuler

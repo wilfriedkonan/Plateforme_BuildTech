@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { ShoppingCart, Trash2, ChevronDown, ChevronUp } from 'lucide-react';
-import { LigneCommande, formaterPrix } from '../lib/mock/pos';
+import { LigneCommande, } from '../lib/mock/pos';
 import { Client } from '../lib/mock/clients';
 import POSPanierLigne from './POSPanierLigne';
 import POSClientSelector from './POSClientSelector';

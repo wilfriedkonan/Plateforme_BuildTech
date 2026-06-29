@@ -1,101 +1,214 @@
 import React from 'react';
-import { Printer } from 'lucide-react';
-import { TransactionPOS, formaterPrix } from '../lib/mock/pos';
+import { Printer, CheckCircle } from 'lucide-react';
+import { TransactionPOS } from '../lib/mock/pos';
+import { PosFacture } from '../../services/posService';
 
 interface POSTicketProps {
   transaction: TransactionPOS;
+  facture?: PosFacture | null;
   onNouvelleVente: () => void;
   onFermer: () => void;
 }
 
-const POSTicket: React.FC<POSTicketProps> = ({ transaction, onNouvelleVente, onFermer }) => {
-  const handleImprimer = () => {
-    window.print();
-  };
+const SEP = '─'.repeat(30);
 
-  const modePaiementLabel = {
-    especes: 'Espèces',
-    carte: 'Carte bancaire',
-    mobile_money: 'Mobile Money',
-    cheque: 'Chèque',
-    virement: 'Virement'
+const Row: React.FC<{ label: string; value: string; bold?: boolean }> = ({ label, value, bold }) => (
+  <div className={`flex justify-between ${bold ? 'font-bold' : ''}`}>
+    <span>{label}</span>
+    <span>{value}</span>
+  </div>
+);
+
+const POSTicket: React.FC<POSTicketProps> = ({ transaction, facture, onNouvelleVente, onFermer }) => {
+  const titre = facture?.caisse?.trim() || 'CAISSE POS';
+
+  const numero = facture?.numeroFacture || transaction.numero;
+
+  const date = facture?.dateCreation
+    ? new Date(facture.dateCreation).toLocaleString('fr-FR', { dateStyle: 'short', timeStyle: 'short' })
+    : transaction.date;
+
+  const caissier = facture?.nomUtilisateur || transaction.caissier || '';
+  const clientNom = facture?.nomClient || transaction.clientNom;
+
+  const sousTotal = facture?.sous_total ?? transaction.sousTotal;
+  const montantTVA = facture?.valeurTVA ?? transaction.montantTVA;
+  const remiseGlobale = facture?.remise_globale ?? transaction.remiseGlobale;
+  const valeurRemise = facture?.valeurRemise_globale ?? (sousTotal * remiseGlobale / 100);
+  const total = facture?.total_final ?? transaction.total;
+
+  const modePaiement = facture?.designationPayement || transaction.modePaiement || '';
+  const montantVerser = facture?.montantVerser ?? transaction.montantRecu;
+  const monnaieRemis = facture?.monnaieRemis ?? transaction.monnaieRendue ?? 0;
+
+  // Articles : préférer les détails API, sinon les lignes locales
+  const articles = facture?.details && facture.details.length > 0
+    ? facture.details.map(d => ({
+        nom: d.designation || '',
+        quantite: d.quantite ?? 1,
+        prixUnitaire: d.prixVente ?? d.prixUnitaireTTC ?? 0,
+        remise: d.valeurRemise ?? 0,
+        montantLigne: d.sousTotal ?? d.prixTotal ?? (d.prixVente ?? 0) * (d.quantite ?? 1),
+      }))
+    : transaction.lignes.map(l => ({
+        nom: l.produit.nom,
+        quantite: l.quantite,
+        prixUnitaire: l.prixUnitaire,
+        remise: l.remise,
+        montantLigne: l.prixUnitaire * l.quantite * (1 - l.remise / 100),
+      }));
+
+  const fmt = (n: number) => n.toLocaleString('fr-FR', { maximumFractionDigits: 0 });
+
+  const handleImprimer = () => {
+    const win = window.open('', '_blank', 'width=320,height=700');
+    if (!win) return;
+
+    const lignesHTML = articles.map(a => `
+      <div style="margin-bottom:5px">
+        <div style="font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${a.nom}</div>
+        <div style="display:flex;justify-content:space-between;color:#555">
+          <span>${a.quantite} &times; ${fmt(a.prixUnitaire)} F${a.remise > 0 ? ` (-${a.remise}%)` : ''}</span>
+          <span style="font-weight:600;color:#111">${fmt(a.montantLigne)} F</span>
+        </div>
+      </div>`).join('');
+
+    const html = `<!DOCTYPE html>
+<html><head>
+<meta charset="utf-8"/>
+<title>Ticket ${numero}</title>
+<style>
+  @page { size: 58mm auto; margin: 3mm; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Courier New', Courier, monospace; font-size: 11px; width: 52mm; }
+  .sep { border: none; border-top: 1px dashed #aaa; margin: 5px 0; }
+  .c { text-align: center; }
+  .row { display: flex; justify-content: space-between; }
+  .b { font-weight: bold; }
+  .g { color: #666; }
+  .total { border-top: 1px solid #333; padding-top: 3px; margin-top: 3px; }
+</style>
+</head><body>
+<div class="c" style="margin-bottom:8px">
+  <div class="b" style="font-size:13px;text-transform:uppercase;letter-spacing:1px">${titre}</div>
+  <div class="g">Point de vente</div>
+</div>
+<hr class="sep"/>
+<div class="c" style="margin-bottom:6px">
+  <div class="b">N° ${numero}</div>
+  <div>${date}</div>
+  <div>Caissier : ${caissier}</div>
+  ${clientNom ? `<div>Client : ${clientNom}</div>` : ''}
+</div>
+<hr class="sep"/>
+<div style="margin-bottom:6px">${lignesHTML}</div>
+<hr class="sep"/>
+<div style="margin-bottom:6px">
+  <div class="row"><span>Sous-total</span><span>${fmt(sousTotal)} F</span></div>
+  ${remiseGlobale > 0 ? `<div class="row" style="color:#c00"><span>Remise (-${remiseGlobale}%)</span><span>-${fmt(valeurRemise)} F</span></div>` : ''}
+  <div class="row g"><span>TVA</span><span>${fmt(montantTVA)} F</span></div>
+  <div class="row b total"><span>TOTAL</span><span>${fmt(total)} F</span></div>
+</div>
+<hr class="sep"/>
+<div class="c" style="margin-bottom:6px">
+  <div>Payé par : <strong>${modePaiement}</strong></div>
+  ${montantVerser != null && montantVerser > 0 ? `
+    <div>Reçu : ${fmt(montantVerser)} F</div>
+    <div>Rendu : ${fmt(monnaieRemis)} F</div>` : ''}
+</div>
+<hr class="sep"/>
+<div class="c g">Merci de votre visite !</div>
+</body></html>`;
+
+    win.document.write(html);
+    win.document.close();
+    win.focus();
+    setTimeout(() => { win.print(); win.close(); }, 400);
   };
 
   return (
-    <div className="space-y-6">
-      <div className="bg-gray-50 rounded-xl p-6 font-mono text-sm">
-        <div className="text-center mb-4">
-          <div className="text-2xl mb-2">🏪</div>
-          <h3 className="font-bold text-lg">COCOPROJECTS</h3>
+    <div className="space-y-4">
+      {/* Confirmation */}
+      <div className="flex items-center justify-center gap-2 text-green-600 font-semibold">
+        <CheckCircle className="w-5 h-5" />
+        <span>Paiement validé avec succès</span>
+      </div>
+
+      {/* Ticket 58mm */}
+      <div
+        id="pos-ticket-print"
+        className="mx-auto bg-white border border-gray-200 rounded-lg font-mono text-xs leading-relaxed shadow-sm"
+        style={{ width: 260, padding: '16px 12px' }}
+      >
+        {/* En-tête */}
+        <div className="text-center mb-3">
+          <p className="font-bold text-sm uppercase tracking-wider">{titre}</p>
+          <p className="text-gray-500">Point de vente</p>
         </div>
 
-        <div className="border-t border-b border-gray-300 py-3 mb-3 text-center space-y-1">
-          <p className="font-bold">N° {transaction.numero}</p>
-          <p>{transaction.date}</p>
-          <p>Caissier : {transaction.caissier}</p>
-          {transaction.clientNom && (
-            <p>Client : {transaction.clientNom}</p>
-          )}
+        <p className="text-gray-300 mb-2">{SEP}</p>
+
+        <div className="text-center space-y-0.5 mb-2">
+          <p className="font-bold">N° {numero}</p>
+          <p>{date}</p>
+          <p>Caissier : {caissier}</p>
+          {clientNom && <p>Client : {clientNom}</p>}
         </div>
 
-        <div className="space-y-2 mb-4">
-          {transaction.lignes.map((ligne, idx) => (
-            <div key={idx} className="flex justify-between">
-              <div className="flex-1">
-                <p>{ligne.produit.nom}</p>
-                <p className="text-xs text-gray-600">
-                  {ligne.quantite} × {formaterPrix(ligne.prixUnitaire)}
-                  {ligne.remise > 0 && ` (-${ligne.remise}%)`}
-                </p>
+        <p className="text-gray-300 mb-2">{SEP}</p>
+
+        {/* Articles */}
+        <div className="space-y-1.5 mb-2">
+          {articles.map((a, idx) => (
+            <div key={idx}>
+              <p className="truncate font-medium">{a.nom}</p>
+              <div className="flex justify-between text-gray-500">
+                <span>
+                  {a.quantite} × {fmt(a.prixUnitaire)} F
+                  {a.remise > 0 && ` (-${a.remise}%)`}
+                </span>
+                <span className="font-medium text-gray-800">{fmt(a.montantLigne)} F</span>
               </div>
-              <p className="font-medium">{formaterPrix(ligne.prixUnitaire * ligne.quantite * (1 - ligne.remise / 100))}</p>
             </div>
           ))}
         </div>
 
-        <div className="border-t border-gray-300 pt-3 space-y-1">
-          <div className="flex justify-between">
-            <span>Sous-total</span>
-            <span>{formaterPrix(transaction.sousTotal)}</span>
-          </div>
+        <p className="text-gray-300 mb-2">{SEP}</p>
 
-          {transaction.remiseGlobale > 0 && (
-            <div className="flex justify-between text-red-600">
-              <span>Remise (-{transaction.remiseGlobale}%)</span>
-              <span>-{formaterPrix(transaction.sousTotal * transaction.remiseGlobale / 100)}</span>
+        {/* Totaux */}
+        <div className="space-y-0.5 mb-2">
+          <Row label="Sous-total" value={`${fmt(sousTotal)} F`} />
+          {remiseGlobale > 0 && (
+            <div className="flex justify-between text-red-500">
+              <span>Remise (-{remiseGlobale}%)</span>
+              <span>-{fmt(valeurRemise)} F</span>
             </div>
           )}
-
-          <div className="flex justify-between text-xs text-gray-600">
-            <span>TVA (incluse)</span>
-            <span>{formaterPrix(transaction.montantTVA)}</span>
-          </div>
-
-          <div className="flex justify-between font-bold text-lg pt-2 border-t border-gray-300">
-            <span>TOTAL</span>
-            <span>{formaterPrix(transaction.total)}</span>
+          <Row label="TVA" value={`${fmt(montantTVA)} F`} />
+          <div className="border-t border-gray-300 pt-1 mt-1">
+            <Row label="TOTAL" value={`${fmt(total)} F`} bold />
           </div>
         </div>
 
-        <div className="border-t border-gray-300 mt-3 pt-3 text-center">
-          <p className="font-medium">Payé par : {modePaiementLabel[transaction.modePaiement]}</p>
-          {transaction.montantRecu && (
+        <p className="text-gray-300 mb-2">{SEP}</p>
+
+        {/* Paiement */}
+        <div className="text-center space-y-0.5 mb-2">
+          <p>Payé par : <span className="font-medium">{modePaiement}</span></p>
+          {montantVerser != null && montantVerser > 0 && (
             <>
-              <p className="text-xs text-gray-600 mt-1">
-                Montant reçu : {formaterPrix(transaction.montantRecu)}
-              </p>
-              <p className="text-xs text-gray-600">
-                Monnaie rendue : {formaterPrix(transaction.monnaieRendue || 0)}
-              </p>
+              <p>Reçu : {fmt(montantVerser)} F</p>
+              <p>Rendu : {fmt(monnaieRemis)} F</p>
             </>
           )}
         </div>
 
-        <div className="border-t border-gray-300 mt-4 pt-3 text-center text-xs">
-          <p>Merci de votre visite !</p>
-        </div>
+        <p className="text-gray-300 mb-2">{SEP}</p>
+
+        <p className="text-center text-gray-400">Merci de votre visite !</p>
       </div>
 
+      {/* Actions */}
       <div className="flex gap-3">
         <button
           onClick={handleImprimer}

@@ -1,6 +1,7 @@
 import { useState, useMemo, useEffect } from 'react';
 import { useArticles } from './useArticles';
 import { Article } from '../services/articleService';
+import { PaymentType } from '../services/posService';
 import {
   ProduitPOS,
   LigneCommande,
@@ -41,6 +42,7 @@ export function usePOS() {
   const [showEncaissement, setShowEncaissement] = useState(false);
   const [showAttentes, setShowAttentes] = useState(false);
   const [ligneRemiseActive, setLigneRemiseActive] = useState<string | null>(null);
+  const [factureId, setFactureId] = useState<string | null>(null);
 
   useEffect(() => {
     fetchArticles();
@@ -92,6 +94,12 @@ export function usePOS() {
     setPanier([]);
     setRemiseGlobale(0);
     setClientSelectionne(null);
+    setFactureId(null);
+  };
+
+  const chargerPanier = (lignes: LigneCommande[], id?: string | null) => {
+    setPanier(lignes);
+    if (id !== undefined) setFactureId(id ?? null);
   };
 
   const ajouterClient = (client: Omit<Client, 'id' | 'code' | 'createdAt'>) => {
@@ -147,7 +155,7 @@ export function usePOS() {
   };
 
   const confirmerEncaissement = (
-    modePaiement: ModePaiement,
+    typePaiement: PaymentType,
     montantRecu?: number,
     reference?: string
   ) => {
@@ -166,7 +174,7 @@ export function usePOS() {
       montantTVA: totaux.montantTVA,
       remiseGlobale,
       total: totaux.total,
-      modePaiement,
+      modePaiement: (typePaiement.refe || typePaiement.libelle || 'autre') as ModePaiement,
       montantRecu,
       monnaieRendue: montantRecu ? montantRecu - totaux.total : undefined,
       statut: 'completee',
@@ -240,12 +248,15 @@ export function usePOS() {
     setQuantite,
     supprimerLigne,
     viderPanier,
+    chargerPanier,
     appliquerRemiseLigne,
     mettreEnAttente,
     reprendreAttente,
     annulerAttente,
     confirmerEncaissement,
     scannerCodeBarre,
-    statsAujourdhui
+    statsAujourdhui,
+    factureId,
+    setFactureId
   };
 }

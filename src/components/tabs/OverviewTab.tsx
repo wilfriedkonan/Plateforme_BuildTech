@@ -1,51 +1,13 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar } from 'recharts';
 import { Crown, Download, Shield, Zap, TrendingUp, DollarSign, Users, Package, Activity, Calendar as CalendarIcon } from 'lucide-react';
 import { User as UserType } from '../../App';
+import { useStatistics } from '../../hooks/useStatistics';
+import { DashboardPeriod } from '../../services/statisticsService';
 
 interface OverviewTabProps {
   user: UserType;
-  activityData: ActivityData | null;
-  loading: boolean;
-  salesPeriod: '7days' | '30days' | '90days' | '1year';
-  setSalesPeriod: (period: '7days' | '30days' | '90days' | '1year') => void;
-  salesChartData: SalesChartData[];
-  chartType: 'line' | 'bar';
-  setChartType: (type: 'line' | 'bar') => void;
-  getPeriodLabel: (period: string) => string;
   handleDownload: (appName: string) => void;
-}
-
-interface ActivityData {
-  sales: {
-    today: number;
-    thisWeek: number;
-    thisMonth: number;
-    growth: number;
-  };
-  customers: {
-    total: number;
-    new: number;
-    returning: number;
-    growth: number;
-  };
-  inventory: {
-    totalProducts: number;
-    lowStock: number;
-    outOfStock: number;
-  };
-  revenue: {
-    today: number;
-    thisWeek: number;
-    thisMonth: number;
-    growth: number;
-  };
-}
-
-interface SalesChartData {
-  date: string;
-  sales: number;
-  revenue: number;
 }
 
 const applications = [
@@ -54,9 +16,9 @@ const applications = [
     name: 'Business Manager Pro',
     version: '2.1.4',
     icon: Zap,
-    description: 'Gestion d\'entreprise complète',
+    description: "Gestion d'entreprise complète",
     size: '45 MB',
-    downloadUrl: '#'
+    downloadUrl: '#',
   },
   {
     id: 2,
@@ -65,22 +27,29 @@ const applications = [
     icon: Shield,
     description: 'Protection avancée des données',
     size: '32 MB',
-    downloadUrl: '#'
-  }
+    downloadUrl: '#',
+  },
 ];
 
-const OverviewTab: React.FC<OverviewTabProps> = ({
-  user,
-  activityData,
-  loading,
-  salesPeriod,
-  setSalesPeriod,
-  salesChartData,
-  chartType,
-  setChartType,
-  getPeriodLabel,
-  handleDownload
-}) => {
+const getPeriodLabel = (period: DashboardPeriod) => {
+  const labels: Record<DashboardPeriod, string> = {
+    '7days': '7 derniers jours',
+    '30days': '30 derniers jours',
+    '90days': '3 derniers mois',
+    '1year': 'la dernière année',
+  };
+  return labels[period];
+};
+
+const OverviewTab: React.FC<OverviewTabProps> = ({ user, handleDownload }) => {
+  const { activityData, chartData, loading, fetchDashboard } = useStatistics();
+  const [salesPeriod, setSalesPeriod] = useState<DashboardPeriod>('7days');
+  const [chartType, setChartType] = useState<'line' | 'bar'>('line');
+
+  useEffect(() => {
+    fetchDashboard(salesPeriod);
+  }, [fetchDashboard, salesPeriod]);
+
   return (
     <>
       {loading ? (
@@ -188,7 +157,7 @@ const OverviewTab: React.FC<OverviewTabProps> = ({
               <CalendarIcon className="w-5 h-5 text-gray-400" />
               <select
                 value={salesPeriod}
-                onChange={(e) => setSalesPeriod(e.target.value as any)}
+                onChange={(e) => setSalesPeriod(e.target.value as DashboardPeriod)}
                 className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-sm"
               >
                 <option value="7days">7 jours</option>
@@ -225,30 +194,20 @@ const OverviewTab: React.FC<OverviewTabProps> = ({
         <div className="h-80">
           <ResponsiveContainer width="100%" height="100%">
             {chartType === 'line' ? (
-              <LineChart data={salesChartData}>
+              <LineChart data={chartData}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-                <XAxis
-                  dataKey="date"
-                  stroke="#6b7280"
-                  fontSize={12}
-                  tickLine={false}
-                />
-                <YAxis
-                  stroke="#6b7280"
-                  fontSize={12}
-                  tickLine={false}
-                  axisLine={false}
-                />
+                <XAxis dataKey="date" stroke="#6b7280" fontSize={12} tickLine={false} />
+                <YAxis stroke="#6b7280" fontSize={12} tickLine={false} axisLine={false} />
                 <Tooltip
                   contentStyle={{
                     backgroundColor: 'white',
                     border: '1px solid #e5e7eb',
                     borderRadius: '8px',
-                    boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
+                    boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)',
                   }}
                   formatter={(value: any, name: string) => [
-                    name === 'sales' ? `${value} ventes` : `${value}F`,
-                    name === 'sales' ? 'Ventes' : 'Revenus'
+                    name === 'sales' ? `${value} ventes` : `${value} F`,
+                    name === 'sales' ? 'Ventes' : 'Revenus',
                   ]}
                 />
                 <Line
@@ -269,30 +228,20 @@ const OverviewTab: React.FC<OverviewTabProps> = ({
                 />
               </LineChart>
             ) : (
-              <BarChart data={salesChartData}>
+              <BarChart data={chartData}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-                <XAxis
-                  dataKey="date"
-                  stroke="#6b7280"
-                  fontSize={12}
-                  tickLine={false}
-                />
-                <YAxis
-                  stroke="#6b7280"
-                  fontSize={12}
-                  tickLine={false}
-                  axisLine={false}
-                />
+                <XAxis dataKey="date" stroke="#6b7280" fontSize={12} tickLine={false} />
+                <YAxis stroke="#6b7280" fontSize={12} tickLine={false} axisLine={false} />
                 <Tooltip
                   contentStyle={{
                     backgroundColor: 'white',
                     border: '1px solid #e5e7eb',
                     borderRadius: '8px',
-                    boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
+                    boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)',
                   }}
                   formatter={(value: any, name: string) => [
-                    name === 'sales' ? `${value} ventes` : `${value}F`,
-                    name === 'sales' ? 'Ventes' : 'Revenus'
+                    name === 'sales' ? `${value} ventes` : `${value} F`,
+                    name === 'sales' ? 'Ventes' : 'Revenus',
                   ]}
                 />
                 <Bar dataKey="sales" fill="#64748b" radius={[4, 4, 0, 0]} />

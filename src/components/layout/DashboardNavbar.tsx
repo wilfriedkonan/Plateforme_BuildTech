@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Zap, RefreshCw, Settings, ChevronDown, LogOut, User, CreditCard, Menu } from 'lucide-react';
 import { User as UserType } from '../../App';
 import MobileDrawer from './MobileDrawer';
+import logo from "../assets/logo.png";
 
 interface DashboardNavbarProps {
   user: UserType;
@@ -21,9 +22,9 @@ const DashboardNavbar: React.FC<DashboardNavbarProps> = ({ user, activeTab, onTa
     { id: 'articles', label: 'Gestion articles', icon: '📦' },
     { id: 'administration', label: 'Administration', icon: '⚙️' },
     { id: 'pos', label: 'POS', icon: '🧾' },
-    { id: 'achat', label: 'Achat', icon: '🛒' },
+  /*   { id: 'achat', label: 'Achat', icon: '🛒' },
     { id: 'client', label: 'Client', icon: '👥' },
-    { id: 'catalogue', label: 'Catalogue', icon: '📋' },
+    { id: 'catalogue', label: 'Catalogue', icon: '📋' }, */
   ] as const;
 
   const getUserInitials = () => {
@@ -70,10 +71,12 @@ const DashboardNavbar: React.FC<DashboardNavbarProps> = ({ user, activeTab, onTa
               onClick={() => onTabChange('overview')}
               className="flex items-center space-x-2 hover:opacity-80 transition-opacity"
             >
-              <div className="w-8 h-8 bg-gray-900 rounded-full flex items-center justify-center">
-                <Zap className="w-5 h-5 text-white" />
-              </div>
-              <span className="text-lg font-bold text-gray-900 hidden sm:inline">Build Tech</span>
+                
+          {/* Logo */}
+          <div className="flex items-center">
+            <img src={logo} alt="Build Tech Solutions" className="h-20 w-auto object-contain" />
+          </div>
+              <span className="text-lg font-bold text-gray-900 hidden sm:inline"></span>
             </button>
 
             {/* Séparateur */}

@@ -36,7 +36,7 @@ const POSMettreEnAttente: React.FC<POSMettreEnAttenteProps> = ({
     const articles = panier.map(ligne => ({
       idArticle: ligne.produit.id,
       designation: ligne.produit.nom,
-      quantité: ligne.quantite,
+      quantite: ligne.quantite,
       prixUnitaireHT: ligne.produit.tva > 0
         ? ligne.prixUnitaire / (1 + ligne.produit.tva / 100)
         : ligne.prixUnitaire,

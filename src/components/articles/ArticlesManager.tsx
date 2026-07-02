@@ -169,25 +169,25 @@ const ArticlesManager: React.FC = () => {
   return (
     <div className="space-y-8">
       <div className="bg-white rounded-2xl shadow-lg p-8">
-        <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-6">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
           <div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">Gestion des Articles</h2>
-            <p className="text-gray-600">Gérez vos articles, catégories et mouvements de stock</p>
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-1">Gestion des Articles</h2>
+            <p className="text-sm text-gray-600">Gérez vos articles, catégories et mouvements de stock</p>
           </div>
-          <div className="flex items-center space-x-4 mt-4 md:mt-0">
-            <button className="bg-gray-100 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-200 transition-all flex items-center space-x-2">
+          <div className="flex flex-wrap items-center gap-2">
+            <button className="bg-gray-100 text-gray-700 px-3 py-2 rounded-lg hover:bg-gray-200 transition-all flex items-center gap-2 text-sm">
               <Download className="w-4 h-4" />
               <span>Exporter</span>
             </button>
-            <button className="bg-teal-600 text-white px-4 py-2 rounded-lg hover:shadow-lg transition-all flex items-center space-x-2">
+            <button className="bg-teal-600 text-white px-3 py-2 rounded-lg hover:shadow-lg transition-all flex items-center gap-2 text-sm">
               <RefreshCw className="w-4 h-4" />
               <span>Actualiser</span>
             </button>
             <button
               onClick={handleNewClick}
-              className="bg-green-600 text-white px-6 py-3 rounded-lg hover:shadow-lg transition-all duration-300 flex items-center space-x-2"
+              className="bg-green-600 text-white px-4 py-2 rounded-lg hover:shadow-lg transition-all duration-300 flex items-center gap-2 text-sm font-medium"
             >
-              <Plus className="w-5 h-5" />
+              <Plus className="w-4 h-4" />
               <span>
                 {activeSubTab === 'articles' && 'Nouvel Article'}
                 {activeSubTab === 'categories' && 'Nouvelle Catégorie'}
@@ -197,7 +197,7 @@ const ArticlesManager: React.FC = () => {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-6">
           <div className="bg-gradient-to-br from-teal-50 to-teal-100 rounded-xl p-4 border border-teal-200">
             <div className="flex items-center justify-between">
               <div>
@@ -235,7 +235,7 @@ const ArticlesManager: React.FC = () => {
           </div>
         </div>
 
-        <div className="flex space-x-2 border-b border-gray-200">
+        <div className="flex overflow-x-auto border-b border-gray-200 -mx-1 px-1">
           <button
             onClick={() => setActiveSubTab('articles')}
             className={`flex items-center space-x-2 px-6 py-3 font-medium transition-all border-b-2 ${

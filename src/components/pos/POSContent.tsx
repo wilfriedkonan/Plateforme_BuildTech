@@ -43,19 +43,13 @@ const POSContent: React.FC = () => {
       };
       return {
         produit,
-        quantite: detail.quantité ?? detail.quantite ?? 1,
+        quantite: detail.quantite ?? detail.quantite ?? 1,
         prixUnitaire: detail.prixVente ?? detail.prixUnitaireTTC ?? produit.prix,
         remise: detail.valeurRemise ?? detail.remise ?? 0,
       };
     });
     pos.chargerPanier(lignes, facture.id);
     pos.setShowAttentes(false);
-  };
-
-  const handleAnnulerAttenteAPI = (id: string) => {
-    if (window.confirm('Êtes-vous sûr de vouloir annuler cette commande en attente ?')) {
-      fetchFacturesEnAttente();
-    }
   };
 
   const handleScannerProduit = () => {
@@ -84,6 +78,7 @@ const POSContent: React.FC = () => {
   const handleConfirmerMettreEnAttente = (nom: string) => {
     pos.mettreEnAttente(nom);
     setShowMettreEnAttente(false);
+    fetchFacturesEnAttente();
   };
 
   const handleNouvelleVente = () => {
@@ -183,7 +178,6 @@ const POSContent: React.FC = () => {
           attentes={facturesEnAttente}
           loading={loadingAttentes}
           onReprendre={handleReprendreFacture}
-          onAnnuler={handleAnnulerAttenteAPI}
           onFermer={() => pos.setShowAttentes(false)}
           onRefresh={fetchFacturesEnAttente}
         />

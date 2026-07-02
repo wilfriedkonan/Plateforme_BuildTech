@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Menu, X, Zap } from 'lucide-react';
+import logo from "./assets/logo.png";
 
  export interface HeaderProps {
   isAuthenticated: boolean;
@@ -23,13 +24,8 @@ const Header: React.FC<HeaderProps> = ({ isAuthenticated, onLogout, onLogin }) =
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
-          <div className="flex items-center space-x-2">
-            <div className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center">
-              <Zap className="w-6 h-6 text-white" />
-            </div>
-            <span className="text-xl font-bold text-gray-900">
-              Build Tech Solutions
-            </span>
+          <div className="flex items-center">
+            <img src={logo} alt="Build Tech Solutions" className="h-20 w-auto object-contain" />
           </div>
 
           {/* Desktop Navigation */}

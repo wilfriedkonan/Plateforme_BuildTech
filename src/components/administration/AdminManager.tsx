@@ -20,8 +20,7 @@ const AdminManager: React.FC = () => {
       case 'domaine':
         return <DomaineManager onRegisterNewAction={setOnNewAction} />;
       case 'livreurs':
-        return <LivreurManager onRegisterNewAction={setOnNewAction} />;
-      case 'utilisateurs':
+        return <LivreurManager onRegisterNewAction={setOnNewAction} />; 
         return <UtilisateurManager onRegisterNewAction={setOnNewAction} />;
       case 'tarifs':
         return <TarifLivraisonManager onRegisterNewAction={setOnNewAction} />;
@@ -45,10 +44,10 @@ const AdminManager: React.FC = () => {
       case 'domaine':
         return 'Nouveau Domaine';
       case 'livreurs':
-        return 'Nouveau Livreur';
+        return 'Nouveau Livreur'; 
       case 'utilisateurs':
         return 'Nouvel Utilisateur';
-      case 'tarifs':
+       case 'tarifs':
         return 'Nouveau Tarif';
       case 'crm':
         return 'Nouveau Message';
@@ -81,7 +80,7 @@ const AdminManager: React.FC = () => {
         </div>
 
         <div className="flex space-x-2 border-b border-gray-200">
-          <button
+          {/* <button
             onClick={() => setActiveSubTab('tables')}
             className={`flex items-center space-x-2 px-6 py-3 font-medium transition-all border-b-2 ${
               activeSubTab === 'tables'
@@ -91,8 +90,8 @@ const AdminManager: React.FC = () => {
           >
             <Utensils className="w-5 h-5" />
             <span>Tables</span>
-          </button>
-          <button
+          </button> */}
+          {/* <button
             onClick={() => setActiveSubTab('domaine')}
             className={`flex items-center space-x-2 px-6 py-3 font-medium transition-all border-b-2 ${
               activeSubTab === 'domaine'
@@ -102,8 +101,8 @@ const AdminManager: React.FC = () => {
           >
             <Globe className="w-5 h-5" />
             <span>Domaine</span>
-          </button>
-          <button
+          </button> */}
+       {/*    <button
             onClick={() => setActiveSubTab('livreurs')}
             className={`flex items-center space-x-2 px-6 py-3 font-medium transition-all border-b-2 ${
               activeSubTab === 'livreurs'
@@ -113,7 +112,7 @@ const AdminManager: React.FC = () => {
           >
             <Truck className="w-5 h-5" />
             <span>Livreurs</span>
-          </button>
+          </button> */}
           <button
             onClick={() => setActiveSubTab('utilisateurs')}
             className={`flex items-center space-x-2 px-6 py-3 font-medium transition-all border-b-2 ${
@@ -125,7 +124,7 @@ const AdminManager: React.FC = () => {
             <Users className="w-5 h-5" />
             <span>Utilisateurs</span>
           </button>
-          <button
+      {/*     <button
             onClick={() => setActiveSubTab('tarifs')}
             className={`flex items-center space-x-2 px-6 py-3 font-medium transition-all border-b-2 ${
               activeSubTab === 'tarifs'
@@ -135,8 +134,8 @@ const AdminManager: React.FC = () => {
           >
             <DollarSign className="w-5 h-5" />
             <span>Tarifs Livraison</span>
-          </button>
-          <button
+          </button> */}
+        {/*   <button
             onClick={() => setActiveSubTab('crm')}
             className={`flex items-center space-x-2 px-6 py-3 font-medium transition-all border-b-2 ${
               activeSubTab === 'crm'
@@ -146,7 +145,7 @@ const AdminManager: React.FC = () => {
           >
             <Handshake className="w-5 h-5" />
             <span>Réglages CRM</span>
-          </button>
+          </button> */}
         </div>
       </div>
 

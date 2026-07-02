@@ -124,49 +124,49 @@ const StockManager: React.FC<StockManagerProps> = ({ onUpdateStock }) => {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between border-b border-gray-200 -mt-2">
-        <div className="flex space-x-2">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-gray-200 pb-2 -mt-2">
+        <div className="flex overflow-x-auto">
           <button
             onClick={() => setActiveView('etat')}
-            className={`flex items-center space-x-2 px-6 py-3 font-medium transition-all border-b-2 ${
+            className={`flex items-center gap-2 px-4 py-3 font-medium text-sm transition-all border-b-2 whitespace-nowrap ${
               activeView === 'etat'
                 ? 'border-teal-600 text-teal-600'
                 : 'border-transparent text-gray-500 hover:text-gray-700'
             }`}
           >
-            <BarChart3 className="w-5 h-5" />
+            <BarChart3 className="w-4 h-4" />
             <span>État du Stock</span>
           </button>
           <button
             onClick={() => setActiveView('mouvements')}
-            className={`flex items-center space-x-2 px-6 py-3 font-medium transition-all border-b-2 ${
+            className={`flex items-center gap-2 px-4 py-3 font-medium text-sm transition-all border-b-2 whitespace-nowrap ${
               activeView === 'mouvements'
                 ? 'border-teal-600 text-teal-600'
                 : 'border-transparent text-gray-500 hover:text-gray-700'
             }`}
           >
-            <Activity className="w-5 h-5" />
+            <Activity className="w-4 h-4" />
             <span>Mouvements</span>
           </button>
         </div>
-        <div className="flex items-center space-x-2 mb-2">
+        <div className="flex flex-wrap items-center gap-2">
           <button
             onClick={() => setIsEntreeFormOpen(true)}
-            className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors flex items-center space-x-2"
+            className="px-3 py-1.5 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors flex items-center gap-1.5 text-sm font-medium"
           >
             <TrendingUp className="w-4 h-4" />
             <span>Entrée</span>
           </button>
           <button
             onClick={() => setIsSortieFormOpen(true)}
-            className="px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors flex items-center space-x-2"
+            className="px-3 py-1.5 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors flex items-center gap-1.5 text-sm font-medium"
           >
             <TrendingDown className="w-4 h-4" />
             <span>Sortie</span>
           </button>
           <button
             onClick={() => setIsAjustementFormOpen(true)}
-            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-2"
+            className="px-3 py-1.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-1.5 text-sm font-medium"
           >
             <Activity className="w-4 h-4" />
             <span>Ajustement</span>
@@ -190,7 +190,7 @@ const StockManager: React.FC<StockManagerProps> = ({ onUpdateStock }) => {
 
           {/* Filtres */}
           <div className="bg-white border border-gray-200 rounded-xl p-4 space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Rechercher</label>
                 <div className="flex space-x-2">
@@ -262,7 +262,7 @@ const StockManager: React.FC<StockManagerProps> = ({ onUpdateStock }) => {
           </div>
 
           {/* Statistiques */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
             <div className="bg-white border border-gray-200 rounded-xl p-4">
               <p className="text-sm text-gray-600">Total Articles</p>
               <p className="text-2xl font-bold text-gray-900">{totals.total}</p>
@@ -391,7 +391,7 @@ const StockManager: React.FC<StockManagerProps> = ({ onUpdateStock }) => {
         <>
           {/* Filtres mouvements */}
           <div className="bg-white border border-gray-200 rounded-xl p-4 space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Date Début</label>
                 <input
@@ -469,7 +469,7 @@ const StockManager: React.FC<StockManagerProps> = ({ onUpdateStock }) => {
           </div>
 
           {/* Statistiques mouvements */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
             <div className="bg-white border border-gray-200 rounded-xl p-4">
               <p className="text-sm text-gray-600">Total Mouvements</p>
               <p className="text-2xl font-bold text-gray-900">{mouvementsTotals.total}</p>

@@ -85,16 +85,14 @@ const Hero: React.FC<HeroProps> = ({ onLogin }) => {
           {/* Left Content */}
           <div className="mb-12 lg:mb-0">
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-6">
-              Distribuez vos{' '}
+             Les commerçants{' '}
               <span className="bg-gradient-to-r from-purple-600 to-orange-500 bg-clip-text text-transparent">
-                applications Windows
+                performants
               </span>{' '}
-              en toute simplicité
+              gèrent avec précision
             </h1>
             <p className="text-xl text-gray-600 mb-8 leading-relaxed">
-              Build Tech Solutions est votre plateforme de distribution d'applications Windows (WPF) 
-              sous abonnement. Gérez vos licences, contrôlez vos téléchargements et offrez une 
-              expérience premium à vos utilisateurs.
+              Gérez vos ventes, suivez vos stocks et consultez vos statistiques en temps réel grâce à notre solution de gestion commerciale.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 mb-8">
               <button

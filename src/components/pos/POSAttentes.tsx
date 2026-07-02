@@ -1,12 +1,12 @@
-import React from 'react';
-import { X, Clock, RefreshCw, Loader2 } from 'lucide-react';
+import React, { useState } from 'react';
+import { X, Clock, RefreshCw, Loader2, AlertCircle } from 'lucide-react';
 import { PosFacture } from '../../services/posService';
+import { usePosFactures } from '../../hooks/usePosFactures';
 
 interface POSAttentesProps {
   attentes: PosFacture[];
   loading?: boolean;
   onReprendre: (facture: PosFacture) => void;
-  onAnnuler: (id: string) => void;
   onFermer: () => void;
   onRefresh: () => void;
 }
@@ -15,10 +15,27 @@ const POSAttentes: React.FC<POSAttentesProps> = ({
   attentes,
   loading,
   onReprendre,
-  onAnnuler,
   onFermer,
   onRefresh,
 }) => {
+  const { cancelFacture } = usePosFactures();
+  const [cancellingId, setCancellingId] = useState<string | null>(null);
+  const [cancelError, setCancelError] = useState<string | null>(null);
+
+  const handleAnnuler = async (id: string) => {
+    if (!window.confirm('Êtes-vous sûr de vouloir annuler cette commande en attente ?')) return;
+    setCancellingId(id);
+    setCancelError(null);
+    try {
+      await cancelFacture(id, { motif: 'Annulation caisse' });
+      onRefresh();
+    } catch (err: any) {
+      const msg = err?.response?.data?.message || err?.message || "Erreur lors de l'annulation";
+      setCancelError(msg);
+    } finally {
+      setCancellingId(null);
+    }
+  };
   const formatHeure = (dateStr?: string) => {
     if (!dateStr) return '';
     return new Date(dateStr).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
@@ -62,6 +79,13 @@ const POSAttentes: React.FC<POSAttentesProps> = ({
         </div>
 
         <div className="flex-1 overflow-auto p-6">
+          {cancelError && (
+            <div className="flex items-center gap-2 mb-4 px-4 py-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
+              <AlertCircle className="w-4 h-4 shrink-0" />
+              <span>{cancelError}</span>
+              <button onClick={() => setCancelError(null)} className="ml-auto text-red-400 hover:text-red-600">✕</button>
+            </div>
+          )}
           {loading ? (
             <div className="flex items-center justify-center h-full gap-2 text-gray-400">
               <Loader2 className="w-5 h-5 animate-spin" />
@@ -125,9 +149,13 @@ const POSAttentes: React.FC<POSAttentesProps> = ({
                         Reprendre
                       </button>
                       <button
-                        onClick={() => facture.id && onAnnuler(facture.id)}
-                        className="px-3 py-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition-colors font-medium text-sm"
+                        onClick={() => facture.id && handleAnnuler(facture.id)}
+                        disabled={cancellingId === facture.id}
+                        className="px-3 py-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition-colors font-medium text-sm disabled:opacity-50 flex items-center gap-1.5"
                       >
+                        {cancellingId === facture.id && (
+                          <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                        )}
                         Annuler
                       </button>
                     </div>

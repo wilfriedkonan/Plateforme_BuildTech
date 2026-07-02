@@ -80,14 +80,14 @@ const POSPanier: React.FC<POSPanierProps> = ({
       </div>
 
       <div className="flex-1 overflow-auto p-4">
-        <div className="mb-4">
+    {/*     <div className="mb-4">
           <POSClientSelector
             clients={clients}
             clientSelectionne={clientSelectionne}
             onSelectionner={onSelectionnerClient}
             onAjouterClient={onAjouterClient}
           />
-        </div>
+        </div> */}
 
         {panier.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-full text-center py-12">

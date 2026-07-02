@@ -133,7 +133,7 @@ const SignUpForm: React.FC<SignUpFormProps> = ({ onSignUp, selectedPlan }) => {
                     onChange={handleChange}
                     required
                     className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-transparent transition-all"
-                    placeholder="+33 6 12 34 56 78"
+                    placeholder="+225 06 12 34 56 78"
                   />
                 </div>
               </div>

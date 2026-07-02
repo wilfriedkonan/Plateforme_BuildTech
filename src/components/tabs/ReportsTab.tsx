@@ -1,178 +1,151 @@
-import React from 'react';
-import { TrendingUp, DollarSign, Users, Package, FileText, Eye, Download, Plus, RefreshCw } from 'lucide-react';
+// ReportsTab.tsx - VERSION RÉVISÉE
+
+import React, { useState } from 'react';
+import { TrendingUp, DollarSign, Package, FileText, Plus } from 'lucide-react';
+import RapportVentesQuantite from '../rapports/RapportVentesQuantite';
+import RapportStock from '../rapports/RapportStock';
+import RapportVentes from '../rapports/RapportVentes';
 
 interface ReportsTabProps {
-  reports: ReportData[];
-  selectedReportType: string;
-  setSelectedReportType: (type: string) => void;
-  generateNewReport: (type: string) => void;
-  handleReportDownload: (reportId: string) => void;
-  setShowReportModal: (show: boolean) => void;
+  setShowReportModal?: (show: boolean) => void;
 }
 
-interface ReportData {
-  id: string;
-  title: string;
-  type: 'sales' | 'inventory' | 'customers' | 'financial';
-  date: string;
-  status: 'ready' | 'generating' | 'error';
-  size: string;
-}
+const ReportsTab: React.FC<ReportsTabProps> = ({ setShowReportModal }) => {
+  const [selectedReportType, setSelectedReportType] = useState<'ventes' | 'ventes-quantite' | 'stock'>('ventes');
+  const [isDownloading, setIsDownloading] = useState(false);
 
-const ReportsTab: React.FC<ReportsTabProps> = ({
-  reports,
-  selectedReportType,
-  setSelectedReportType,
-  generateNewReport,
-  handleReportDownload,
-  setShowReportModal
-}) => {
-  const filteredReports = selectedReportType === 'all'
-    ? reports
-    : reports.filter(r => r.type === selectedReportType);
-
-  const getReportIcon = (type: string) => {
-    switch (type) {
-      case 'sales': return TrendingUp;
-      case 'inventory': return Package;
-      case 'customers': return Users;
-      case 'financial': return DollarSign;
-      default: return FileText;
+  const reportTypes = [
+    {
+      id: 'ventes',
+      label: 'Rapport Ventes',
+      icon: TrendingUp,
+      description: 'Analyse détaillée des ventes par date',
+      color: 'text-green-600 bg-green-100 hover:bg-green-200'
+    },
+    {
+      id: 'ventes-quantite',
+      label: 'Ventes Quantité & Valeur',
+      icon: DollarSign,
+      description: 'Quantités vendues et montants par article',
+      color: 'text-purple-600 bg-purple-100 hover:bg-purple-200'
+    },
+    {
+      id: 'stock',
+      label: 'Rapport Stock',
+      icon: Package,
+      description: 'État actuel des stocks par article',
+      color: 'text-orange-600 bg-orange-100 hover:bg-orange-200'
     }
-  };
+  ];
 
-  const getReportColor = (type: string) => {
-    switch (type) {
-      case 'sales': return 'text-green-600 bg-green-100';
-      case 'inventory': return 'text-blue-600 bg-blue-100';
-      case 'customers': return 'text-purple-600 bg-purple-100';
-      case 'financial': return 'text-orange-600 bg-orange-100';
-      default: return 'text-gray-600 bg-gray-100';
-    }
-  };
+  const currentReport = reportTypes.find(r => r.id === selectedReportType);
+  const CurrentIcon = currentReport?.icon || FileText;
 
   return (
-    <div className="space-y-8">
-      <div className="bg-white rounded-2xl shadow-lg p-8">
-        <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-6">
+    <div className="space-y-6">
+      {/* En-tête avec sélection de rapport */}
+      <div className="bg-white rounded-2xl shadow-lg p-6 md:p-8">
+        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 mb-8">
           <div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">Rapports d'activité</h2>
+            <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">Rapports d'activité</h2>
             <p className="text-gray-600">Consultez et téléchargez vos rapports d'analyse</p>
           </div>
-          <div className="flex items-center space-x-4 mt-4 md:mt-0">
+          {setShowReportModal && (
             <button
               onClick={() => setShowReportModal(true)}
-              className="bg-gray-800 text-white px-6 py-3 rounded-lg hover:shadow-lg transition-all duration-300 flex items-center space-x-2"
+              className="bg-gray-800 text-white px-6 py-3 rounded-lg hover:shadow-lg transition-all duration-300 flex items-center space-x-2 whitespace-nowrap"
             >
               <Plus className="w-5 h-5" />
               <span>Générer un rapport</span>
             </button>
-            <select
-              value={selectedReportType}
-              onChange={(e) => setSelectedReportType(e.target.value)}
-              className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-transparent"
-            >
-              <option value="all">Tous les rapports</option>
-              <option value="sales">Ventes</option>
-              <option value="inventory">Inventaire</option>
-              <option value="customers">Clientèle</option>
-              <option value="financial">Financier</option>
-            </select>
-          </div>
+          )}
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <button
-            onClick={() => generateNewReport('sales')}
-            className="flex items-center justify-center space-x-2 p-4 border-2 border-dashed border-gray-300 rounded-lg hover:border-gray-500 hover:bg-gray-50 transition-all"
-          >
-            <TrendingUp className="w-5 h-5 text-gray-600" />
-            <span className="text-sm font-medium text-gray-600">Rapport Ventes</span>
-          </button>
-          <button
-            onClick={() => generateNewReport('inventory')}
-            className="flex items-center justify-center space-x-2 p-4 border-2 border-dashed border-gray-300 rounded-lg hover:border-gray-500 hover:bg-gray-50 transition-all"
-          >
-            <Package className="w-5 h-5 text-gray-600" />
-            <span className="text-sm font-medium text-gray-600">Rapport Stock</span>
-          </button>
-          <button
-            onClick={() => generateNewReport('customers')}
-            className="flex items-center justify-center space-x-2 p-4 border-2 border-dashed border-gray-300 rounded-lg hover:border-gray-500 hover:bg-gray-50 transition-all"
-          >
-            <Users className="w-5 h-5 text-gray-600" />
-            <span className="text-sm font-medium text-gray-600">Rapport Clients</span>
-          </button>
-          <button
-            onClick={() => generateNewReport('financial')}
-            className="flex items-center justify-center space-x-2 p-4 border-2 border-dashed border-gray-300 rounded-lg hover:border-gray-500 hover:bg-gray-50 transition-all"
-          >
-            <DollarSign className="w-5 h-5 text-gray-600" />
-            <span className="text-sm font-medium text-gray-600">Rapport Financier</span>
-          </button>
-        </div>
-      </div>
+        {/* Sélecteur de type de rapport */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {reportTypes.map((report) => {
+            const Icon = report.icon;
+            const isSelected = selectedReportType === report.id;
 
-      <div className="bg-white rounded-2xl shadow-lg p-8">
-        <h3 className="text-lg font-semibold text-gray-900 mb-6">Rapports disponibles</h3>
-        <div className="space-y-4">
-          {filteredReports.map((report) => {
-            const IconComponent = getReportIcon(report.type);
             return (
-              <div key={report.id} className="border border-gray-200 rounded-xl p-6 hover:shadow-md transition-shadow">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-4">
-                    <div className={`w-12 h-12 rounded-lg flex items-center justify-center ${getReportColor(report.type)}`}>
-                      <IconComponent className="w-6 h-6" />
-                    </div>
-                    <div>
-                      <h4 className="font-semibold text-gray-900">{report.title}</h4>
-                      <p className="text-sm text-gray-600">Généré le {new Date(report.date).toLocaleDateString()}</p>
-                      <div className="flex items-center space-x-4 mt-1 text-xs text-gray-500">
-                        <span className="capitalize">{report.type}</span>
-                        <span>•</span>
-                        <span>{report.size}</span>
-                      </div>
-                    </div>
+              <button
+                key={report.id}
+                onClick={() => setSelectedReportType(report.id as any)}
+                className={`"flex items-center justify-center space-x-2 p-4 border-2 border-dashed border-gray-300 rounded-lg hover:border-gray-500 hover:bg-gray-50 transition-all" ${
+                  isSelected
+                    ? 'border-gray-200 hover:border-gray-400 bg-white hover:shadow-md'
+                    : 'border-gray-200 hover:border-gray-400 bg-white hover:shadow-md'
+                }`}
+              >
+                <div className="flex items-start gap-3">
+                  <div
+                    className={`p-2 rounded-lg ${
+                      isSelected ? 'bg-white text-gray-900' : report.color
+                    }`}
+                  >
+                    <Icon className="w-5 h-5" />
                   </div>
-                  <div className="flex items-center space-x-3">
-                    {report.status === 'generating' && (
-                      <div className="flex items-center space-x-2 text-orange-600">
-                        <RefreshCw className="w-4 h-4 animate-spin" />
-                        <span className="text-sm">Génération...</span>
-                      </div>
-                    )}
-                    {report.status === 'ready' && (
-                      <>
-                        <button className="p-2 text-gray-400 hover:text-gray-600 transition-colors">
-                          <Eye className="w-5 h-5" />
-                        </button>
-                        <button
-                          onClick={() => handleReportDownload(report.id)}
-                          className="bg-gray-800 text-white px-4 py-2 rounded-lg hover:shadow-lg transition-all duration-300 flex items-center space-x-2"
-                        >
-                          <Download className="w-4 h-4" />
-                          <span>Télécharger</span>
-                        </button>
-                      </>
-                    )}
-                    {report.status === 'error' && (
-                      <span className="text-red-600 text-sm">Erreur</span>
-                    )}
+                  <div className="flex-1 min-w-0">
+                    <h3 className="font-semibold text-sm leading-tight mb-1">{report.label}</h3>
+                    <p className={`text-xs ${isSelected ? 'text-gray-600' : 'text-gray-600'}`}>
+                      {report.description}
+                    </p>
                   </div>
                 </div>
-              </div>
+              </button>
             );
           })}
         </div>
+      </div>
 
-        {filteredReports.length === 0 && (
-          <div className="text-center py-12">
-            <FileText className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-gray-900 mb-2">Aucun rapport disponible</h3>
-            <p className="text-gray-600">Générez votre premier rapport en utilisant les boutons ci-dessus</p>
+      {/* Conteneur du rapport sélectionné */}
+      <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
+        {/* En-tête du rapport */}
+        <div className="bg-gradient-to-r from-gray-50 to-gray-100 border-b border-gray-200 p-6">
+          <div className="flex items-center gap-4">
+            <div className={`p-3 rounded-lg ${currentReport?.color}`}>
+              <CurrentIcon className="w-6 h-6" />
+            </div>
+            <div>
+              <h3 className="text-xl font-bold text-gray-900">{currentReport?.label}</h3>
+              <p className="text-sm text-gray-600">{currentReport?.description}</p>
+            </div>
           </div>
-        )}
+        </div>
+
+        {/* Contenu du rapport */}
+        <div className="p-6">
+          {isDownloading && (
+            <div className="mb-4 p-4 bg-blue-50 border border-blue-200 rounded-lg flex items-center gap-2 text-blue-700">
+              <div className="animate-spin rounded-full h-4 w-4 border-2 border-blue-500 border-t-transparent"></div>
+              Téléchargement du rapport en cours...
+            </div>
+          )}
+
+          {selectedReportType === 'ventes' && (
+            <RapportVentes onDownload={setIsDownloading} />
+          )}
+          {selectedReportType === 'ventes-quantite' && (
+            <RapportVentesQuantite onDownload={setIsDownloading} />
+          )}
+          {selectedReportType === 'stock' && (
+            <RapportStock onDownload={setIsDownloading} />
+          )}
+        </div>
+      </div>
+
+      {/* Informations utiles */}
+      <div className="bg-blue-50 border border-blue-200 rounded-xl p-6">
+        <h4 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
+          <FileText className="w-5 h-5 text-blue-600" />
+          Conseils d'utilisation
+        </h4>
+        <ul className="space-y-2 text-sm text-gray-700">
+          <li>• Sélectionnez les dates pour filtrer les données de votre rapport</li>
+          <li>• Utilisez la pagination pour naviguer entre les pages</li>
+          <li>• Cliquez sur "Télécharger PDF" pour exporter le rapport en PDF</li>
+          <li>• Les formats de nombre utilisent la convention française (10 000 000 FCFA)</li>
+        </ul>
       </div>
     </div>
   );

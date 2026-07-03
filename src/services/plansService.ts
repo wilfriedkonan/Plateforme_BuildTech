@@ -93,7 +93,7 @@ export const plansService = {
         console.warn('[plansService] Axios failed with status', axiosError.response?.status);
         
         // Fallback: try with fetch API (like the browser does)
-        const response = await fetch('http://https://api.buildtch.uk/api/plans', {
+        const response = await fetch('https://api.buildtch.uk/api/plans', {
           method: 'GET',
           headers: {
             'ApiKey': 'VotreClÃ©SecrÃ¨teTrÃ¨sLongueEtSÃ©curisÃ©e123!@#$%^&*()',

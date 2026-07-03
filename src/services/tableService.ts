@@ -1,4 +1,4 @@
-import { apiClient } from './apiClient';
+﻿import { apiClient } from './apiClient';
 
 export interface Table {
   id?: string;
@@ -48,11 +48,10 @@ export interface TableDetailResponse {
 }
 
 const tableService = {
-  // GET /api/Table - Récupérer toutes les tables
+  // GET /api/Table - RÃ©cupÃ©rer toutes les tables
   async getTables(): Promise<Table[]> {
     try {
       const response = await apiClient.get<TableListResponse>('/Table');
-      console.log('[tableService] Get tables response:', response.data);
       return response.data.tables || [];
     } catch (error: any) {
       console.error('[tableService] Error fetching tables:', error);
@@ -60,11 +59,10 @@ const tableService = {
     }
   },
 
-  // GET /api/Table/disponibles - Récupérer les tables disponibles
+  // GET /api/Table/disponibles - RÃ©cupÃ©rer les tables disponibles
   async getTablesDisponibles(): Promise<Table[]> {
     try {
       const response = await apiClient.get<TableListResponse>('/Table/disponibles');
-      console.log('[tableService] Get tables disponibles response:', response.data);
       return response.data.tables || [];
     } catch (error: any) {
       console.error('[tableService] Error fetching tables disponibles:', error);
@@ -72,11 +70,10 @@ const tableService = {
     }
   },
 
-  // GET /api/Table/{id} - Récupérer une table par ID
+  // GET /api/Table/{id} - RÃ©cupÃ©rer une table par ID
   async getTableById(id: string): Promise<Table | null> {
     try {
       const response = await apiClient.get<TableDetailResponse>(`/Table/${id}`);
-      console.log('[tableService] Get table by ID response:', response.data);
       return response.data.data || response.data.table || null;
     } catch (error: any) {
       console.error('[tableService] Error fetching table by ID:', error);
@@ -84,11 +81,10 @@ const tableService = {
     }
   },
 
-  // POST /api/Table - Créer une nouvelle table
+  // POST /api/Table - CrÃ©er une nouvelle table
   async createTable(table: CreateTableRequest): Promise<TableDetailResponse> {
     try {
       const response = await apiClient.post<TableDetailResponse>('/Table', table);
-      console.log('[tableService] Create table response:', response.data);
       return response.data;
     } catch (error: any) {
       console.error('[tableService] Error creating table:', error);
@@ -96,11 +92,10 @@ const tableService = {
     }
   },
 
-  // PUT /api/Table/{id} - Mettre à jour une table
+  // PUT /api/Table/{id} - Mettre Ã  jour une table
   async updateTable(id: string, table: UpdateTableRequest): Promise<Table | null> {
     try {
       const response = await apiClient.put<TableDetailResponse>(`/Table/${id}`, table);
-      console.log('[tableService] Update table response:', response.data);
       return response.data.data || response.data.table || null;
     } catch (error: any) {
       console.error('[tableService] Error updating table:', error);
@@ -112,7 +107,6 @@ const tableService = {
   async deleteTable(id: string): Promise<boolean> {
     try {
       const response = await apiClient.delete<TableDetailResponse>(`/Table/${id}`);
-      console.log('[tableService] Delete table response:', response.data);
       return response.data.success;
     } catch (error: any) {
       console.error('[tableService] Error deleting table:', error);
@@ -120,11 +114,10 @@ const tableService = {
     }
   },
 
-  // PUT /api/Table/{id}/affecter - Affecter un serveur à une table
+  // PUT /api/Table/{id}/affecter - Affecter un serveur Ã  une table
   async affecterServeur(id: string, request: AffecterServeurRequest): Promise<Table | null> {
     try {
       const response = await apiClient.put<TableDetailResponse>(`/Table/${id}/affecter`, request);
-      console.log('[tableService] Affecter serveur response:', response.data);
       return response.data.data || response.data.table || null;
     } catch (error: any) {
       console.error('[tableService] Error affecting serveur to table:', error);
@@ -132,11 +125,10 @@ const tableService = {
     }
   },
 
-  // PUT /api/Table/{id}/liberer - Libérer une table
+  // PUT /api/Table/{id}/liberer - LibÃ©rer une table
   async libererTable(id: string): Promise<Table | null> {
     try {
       const response = await apiClient.put<TableDetailResponse>(`/Table/${id}/liberer`, {});
-      console.log('[tableService] Liberer table response:', response.data);
       return response.data.data || response.data.table || null;
     } catch (error: any) {
       console.error('[tableService] Error liberating table:', error);

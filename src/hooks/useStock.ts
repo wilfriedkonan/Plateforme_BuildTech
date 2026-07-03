@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+﻿import { useState, useCallback } from 'react';
 import stockService, { StockItem, StockFilters } from '../services/stockService';
 
 interface UseStockState {
@@ -44,12 +44,11 @@ export const useStock = () => {
     },
   });
 
-  // Récupérer les stocks avec filtres
+  // RÃ©cupÃ©rer les stocks avec filtres
   const fetchStocks = useCallback(async (filters: StockFilters = {}) => {
     setState(prev => ({ ...prev, loading: true, error: null }));
     try {
       const response = await stockService.getStocks(filters);
-      console.log('[useStock] Fetched stocks:', response);
       setState({
         stocks: response.data || [],
         loading: false,
@@ -81,12 +80,11 @@ export const useStock = () => {
     }
   }, []);
 
-  // Récupérer le stock d'un article
+  // RÃ©cupÃ©rer le stock d'un article
   const getStockById = useCallback(async (articleId: string) => {
     setState(prev => ({ ...prev, loading: true, error: null }));
     try {
       const stock = await stockService.getStockById(articleId);
-      console.log('[useStock] Fetched stock by ID:', stock);
       setState(prev => ({ ...prev, loading: false }));
       return stock;
     } catch (error: any) {
@@ -101,16 +99,15 @@ export const useStock = () => {
     }
   }, []);
 
-  // Mettre à jour le stock d'un article
+  // Mettre Ã  jour le stock d'un article
   const updateStock = useCallback(async (articleId: string, stockData: { stockActuel: number; seuilStock?: number }) => {
     setState(prev => ({ ...prev, loading: true, error: null }));
     try {
       const updatedStock = await stockService.updateStock(articleId, stockData);
-      console.log('[useStock] Updated stock:', updatedStock);
       setState(prev => ({ ...prev, loading: false }));
       return updatedStock;
     } catch (error: any) {
-      const errorMessage = error?.response?.data?.message || error?.message || 'Erreur lors de la mise à jour du stock';
+      const errorMessage = error?.response?.data?.message || error?.message || 'Erreur lors de la mise Ã  jour du stock';
       console.error('[useStock] Error updating stock:', errorMessage);
       setState(prev => ({
         ...prev,

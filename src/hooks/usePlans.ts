@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+﻿import { useCallback, useEffect, useMemo, useState } from 'react';
 import { plansService, type ApplicationPlansDto, type CreatePlanDto, type PlanDto, type UpdatePlanDto } from '../services/plansService';
 import { mockPlansData } from '../services/mockPlansData';
 
@@ -62,20 +62,15 @@ export const usePlans = () => {
     setState((prev) => ({ ...prev, loading: true, error: null }));
     try {
       if (USE_MOCK_DATA) {
-        console.log('[usePlans] Using mock data (VITE_USE_MOCK_PLANS=true)');
         setState({ data: mockPlansData, loading: false, error: null });
         return;
       }
 
-      console.log('[usePlans] Fetching plans from API...');
       const raw = await plansService.list();
-      console.log('[usePlans] Raw response:', raw);
       const normalized = normalizePlansResponse(raw);
-      console.log('[usePlans] Normalized data:', normalized);
-      setState({ data: normalized, loading: false, error: normalized ? null : 'Format de réponse API inattendu' });
+      setState({ data: normalized, loading: false, error: normalized ? null : 'Format de rÃ©ponse API inattendu' });
     } catch (e: any) {
       console.error('[usePlans] API Error, falling back to mock data:', e?.message);
-      console.log('[usePlans] Using mock data as fallback');
       setState({ data: mockPlansData, loading: false, error: null });
     }
   }, []);

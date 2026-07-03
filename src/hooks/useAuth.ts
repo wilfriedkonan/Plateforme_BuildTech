@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react';
+﻿import { useCallback, useMemo, useState } from 'react';
 import { authService, type LoginPayload, type RegistrationPayload } from '../services/authService';
 
 type UseAuthState = {
@@ -19,9 +19,7 @@ export const useAuth = () => {
   const register = useCallback(async (payload: RegistrationPayload) => {
     setState((prev) => ({ ...prev, isLoading: true, error: null }));
     try {
-      console.log('[useAuth] Registering user...');
       const response = await authService.register(payload);
-      console.log('[useAuth] Registration successful:', response);
       
       if (response.success) {
         setState({
@@ -50,9 +48,7 @@ export const useAuth = () => {
   const login = useCallback(async (payload: LoginPayload) => {
     setState((prev) => ({ ...prev, isLoading: true, error: null }));
     try {
-      console.log('[useAuth] Logging in user...');
       const response = await authService.login(payload);
-      console.log('[useAuth] Login successful:', response);
       
       if (response.success) {
         // Store token if provided
@@ -86,7 +82,6 @@ export const useAuth = () => {
   const logout = useCallback(async () => {
     setState((prev) => ({ ...prev, isLoading: true }));
     try {
-      console.log('[useAuth] Logging out...');
       await authService.logout();
       localStorage.removeItem('authToken');
       setState({

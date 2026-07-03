@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react';
+﻿import { useCallback, useMemo, useState } from 'react';
 import { otpService, type OTPValidatePayload } from '../services/otpService';
 
 type UseOTPState = {
@@ -19,9 +19,7 @@ export const useOTP = () => {
   const validate = useCallback(async (payload: OTPValidatePayload) => {
     setState((prev) => ({ ...prev, isLoading: true, error: null }));
     try {
-      console.log('[useOTP] Validating OTP...');
       const response = await otpService.validate(payload);
-      console.log('[useOTP] Validation response:', response);
 
       if (response.success && response.isValid) {
         setState({

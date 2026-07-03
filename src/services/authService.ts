@@ -1,4 +1,4 @@
-import { apiClient } from './apiClient';
+﻿import { apiClient } from './apiClient';
 
 // Registration DTOs
 export interface RegistrationPayload {
@@ -53,9 +53,7 @@ export interface LoginResponse {
 export const authService = {
   register: async (payload: RegistrationPayload): Promise<RegistrationResponse> => {
     try {
-      console.log('[authService] Registering user:', payload.email);
       const { data } = await apiClient.post<RegistrationResponse>('Registration/register', payload);
-      console.log('[authService] Registration response:', data);
       return data;
     } catch (error: any) {
       console.error('[authService] Registration error:', error.message);
@@ -65,9 +63,7 @@ export const authService = {
 
   login: async (payload: LoginPayload): Promise<LoginResponse> => {
     try {
-      console.log('[authService] Logging in user:', payload.email);
       const { data } = await apiClient.post<LoginResponse>('Auth/login', payload);
-      console.log('[authService] Login response:', data);
       return data;
     } catch (error: any) {
       console.error('[authService] Login error:', error.message);
@@ -77,7 +73,6 @@ export const authService = {
 
   logout: async (): Promise<void> => {
     try {
-      console.log('[authService] Logging out');
       await apiClient.post('Auth/logout');
     } catch (error: any) {
       console.error('[authService] Logout error:', error.message);

@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+﻿import { useState, useCallback } from 'react';
 import articleService, { Article, CreateArticleRequest, UpdateArticleRequest } from '../services/articleService';
 
 interface UseArticlesState {
@@ -16,12 +16,11 @@ export const useArticles = () => {
     total: 0
   });
 
-  // Récupérer tous les articles
+  // RÃ©cupÃ©rer tous les articles
   const fetchArticles = useCallback(async () => {
     setState(prev => ({ ...prev, loading: true, error: null }));
     try {
       const articles = await articleService.getArticles();
-      console.log('[useArticles] Fetched articles:', articles);
       setState({
         articles: articles || [],
         loading: false,
@@ -39,12 +38,11 @@ export const useArticles = () => {
     }
   }, []);
 
-  // Récupérer un article par ID
+  // RÃ©cupÃ©rer un article par ID
   const getArticleById = useCallback(async (id: string) => {
     setState(prev => ({ ...prev, loading: true, error: null }));
     try {
       const response = await articleService.getArticleById(id);
-      console.log('[useArticles] Fetched article by ID:', response);
       return response;
     } catch (error: any) {
       const errorMessage = error?.response?.data?.message || error?.message || 'Erreur lors du chargement de l\'article';
@@ -58,21 +56,20 @@ export const useArticles = () => {
     }
   }, []);
 
-  // Créer un article
+  // CrÃ©er un article
   const createArticle = useCallback(async (article: CreateArticleRequest) => {
     setState(prev => ({ ...prev, loading: true, error: null }));
     try {
       const response = await articleService.createArticle(article);
-      console.log('[useArticles] Created article:', response);
       
       if (response.success) {
-        // Rafraîchir la liste des articles
+        // RafraÃ®chir la liste des articles
         await fetchArticles();
       }
       setState(prev => ({ ...prev, loading: false }));
       return response;
     } catch (error: any) {
-      const errorMessage = error?.response?.data?.message || error?.message || 'Erreur lors de la création de l\'article';
+      const errorMessage = error?.response?.data?.message || error?.message || 'Erreur lors de la crÃ©ation de l\'article';
       console.error('[useArticles] Error creating article:', errorMessage);
       setState(prev => ({
         ...prev,
@@ -83,21 +80,20 @@ export const useArticles = () => {
     }
   }, [fetchArticles]);
 
-  // Mettre à jour un article
+  // Mettre Ã  jour un article
   const updateArticle = useCallback(async (id: string, article: UpdateArticleRequest) => {
     setState(prev => ({ ...prev, loading: true, error: null }));
     try {
       const response = await articleService.updateArticle(id, article);
-      console.log('[useArticles] Updated article:', response);
       
       if (response) {
-        // Rafraîchir la liste des articles
+        // RafraÃ®chir la liste des articles
         await fetchArticles();
       }
       setState(prev => ({ ...prev, loading: false }));
       return response;
     } catch (error: any) {
-      const errorMessage = error?.response?.data?.message || error?.message || 'Erreur lors de la mise à jour de l\'article';
+      const errorMessage = error?.response?.data?.message || error?.message || 'Erreur lors de la mise Ã  jour de l\'article';
       console.error('[useArticles] Error updating article:', errorMessage);
       setState(prev => ({
         ...prev,
@@ -113,10 +109,9 @@ export const useArticles = () => {
     setState(prev => ({ ...prev, loading: true, error: null }));
     try {
       const success = await articleService.deleteArticle(id);
-      console.log('[useArticles] Deleted article:', success);
       
       if (success) {
-        // Rafraîchir la liste des articles
+        // RafraÃ®chir la liste des articles
         await fetchArticles();
       }
       setState(prev => ({ ...prev, loading: false }));
@@ -133,12 +128,11 @@ export const useArticles = () => {
     }
   }, [fetchArticles]);
 
-  // Récupérer les articles par catégorie
+  // RÃ©cupÃ©rer les articles par catÃ©gorie
   const getArticlesByCategorie = useCallback(async (idCategorie: string) => {
     setState(prev => ({ ...prev, loading: true, error: null }));
     try {
       const articles = await articleService.getArticlesByCategorie(idCategorie);
-      console.log('[useArticles] Fetched articles by categorie:', articles);
       setState({
         articles: articles || [],
         loading: false,
@@ -146,7 +140,7 @@ export const useArticles = () => {
         total: articles?.length || 0
       });
     } catch (error: any) {
-      const errorMessage = error?.response?.data?.message || error?.message || 'Erreur lors du chargement des articles par catégorie';
+      const errorMessage = error?.response?.data?.message || error?.message || 'Erreur lors du chargement des articles par catÃ©gorie';
       console.error('[useArticles] Error fetching articles by categorie:', errorMessage);
       setState(prev => ({
         ...prev,
@@ -156,12 +150,11 @@ export const useArticles = () => {
     }
   }, []);
 
-  // Récupérer les articles POS
+  // RÃ©cupÃ©rer les articles POS
   const getArticlesPOS = useCallback(async () => {
     setState(prev => ({ ...prev, loading: true, error: null }));
     try {
       const articles = await articleService.getArticlesPOS();
-      console.log('[useArticles] Fetched articles POS:', articles);
       setState({
         articles: articles || [],
         loading: false,
@@ -179,12 +172,11 @@ export const useArticles = () => {
     }
   }, []);
 
-  // Récupérer les articles en promotion
+  // RÃ©cupÃ©rer les articles en promotion
   const getArticlesPromo = useCallback(async () => {
     setState(prev => ({ ...prev, loading: true, error: null }));
     try {
       const articles = await articleService.getArticlesPromo();
-      console.log('[useArticles] Fetched articles promo:', articles);
       setState({
         articles: articles || [],
         loading: false,
@@ -202,12 +194,11 @@ export const useArticles = () => {
     }
   }, []);
 
-  // Récupérer les articles en stock
+  // RÃ©cupÃ©rer les articles en stock
   const getArticlesStock = useCallback(async () => {
     setState(prev => ({ ...prev, loading: true, error: null }));
     try {
       const articles = await articleService.getArticlesStock();
-      console.log('[useArticles] Fetched articles stock:', articles);
       setState({
         articles: articles || [],
         loading: false,
@@ -225,12 +216,11 @@ export const useArticles = () => {
     }
   }, []);
 
-  // Récupérer un article par code barre
+  // RÃ©cupÃ©rer un article par code barre
   const getArticleByCodeBarre = useCallback(async (codeBarre: string) => {
     setState(prev => ({ ...prev, loading: true, error: null }));
     try {
       const response = await articleService.getArticleByCodeBarre(codeBarre);
-      console.log('[useArticles] Fetched article by code barre:', response);
       return response;
     } catch (error: any) {
       const errorMessage = error?.response?.data?.message || error?.message || 'Erreur lors du chargement de l\'article par code barre';

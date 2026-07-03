@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+﻿import { useState, useCallback } from 'react';
 import tableService, { Table, CreateTableRequest, UpdateTableRequest, AffecterServeurRequest } from '../services/tableService';
 
 interface UseTableState {
@@ -16,12 +16,11 @@ export const useTable = () => {
     total: 0,
   });
 
-  // Récupérer toutes les tables
+  // RÃ©cupÃ©rer toutes les tables
   const fetchTables = useCallback(async () => {
     setState(prev => ({ ...prev, loading: true, error: null }));
     try {
       const tables = await tableService.getTables();
-      console.log('[useTable] Fetched tables:', tables);
       setState({
         tables: tables || [],
         loading: false,
@@ -35,12 +34,11 @@ export const useTable = () => {
     }
   }, []);
 
-  // Récupérer les tables disponibles
+  // RÃ©cupÃ©rer les tables disponibles
   const fetchTablesDisponibles = useCallback(async () => {
     setState(prev => ({ ...prev, loading: true, error: null }));
     try {
       const tables = await tableService.getTablesDisponibles();
-      console.log('[useTable] Fetched tables disponibles:', tables);
       setState({
         tables: tables || [],
         loading: false,
@@ -54,12 +52,11 @@ export const useTable = () => {
     }
   }, []);
 
-  // Récupérer une table par ID
+  // RÃ©cupÃ©rer une table par ID
   const getTableById = useCallback(async (id: string) => {
     setState(prev => ({ ...prev, loading: true, error: null }));
     try {
       const response = await tableService.getTableById(id);
-      console.log('[useTable] Fetched table by ID:', response);
       setState(prev => ({ ...prev, loading: false }));
       return response;
     } catch (error: any) {
@@ -70,38 +67,36 @@ export const useTable = () => {
     }
   }, []);
 
-  // Créer une table
+  // CrÃ©er une table
   const createTable = useCallback(async (table: CreateTableRequest) => {
     setState(prev => ({ ...prev, loading: true, error: null }));
     try {
       const response = await tableService.createTable(table);
-      console.log('[useTable] Created table:', response);
       if (response.success) {
         await fetchTables();
       }
       setState(prev => ({ ...prev, loading: false }));
       return response;
     } catch (error: any) {
-      const errorMessage = error?.response?.data?.message || error?.message || 'Erreur lors de la création de la table';
+      const errorMessage = error?.response?.data?.message || error?.message || 'Erreur lors de la crÃ©ation de la table';
       console.error('[useTable] Error creating table:', errorMessage);
       setState(prev => ({ ...prev, loading: false, error: errorMessage }));
       throw error;
     }
   }, [fetchTables]);
 
-  // Mettre à jour une table
+  // Mettre Ã  jour une table
   const updateTable = useCallback(async (id: string, table: UpdateTableRequest) => {
     setState(prev => ({ ...prev, loading: true, error: null }));
     try {
       const response = await tableService.updateTable(id, table);
-      console.log('[useTable] Updated table:', response);
       if (response) {
         await fetchTables();
       }
       setState(prev => ({ ...prev, loading: false }));
       return response;
     } catch (error: any) {
-      const errorMessage = error?.response?.data?.message || error?.message || 'Erreur lors de la mise à jour de la table';
+      const errorMessage = error?.response?.data?.message || error?.message || 'Erreur lors de la mise Ã  jour de la table';
       console.error('[useTable] Error updating table:', errorMessage);
       setState(prev => ({ ...prev, loading: false, error: errorMessage }));
       throw error;
@@ -113,7 +108,6 @@ export const useTable = () => {
     setState(prev => ({ ...prev, loading: true, error: null }));
     try {
       const success = await tableService.deleteTable(id);
-      console.log('[useTable] Deleted table:', success);
       if (success) {
         await fetchTables();
       }
@@ -127,12 +121,11 @@ export const useTable = () => {
     }
   }, [fetchTables]);
 
-  // Affecter un serveur à une table
+  // Affecter un serveur Ã  une table
   const affecterServeur = useCallback(async (id: string, request: AffecterServeurRequest) => {
     setState(prev => ({ ...prev, loading: true, error: null }));
     try {
       const response = await tableService.affecterServeur(id, request);
-      console.log('[useTable] Affected serveur to table:', response);
       if (response) {
         await fetchTables();
       }
@@ -146,19 +139,18 @@ export const useTable = () => {
     }
   }, [fetchTables]);
 
-  // Libérer une table
+  // LibÃ©rer une table
   const libererTable = useCallback(async (id: string) => {
     setState(prev => ({ ...prev, loading: true, error: null }));
     try {
       const response = await tableService.libererTable(id);
-      console.log('[useTable] Liberated table:', response);
       if (response) {
         await fetchTables();
       }
       setState(prev => ({ ...prev, loading: false }));
       return response;
     } catch (error: any) {
-      const errorMessage = error?.response?.data?.message || error?.message || 'Erreur lors de la libération de la table';
+      const errorMessage = error?.response?.data?.message || error?.message || 'Erreur lors de la libÃ©ration de la table';
       console.error('[useTable] Error liberating table:', errorMessage);
       setState(prev => ({ ...prev, loading: false, error: errorMessage }));
       throw error;

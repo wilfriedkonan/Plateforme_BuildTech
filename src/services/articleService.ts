@@ -1,4 +1,4 @@
-import { apiClient } from './apiClient';
+﻿import { apiClient } from './apiClient';
 
 export interface Article {
   id?: string;
@@ -104,11 +104,10 @@ export interface ArticleDetailResponse {
 }
 
 const articleService = {
-  // GET /api/Articles - Récupérer tous les articles de l'entreprise (depuis le token)
+  // GET /api/Articles - RÃ©cupÃ©rer tous les articles de l'entreprise (depuis le token)
   async getArticles(): Promise<Article[]> {
     try {
       const response = await apiClient.get<ArticleListResponse>('/Articles');
-      console.log('[articleService] Get articles response:', response.data);
       return response.data.data || response.data.articles || [];
     } catch (error: any) {
       console.error('[articleService] Error fetching articles:', error);
@@ -116,11 +115,10 @@ const articleService = {
     }
   },
 
-  // POST /api/Articles - Créer un nouvel article
+  // POST /api/Articles - CrÃ©er un nouvel article
   async createArticle(article: CreateArticleRequest): Promise<ArticleDetailResponse> {
     try {
       const response = await apiClient.post<ArticleDetailResponse>('/Articles', article);
-      console.log('[articleService] Create article response:', response.data);
       return response.data;
     } catch (error: any) {
       console.error('[articleService] Error creating article:', error);
@@ -128,11 +126,10 @@ const articleService = {
     }
   },
 
-  // GET /api/Articles/{id} - Récupérer un article par ID
+  // GET /api/Articles/{id} - RÃ©cupÃ©rer un article par ID
   async getArticleById(id: string): Promise<Article | null> {
     try {
       const response = await apiClient.get<ArticleDetailResponse>(`/Articles/${id}`);
-      console.log('[articleService] Get article by ID response:', response.data);
       return response.data.data || response.data.article || null;
     } catch (error: any) {
       console.error('[articleService] Error fetching article by ID:', error);
@@ -140,11 +137,10 @@ const articleService = {
     }
   },
 
-  // PUT /api/Articles/{id} - Mettre à jour un article
+  // PUT /api/Articles/{id} - Mettre Ã  jour un article
   async updateArticle(id: string, article: UpdateArticleRequest): Promise<Article | null> {
     try {
       const response = await apiClient.put<ArticleDetailResponse>(`/Articles/${id}`, article);
-      console.log('[articleService] Update article response:', response.data);
       return response.data.data || response.data.article || null;
     } catch (error: any) {
       console.error('[articleService] Error updating article:', error);
@@ -156,7 +152,6 @@ const articleService = {
   async deleteArticle(id: string): Promise<boolean> {
     try {
       const response = await apiClient.delete<ArticleDetailResponse>(`/Articles/${id}`);
-      console.log('[articleService] Delete article response:', response.data);
       return response.data.success;
     } catch (error: any) {
       console.error('[articleService] Error deleting article:', error);
@@ -164,11 +159,10 @@ const articleService = {
     }
   },
 
-  // GET /api/Articles/categorie/{idCategorie} - Récupérer les articles par catégorie
+  // GET /api/Articles/categorie/{idCategorie} - RÃ©cupÃ©rer les articles par catÃ©gorie
   async getArticlesByCategorie(idCategorie: string): Promise<Article[]> {
     try {
       const response = await apiClient.get<ArticleListResponse>(`/Articles/categorie/${idCategorie}`);
-      console.log('[articleService] Get articles by categorie response:', response.data);
       return response.data.data || response.data.articles || [];
     } catch (error: any) {
       console.error('[articleService] Error fetching articles by categorie:', error);
@@ -176,11 +170,10 @@ const articleService = {
     }
   },
 
-  // GET /api/Articles/pos - Récupérer les articles POS
+  // GET /api/Articles/pos - RÃ©cupÃ©rer les articles POS
   async getArticlesPOS(): Promise<Article[]> {
     try {
       const response = await apiClient.get<ArticleListResponse>('/Articles/pos');
-      console.log('[articleService] Get articles POS response:', response.data);
       return response.data.data || response.data.articles || [];
     } catch (error: any) {
       console.error('[articleService] Error fetching articles POS:', error);
@@ -188,11 +181,10 @@ const articleService = {
     }
   },
 
-  // GET /api/Articles/promo - Récupérer les articles en promotion
+  // GET /api/Articles/promo - RÃ©cupÃ©rer les articles en promotion
   async getArticlesPromo(): Promise<Article[]> {
     try {
       const response = await apiClient.get<ArticleListResponse>('/Articles/promo');
-      console.log('[articleService] Get articles promo response:', response.data);
       return response.data.data || response.data.articles || [];
     } catch (error: any) {
       console.error('[articleService] Error fetching articles promo:', error);
@@ -200,11 +192,10 @@ const articleService = {
     }
   },
 
-  // GET /api/Articles/stock - Récupérer les articles en stock
+  // GET /api/Articles/stock - RÃ©cupÃ©rer les articles en stock
   async getArticlesStock(): Promise<Article[]> {
     try {
       const response = await apiClient.get<ArticleListResponse>('/Articles/stock');
-      console.log('[articleService] Get articles stock response:', response.data);
       return response.data.data || response.data.articles || [];
     } catch (error: any) {
       console.error('[articleService] Error fetching articles stock:', error);
@@ -212,11 +203,10 @@ const articleService = {
     }
   },
 
-  // GET /api/Articles/codebarre/{codeBarre} - Récupérer un article par code barre
+  // GET /api/Articles/codebarre/{codeBarre} - RÃ©cupÃ©rer un article par code barre
   async getArticleByCodeBarre(codeBarre: string): Promise<Article | null> {
     try {
       const response = await apiClient.get<ArticleDetailResponse>(`/Articles/codebarre/${codeBarre}`);
-      console.log('[articleService] Get article by code barre response:', response.data);
       return response.data.data || response.data.article || null;
     } catch (error: any) {
       console.error('[articleService] Error fetching article by code barre:', error);

@@ -1,4 +1,4 @@
-import { apiClient } from './apiClient';
+﻿import { apiClient } from './apiClient';
 
 export interface Mouvement {
   id: string;
@@ -54,7 +54,7 @@ export interface MouvementFilters {
 }
 
 const mouvementStockService = {
-  // GET /api/MouvementStock - Récupérer les mouvements de stock avec filtres
+  // GET /api/MouvementStock - RÃ©cupÃ©rer les mouvements de stock avec filtres
   async getMouvements(filters: MouvementFilters = {}): Promise<MouvementListResponse> {
     try {
       const params = new URLSearchParams();
@@ -72,7 +72,6 @@ const mouvementStockService = {
       const url = `/MouvementStock${queryString ? '?' + queryString : ''}`;
       
       const response = await apiClient.get<MouvementListResponse>(url);
-      console.log('[mouvementStockService] Get mouvements response:', response.data);
       return response.data;
     } catch (error: any) {
       console.error('[mouvementStockService] Error fetching mouvements:', error);
@@ -80,11 +79,10 @@ const mouvementStockService = {
     }
   },
 
-  // GET /api/MouvementStock/{id} - Récupérer le détail d'un mouvement
+  // GET /api/MouvementStock/{id} - RÃ©cupÃ©rer le dÃ©tail d'un mouvement
   async getMouvementById(id: string): Promise<Mouvement | null> {
     try {
       const response = await apiClient.get<{ success: boolean; data?: Mouvement }>(`/MouvementStock/${id}`);
-      console.log('[mouvementStockService] Get mouvement by ID response:', response.data);
       return response.data.data || null;
     } catch (error: any) {
       console.error('[mouvementStockService] Error fetching mouvement by ID:', error);
@@ -92,11 +90,10 @@ const mouvementStockService = {
     }
   },
 
-  // POST /api/MouvementStock - Créer un mouvement de stock
+  // POST /api/MouvementStock - CrÃ©er un mouvement de stock
   async createMouvement(mouvementData: Partial<Mouvement>): Promise<Mouvement | null> {
     try {
       const response = await apiClient.post<{ success: boolean; data?: Mouvement }>('/MouvementStock', mouvementData);
-      console.log('[mouvementStockService] Create mouvement response:', response.data);
       return response.data.data || null;
     } catch (error: any) {
       console.error('[mouvementStockService] Error creating mouvement:', error);
@@ -108,7 +105,6 @@ const mouvementStockService = {
   async deleteMouvement(id: string): Promise<boolean> {
     try {
       const response = await apiClient.delete<{ success: boolean }>(`/MouvementStock/${id}`);
-      console.log('[mouvementStockService] Delete mouvement response:', response.data);
       return response.data.success || false;
     } catch (error: any) {
       console.error('[mouvementStockService] Error deleting mouvement:', error);

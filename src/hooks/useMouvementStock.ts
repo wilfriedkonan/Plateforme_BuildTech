@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+﻿import { useState, useCallback } from 'react';
 import mouvementStockService, { Mouvement, MouvementFilters } from '../services/mouvementStockService';
 
 interface UseMouvementStockState {
@@ -48,12 +48,11 @@ export const useMouvementStock = () => {
     },
   });
 
-  // Récupérer les mouvements avec filtres
+  // RÃ©cupÃ©rer les mouvements avec filtres
   const fetchMouvements = useCallback(async (filters: MouvementFilters = {}) => {
     setState(prev => ({ ...prev, loading: true, error: null }));
     try {
       const response = await mouvementStockService.getMouvements(filters);
-      console.log('[useMouvementStock] Fetched mouvements:', response);
       setState({
         mouvements: response.mouvements || [],
         loading: false,
@@ -87,12 +86,11 @@ export const useMouvementStock = () => {
     }
   }, []);
 
-  // Récupérer un mouvement par ID
+  // RÃ©cupÃ©rer un mouvement par ID
   const getMouvementById = useCallback(async (id: string) => {
     setState(prev => ({ ...prev, loading: true, error: null }));
     try {
       const mouvement = await mouvementStockService.getMouvementById(id);
-      console.log('[useMouvementStock] Fetched mouvement by ID:', mouvement);
       setState(prev => ({ ...prev, loading: false }));
       return mouvement;
     } catch (error: any) {
@@ -107,16 +105,15 @@ export const useMouvementStock = () => {
     }
   }, []);
 
-  // Créer un mouvement
+  // CrÃ©er un mouvement
   const createMouvement = useCallback(async (mouvementData: Partial<Mouvement>) => {
     setState(prev => ({ ...prev, loading: true, error: null }));
     try {
       const mouvement = await mouvementStockService.createMouvement(mouvementData);
-      console.log('[useMouvementStock] Created mouvement:', mouvement);
       setState(prev => ({ ...prev, loading: false }));
       return mouvement;
     } catch (error: any) {
-      const errorMessage = error?.response?.data?.message || error?.message || 'Erreur lors de la création du mouvement';
+      const errorMessage = error?.response?.data?.message || error?.message || 'Erreur lors de la crÃ©ation du mouvement';
       console.error('[useMouvementStock] Error creating mouvement:', errorMessage);
       setState(prev => ({
         ...prev,
@@ -132,7 +129,6 @@ export const useMouvementStock = () => {
     setState(prev => ({ ...prev, loading: true, error: null }));
     try {
       const success = await mouvementStockService.deleteMouvement(id);
-      console.log('[useMouvementStock] Deleted mouvement:', success);
       setState(prev => ({ ...prev, loading: false }));
       return success;
     } catch (error: any) {

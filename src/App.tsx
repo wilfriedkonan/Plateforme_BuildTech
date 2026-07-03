@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+﻿import React, { useEffect, useState } from 'react';
 import Header from './components/Header';
 import Hero from './components/Hero';
 import Features from './components/Features';
@@ -44,7 +44,7 @@ function App() {
   const [isLoggingIn, setIsLoggingIn] = useState(false);
   const [activeTab, setActiveTab] = useState<'overview' | 'reports' | 'articles' | 'administration' | 'pos' | 'achat' | 'client' | 'catalogue'>('overview');
 
-  // Vérifier si on est en mode admin via l'URL et restaurer la session depuis localStorage
+  // VÃ©rifier si on est en mode admin via l'URL et restaurer la session depuis localStorage
   React.useEffect(() => {
     const path = window.location.pathname;
     if (path === '/admin' || path.startsWith('/admin/')) {
@@ -88,7 +88,6 @@ function App() {
     return <StorePage />;
   }
   useEffect(()=>{
-    console.log('pendingUser:', pendingUser)
   },[pendingUser])
 
   const handleSignUp = (userData: { companyName: string; email: string; phone: string; otpMethod: 'email' | 'whatsapp' }, planData?: {app: string, plan: string, idPlan: string}) => {
@@ -109,9 +108,7 @@ function App() {
     setIsLoggingIn(true);
     setLoginError(null);
     try {
-      console.log('[App] Logging in user:', email);
       const response = await login({ email, password });
-      console.log('[App] Login response:', response);
 
       if (response.success && response.user) {
         const newUser: User = {
@@ -123,7 +120,6 @@ function App() {
           subscriptionPlan: 'Standard',
           downloadHistory: []
         };
-        console.log('[App] Creating authenticated user:', newUser);
         setCurrentUser(newUser);
         setIsAuthenticated(true);
         setShowLoginModal(false);
@@ -148,7 +144,7 @@ function App() {
   const handlePlanSelection = (app: string, plan: string, idPlan: string) => {
     if (isAuthenticated) {
       // User is logged in, proceed with plan selection
-      alert(`Plan ${plan} sélectionné pour ${app}`);
+      alert(`Plan ${plan} sÃ©lectionnÃ© pour ${app}`);
     } else {
       // User not logged in, show signup/login options
       setPendingPlan({app, plan, idPlan});
@@ -162,7 +158,6 @@ function App() {
 
   const handleOTPVerification = (_otp: string, userData?: { email: string; phone: string; companyName?: string }, planData?: { app: string; plan: string; idPlan: string }) => {
     // OTP has been validated by the API, create user session
-    console.log('[App] OTP verified, creating user session');
     const newUser: User = {
       id: Math.random().toString(36).substr(2, 9),
       nomEntreprise: userData?.companyName || pendingUser?.nomEntreprise || '',
@@ -173,7 +168,6 @@ function App() {
       selectedApp: planData?.app,
       downloadHistory: []
     };
-    console.log('[App] Creating user:', newUser);
     setCurrentUser(newUser);
     setIsAuthenticated(true);
     setShowOTPModal(false);

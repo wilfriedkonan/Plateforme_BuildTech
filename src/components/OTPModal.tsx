@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { X, MessageCircle, Mail } from 'lucide-react';
 import { useOTP } from '../hooks/useOTP';
 import { otpService } from '../services/otpService';
@@ -38,15 +38,13 @@ const OTPModal: React.FC<OTPModalProps> = ({ onVerify, onClose, email, phone, de
     e.preventDefault();
     const otpValue = otp.join('');
     if (otpValue.length !== 4) {
-      setError('Veuillez saisir le code à 4 chiffres');
+      setError('Veuillez saisir le code Ã  4 chiffres');
       return;
     }
 
     try {
-      console.log('[OTPModal] Validating OTP:', otpValue);
       const response = await validate({ email, code: otpValue });
       if (response.isValid) {
-        console.log('[OTPModal] OTP validated successfully, connecting user');
         onVerify(otpValue, { email, phone, nomEntreprise: userData?.nomEntreprise }, planData);
       } else {
         setError(response.message || 'Code OTP invalide');
@@ -67,14 +65,12 @@ const OTPModal: React.FC<OTPModalProps> = ({ onVerify, onClose, email, phone, de
     setIsResending(true);
     setError('');
     try {
-      console.log('[OTPModal] Resending OTP via', deliveryMethod);
       await otpService.resend({
         email,
         method: deliveryMethod,
       });
       setOtp(['', '', '', '']);
       setError('');
-      console.log(`Code OTP renvoyé via ${deliveryMethod === 'email' ? 'email' : 'WhatsApp'}`);
     } catch (e: any) {
       setError(e?.response?.data?.message || 'Erreur lors du renvoi du code OTP');
     } finally {
@@ -86,7 +82,7 @@ const OTPModal: React.FC<OTPModalProps> = ({ onVerify, onClose, email, phone, de
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
       <div className="bg-white rounded-2xl p-8 max-w-md w-full">
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-2xl font-bold text-gray-900">Vérification OTP</h2>
+          <h2 className="text-2xl font-bold text-gray-900">VÃ©rification OTP</h2>
           <button
             onClick={onClose}
             className="p-2 hover:bg-gray-100 rounded-full transition-colors"
@@ -106,11 +102,11 @@ const OTPModal: React.FC<OTPModalProps> = ({ onVerify, onClose, email, phone, de
             </div>
           </div>
           <h3 className="text-lg font-semibold text-gray-900 mb-2">
-            Code envoyé via {deliveryMethod === 'email' ? 'Email' : 'WhatsApp'}
+            Code envoyÃ© via {deliveryMethod === 'email' ? 'Email' : 'WhatsApp'}
           </h3>
           <p className="text-gray-600 mb-2">
-            Nous avons envoyé un code de vérification à 4 chiffres sur votre{' '}
-            {deliveryMethod === 'email' ? 'adresse email' : 'numéro WhatsApp'}.
+            Nous avons envoyÃ© un code de vÃ©rification Ã  4 chiffres sur votre{' '}
+            {deliveryMethod === 'email' ? 'adresse email' : 'numÃ©ro WhatsApp'}.
           </p>
           <p className="text-sm text-gray-500">
             {deliveryMethod === 'email' ? `Email : ${email}` : `WhatsApp : ${phone}`}
@@ -147,13 +143,13 @@ const OTPModal: React.FC<OTPModalProps> = ({ onVerify, onClose, email, phone, de
             disabled={isLoading}
             className="w-full bg-gray-800 text-white py-3 px-6 rounded-lg font-semibold hover:shadow-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {isLoading ? 'Vérification en cours...' : 'Vérifier le code'}
+            {isLoading ? 'VÃ©rification en cours...' : 'VÃ©rifier le code'}
           </button>
         </form>
 
         <div className="mt-6 text-center">
           <p className="text-sm text-gray-600 mb-2">
-            Vous n'avez pas reçu le code ?
+            Vous n'avez pas reÃ§u le code ?
           </p>
           <button 
             onClick={resendOTP}

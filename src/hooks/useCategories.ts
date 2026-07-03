@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+﻿import { useState, useCallback } from 'react';
 import categorieService, { Categorie } from '../services/categorieService';
 
 interface UseCategoriesState {
@@ -16,12 +16,11 @@ export const useCategories = () => {
     total: 0
   });
 
-  // Récupérer toutes les catégories
+  // RÃ©cupÃ©rer toutes les catÃ©gories
   const fetchCategories = useCallback(async () => {
     setState(prev => ({ ...prev, loading: true, error: null }));
     try {
       const response = await categorieService.getCategories();
-      console.log('[useCategories] Fetched categories:', response);
       setState({
         categories: response.categories || [],
         loading: false,
@@ -29,7 +28,7 @@ export const useCategories = () => {
         total: response.total || 0
       });
     } catch (error: any) {
-      const errorMessage = error?.response?.data?.message || error?.message || 'Erreur lors du chargement des catégories';
+      const errorMessage = error?.response?.data?.message || error?.message || 'Erreur lors du chargement des catÃ©gories';
       console.error('[useCategories] Error fetching categories:', errorMessage);
       setState(prev => ({
         ...prev,
@@ -40,22 +39,21 @@ export const useCategories = () => {
   }, []);
 
 
-  // Créer une catégorie
+  // CrÃ©er une catÃ©gorie
   const createCategorie = useCallback(async (categorie: Categorie) => {
     setState(prev => ({ ...prev, loading: true, error: null }));
     try {
       const response = await categorieService.createCategorie(categorie);
-      console.log('[useCategories] Created categorie:', response);
       
       if (response.success) {
-        // Rafraîchir la liste des catégories
+        // RafraÃ®chir la liste des catÃ©gories
         await fetchCategories();
         return response;
       } else {
-        throw new Error(response.message || 'Erreur lors de la création de la catégorie');
+        throw new Error(response.message || 'Erreur lors de la crÃ©ation de la catÃ©gorie');
       }
     } catch (error: any) {
-      const errorMessage = error?.response?.data?.message || error?.message || 'Erreur lors de la création de la catégorie';
+      const errorMessage = error?.response?.data?.message || error?.message || 'Erreur lors de la crÃ©ation de la catÃ©gorie';
       console.error('[useCategories] Error creating categorie:', errorMessage);
       setState(prev => ({
         ...prev,
@@ -66,22 +64,21 @@ export const useCategories = () => {
     }
   }, [fetchCategories]);
 
-  // Mettre à jour une catégorie
+  // Mettre Ã  jour une catÃ©gorie
   const updateCategorie = useCallback(async (id: string, categorie: Partial<Categorie>) => {
     setState(prev => ({ ...prev, loading: true, error: null }));
     try {
       const response = await categorieService.updateCategorie(id, categorie);
-      console.log('[useCategories] Updated categorie:', response);
       
       if (response.success) {
-        // Rafraîchir la liste des catégories
+        // RafraÃ®chir la liste des catÃ©gories
         await fetchCategories();
         return response;
       } else {
-        throw new Error(response.message || 'Erreur lors de la mise à jour de la catégorie');
+        throw new Error(response.message || 'Erreur lors de la mise Ã  jour de la catÃ©gorie');
       }
     } catch (error: any) {
-      const errorMessage = error?.response?.data?.message || error?.message || 'Erreur lors de la mise à jour de la catégorie';
+      const errorMessage = error?.response?.data?.message || error?.message || 'Erreur lors de la mise Ã  jour de la catÃ©gorie';
       console.error('[useCategories] Error updating categorie:', errorMessage);
       setState(prev => ({
         ...prev,
@@ -92,22 +89,21 @@ export const useCategories = () => {
     }
   }, [fetchCategories]);
 
-  // Supprimer une catégorie
+  // Supprimer une catÃ©gorie
   const deleteCategorie = useCallback(async (id: string) => {
     setState(prev => ({ ...prev, loading: true, error: null }));
     try {
       const response = await categorieService.deleteCategorie(id);
-      console.log('[useCategories] Deleted categorie:', response);
       
       if (response.success) {
-        // Rafraîchir la liste des catégories
+        // RafraÃ®chir la liste des catÃ©gories
         await fetchCategories();
         return response;
       } else {
-        throw new Error(response.message || 'Erreur lors de la suppression de la catégorie');
+        throw new Error(response.message || 'Erreur lors de la suppression de la catÃ©gorie');
       }
     } catch (error: any) {
-      const errorMessage = error?.response?.data?.message || error?.message || 'Erreur lors de la suppression de la catégorie';
+      const errorMessage = error?.response?.data?.message || error?.message || 'Erreur lors de la suppression de la catÃ©gorie';
       console.error('[useCategories] Error deleting categorie:', errorMessage);
       setState(prev => ({
         ...prev,

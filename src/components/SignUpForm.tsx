@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { Building, Mail, Phone, ArrowRight, Check } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 
@@ -25,8 +25,6 @@ const SignUpForm: React.FC<SignUpFormProps> = ({ onSignUp, selectedPlan }) => {
       return;
     }
 
-    console.log('[SignUpForm] selectedPlan:', selectedPlan);
-    console.log('[SignUpForm] idPlan to send:', selectedPlan?.idPlan);
 
     try {
       const payload = {
@@ -44,7 +42,6 @@ const SignUpForm: React.FC<SignUpFormProps> = ({ onSignUp, selectedPlan }) => {
         idPlan: selectedPlan?.idPlan,
         subscriptionDurationMonths: 1,
       };
-      console.log('[SignUpForm] Full payload:', payload);
       await register(payload);
       onSignUp({
         companyName: formData.companyName,
@@ -69,7 +66,7 @@ const SignUpForm: React.FC<SignUpFormProps> = ({ onSignUp, selectedPlan }) => {
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-            {selectedPlan ? `Finaliser votre abonnement` : 'Créez votre compte'}{' '}
+            {selectedPlan ? `Finaliser votre abonnement` : 'CrÃ©ez votre compte'}{' '}
             <span className="text-gray-800">
               {selectedPlan ? selectedPlan.plan : 'professionnel'}
             </span>
@@ -77,7 +74,7 @@ const SignUpForm: React.FC<SignUpFormProps> = ({ onSignUp, selectedPlan }) => {
           <p className="text-xl text-gray-600">
             {selectedPlan 
               ? `Vous avez choisi le plan ${selectedPlan.plan} pour ${selectedPlan.app}`
-              : 'Rejoignez des centaines d\'entreprises qui font confiance à Build Tech Solutions'
+              : 'Rejoignez des centaines d\'entreprises qui font confiance Ã  Build Tech Solutions'
             }
           </p>
         </div>
@@ -90,7 +87,7 @@ const SignUpForm: React.FC<SignUpFormProps> = ({ onSignUp, selectedPlan }) => {
                 <p className="text-purple-600 font-medium">Plan {selectedPlan.plan}</p>
               </div>
               <div className="text-right">
-                <p className="text-sm text-gray-600">Sélectionné</p>
+                <p className="text-sm text-gray-600">SÃ©lectionnÃ©</p>
                 <Check className="w-6 h-6 text-green-500 ml-auto" />
               </div>
             </div>
@@ -121,7 +118,7 @@ const SignUpForm: React.FC<SignUpFormProps> = ({ onSignUp, selectedPlan }) => {
 
               <div>
                 <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-2">
-                  Numéro de téléphone *
+                  NumÃ©ro de tÃ©lÃ©phone *
                 </label>
                 <div className="relative">
                   <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
@@ -171,14 +168,14 @@ const SignUpForm: React.FC<SignUpFormProps> = ({ onSignUp, selectedPlan }) => {
                   onChange={handleChange}
                   required
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-transparent transition-all"
-                  placeholder="Votre mot de passe sécurisé"
+                  placeholder="Votre mot de passe sÃ©curisÃ©"
                 />
               </div>
             </div>
 
             <div>
               <label htmlFor="otpMethod" className="block text-sm font-medium text-gray-700 mb-2">
-                Méthode de vérification *
+                MÃ©thode de vÃ©rification *
               </label>
               <select
                 id="otpMethod"
@@ -192,7 +189,7 @@ const SignUpForm: React.FC<SignUpFormProps> = ({ onSignUp, selectedPlan }) => {
                 <option value="whatsapp">WhatsApp</option>
               </select>
               <p className="text-xs text-gray-500 mt-1">
-                Choisissez comment vous souhaitez recevoir votre code de vérification
+                Choisissez comment vous souhaitez recevoir votre code de vÃ©rification
               </p>
             </div>
 
@@ -205,8 +202,8 @@ const SignUpForm: React.FC<SignUpFormProps> = ({ onSignUp, selectedPlan }) => {
             <div className="bg-purple-50 border border-purple-200 rounded-lg p-4">
               <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
                 <p className="text-sm text-gray-700">
-                  <strong>Vérification requise :</strong> Après inscription, vous recevrez un code de vérification 
-                  via la méthode sélectionnée pour valider votre compte.
+                  <strong>VÃ©rification requise :</strong> AprÃ¨s inscription, vous recevrez un code de vÃ©rification 
+                  via la mÃ©thode sÃ©lectionnÃ©e pour valider votre compte.
                 </p>
               </div>
             </div>
@@ -229,7 +226,7 @@ const SignUpForm: React.FC<SignUpFormProps> = ({ onSignUp, selectedPlan }) => {
               </a>{' '}
               et notre{' '}
               <a href="#" className="text-gray-700 hover:text-gray-900">
-                politique de confidentialité
+                politique de confidentialitÃ©
               </a>
               .
             </p>

@@ -1,4 +1,4 @@
-import { apiClient } from './apiClient';
+﻿import { apiClient } from './apiClient';
 
 export interface Fournisseur {
   id: string;
@@ -67,7 +67,7 @@ export interface FournisseurFilters {
 }
 
 const fournisseurService = {
-  // GET /api/Fournisseurs - Récupérer la liste des fournisseurs
+  // GET /api/Fournisseurs - RÃ©cupÃ©rer la liste des fournisseurs
   async getFournisseurs(filters: FournisseurFilters = {}): Promise<FournisseurListResponse> {
     try {
       const params = new URLSearchParams();
@@ -83,7 +83,6 @@ const fournisseurService = {
       const url = `/Fournisseurs${queryString ? '?' + queryString : ''}`;
       
       const response = await apiClient.get<FournisseurListResponse>(url);
-      console.log('[fournisseurService] Get fournisseurs response:', response.data);
       return response.data;
     } catch (error: any) {
       console.error('[fournisseurService] Error fetching fournisseurs:', error);
@@ -91,11 +90,10 @@ const fournisseurService = {
     }
   },
 
-  // GET /api/Fournisseurs/{id} - Récupérer un fournisseur par ID
+  // GET /api/Fournisseurs/{id} - RÃ©cupÃ©rer un fournisseur par ID
   async getFournisseurById(id: string): Promise<Fournisseur | null> {
     try {
       const response = await apiClient.get<FournisseurDetailResponse>(`/Fournisseurs/${id}`);
-      console.log('[fournisseurService] Get fournisseur by ID response:', response.data);
       return response.data.data || null;
     } catch (error: any) {
       console.error('[fournisseurService] Error fetching fournisseur by ID:', error);
@@ -103,11 +101,10 @@ const fournisseurService = {
     }
   },
 
-  // POST /api/Fournisseurs - Créer un fournisseur
+  // POST /api/Fournisseurs - CrÃ©er un fournisseur
   async createFournisseur(fournisseurData: CreateFournisseurRequest): Promise<Fournisseur | null> {
     try {
       const response = await apiClient.post<FournisseurDetailResponse>('/Fournisseurs', fournisseurData);
-      console.log('[fournisseurService] Create fournisseur response:', response.data);
       return response.data.data || null;
     } catch (error: any) {
       console.error('[fournisseurService] Error creating fournisseur:', error);
@@ -115,11 +112,10 @@ const fournisseurService = {
     }
   },
 
-  // PUT /api/Fournisseurs/{id} - Mettre à jour un fournisseur
+  // PUT /api/Fournisseurs/{id} - Mettre Ã  jour un fournisseur
   async updateFournisseur(id: string, fournisseurData: UpdateFournisseurRequest): Promise<Fournisseur | null> {
     try {
       const response = await apiClient.put<FournisseurDetailResponse>(`/Fournisseurs/${id}`, fournisseurData);
-      console.log('[fournisseurService] Update fournisseur response:', response.data);
       return response.data.data || null;
     } catch (error: any) {
       console.error('[fournisseurService] Error updating fournisseur:', error);
@@ -131,7 +127,6 @@ const fournisseurService = {
   async deleteFournisseur(id: string): Promise<boolean> {
     try {
       const response = await apiClient.delete<{ success: boolean }>(`/Fournisseurs/${id}`);
-      console.log('[fournisseurService] Delete fournisseur response:', response.data);
       return response.data.success || false;
     } catch (error: any) {
       console.error('[fournisseurService] Error deleting fournisseur:', error);
@@ -139,11 +134,10 @@ const fournisseurService = {
     }
   },
 
-  // PATCH /api/Fournisseurs/{id}/etat - Changer l'état d'un fournisseur
+  // PATCH /api/Fournisseurs/{id}/etat - Changer l'Ã©tat d'un fournisseur
   async changeFournisseurEtat(id: string, etat: string): Promise<Fournisseur | null> {
     try {
       const response = await apiClient.patch<FournisseurDetailResponse>(`/Fournisseurs/${id}/etat`, { etat });
-      console.log('[fournisseurService] Change fournisseur etat response:', response.data);
       return response.data.data || null;
     } catch (error: any) {
       console.error('[fournisseurService] Error changing fournisseur etat:', error);

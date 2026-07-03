@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+﻿import { useState, useCallback } from 'react';
 import fournisseurService, { Fournisseur, CreateFournisseurRequest, UpdateFournisseurRequest, FournisseurFilters } from '../services/fournisseurService';
 
 interface UseFournisseurState {
@@ -40,12 +40,11 @@ export const useFournisseur = () => {
     },
   });
 
-  // Récupérer la liste des fournisseurs
+  // RÃ©cupÃ©rer la liste des fournisseurs
   const fetchFournisseurs = useCallback(async (filters: FournisseurFilters = {}) => {
     setState(prev => ({ ...prev, loading: true, error: null }));
     try {
       const response = await fournisseurService.getFournisseurs(filters);
-      console.log('[useFournisseur] Fetched fournisseurs:', response);
       setState({
         fournisseurs: response.data || [],
         loading: false,
@@ -75,12 +74,11 @@ export const useFournisseur = () => {
     }
   }, []);
 
-  // Récupérer un fournisseur par ID
+  // RÃ©cupÃ©rer un fournisseur par ID
   const getFournisseurById = useCallback(async (id: string) => {
     setState(prev => ({ ...prev, loading: true, error: null }));
     try {
       const fournisseur = await fournisseurService.getFournisseurById(id);
-      console.log('[useFournisseur] Fetched fournisseur by ID:', fournisseur);
       setState(prev => ({ ...prev, loading: false }));
       return fournisseur;
     } catch (error: any) {
@@ -95,16 +93,15 @@ export const useFournisseur = () => {
     }
   }, []);
 
-  // Créer un fournisseur
+  // CrÃ©er un fournisseur
   const createFournisseur = useCallback(async (fournisseurData: CreateFournisseurRequest) => {
     setState(prev => ({ ...prev, loading: true, error: null }));
     try {
       const fournisseur = await fournisseurService.createFournisseur(fournisseurData);
-      console.log('[useFournisseur] Created fournisseur:', fournisseur);
       setState(prev => ({ ...prev, loading: false }));
       return fournisseur;
     } catch (error: any) {
-      const errorMessage = error?.response?.data?.message || error?.message || 'Erreur lors de la création du fournisseur';
+      const errorMessage = error?.response?.data?.message || error?.message || 'Erreur lors de la crÃ©ation du fournisseur';
       console.error('[useFournisseur] Error creating fournisseur:', errorMessage);
       setState(prev => ({
         ...prev,
@@ -115,16 +112,15 @@ export const useFournisseur = () => {
     }
   }, []);
 
-  // Mettre à jour un fournisseur
+  // Mettre Ã  jour un fournisseur
   const updateFournisseur = useCallback(async (id: string, fournisseurData: UpdateFournisseurRequest) => {
     setState(prev => ({ ...prev, loading: true, error: null }));
     try {
       const fournisseur = await fournisseurService.updateFournisseur(id, fournisseurData);
-      console.log('[useFournisseur] Updated fournisseur:', fournisseur);
       setState(prev => ({ ...prev, loading: false }));
       return fournisseur;
     } catch (error: any) {
-      const errorMessage = error?.response?.data?.message || error?.message || 'Erreur lors de la mise à jour du fournisseur';
+      const errorMessage = error?.response?.data?.message || error?.message || 'Erreur lors de la mise Ã  jour du fournisseur';
       console.error('[useFournisseur] Error updating fournisseur:', errorMessage);
       setState(prev => ({
         ...prev,
@@ -140,7 +136,6 @@ export const useFournisseur = () => {
     setState(prev => ({ ...prev, loading: true, error: null }));
     try {
       const success = await fournisseurService.deleteFournisseur(id);
-      console.log('[useFournisseur] Deleted fournisseur:', success);
       setState(prev => ({ ...prev, loading: false }));
       return success;
     } catch (error: any) {
@@ -155,16 +150,15 @@ export const useFournisseur = () => {
     }
   }, []);
 
-  // Changer l'état d'un fournisseur
+  // Changer l'Ã©tat d'un fournisseur
   const changeFournisseurEtat = useCallback(async (id: string, etat: string) => {
     setState(prev => ({ ...prev, loading: true, error: null }));
     try {
       const fournisseur = await fournisseurService.changeFournisseurEtat(id, etat);
-      console.log('[useFournisseur] Changed fournisseur etat:', fournisseur);
       setState(prev => ({ ...prev, loading: false }));
       return fournisseur;
     } catch (error: any) {
-      const errorMessage = error?.response?.data?.message || error?.message || 'Erreur lors du changement d\'état du fournisseur';
+      const errorMessage = error?.response?.data?.message || error?.message || 'Erreur lors du changement d\'Ã©tat du fournisseur';
       console.error('[useFournisseur] Error changing fournisseur etat:', errorMessage);
       setState(prev => ({
         ...prev,

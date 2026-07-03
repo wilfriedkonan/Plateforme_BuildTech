@@ -1,4 +1,4 @@
-import { apiClient } from './apiClient';
+﻿import { apiClient } from './apiClient';
 
 export interface Categorie {
   id?: string;
@@ -27,11 +27,10 @@ export interface CategorieDetailResponse {
 }
 
 const categorieService = {
-  // Récupérer toutes les catégories de l'entreprise (depuis le token)
+  // RÃ©cupÃ©rer toutes les catÃ©gories de l'entreprise (depuis le token)
   async getCategories(): Promise<CategorieResponse> {
     try {
       const response = await apiClient.get<CategorieResponse>('/Categorie');
-      console.log('[categorieService] Get categories response:', response.data);
       return response.data;
     } catch (error: any) {
       console.error('[categorieService] Error fetching categories:', error);
@@ -39,11 +38,10 @@ const categorieService = {
     }
   },
 
-  // Créer une nouvelle catégorie
+  // CrÃ©er une nouvelle catÃ©gorie
   async createCategorie(categorie: Categorie): Promise<CategorieDetailResponse> {
     try {
       const response = await apiClient.post<CategorieDetailResponse>('/Categorie', categorie);
-      console.log('[categorieService] Create categorie response:', response.data);
       return response.data;
     } catch (error: any) {
       console.error('[categorieService] Error creating categorie:', error);
@@ -51,11 +49,10 @@ const categorieService = {
     }
   },
 
-  // Mettre à jour une catégorie
+  // Mettre Ã  jour une catÃ©gorie
   async updateCategorie(id: string, categorie: Partial<Categorie>): Promise<CategorieDetailResponse> {
     try {
       const response = await apiClient.put<CategorieDetailResponse>(`/Categorie/${id}`, categorie);
-      console.log('[categorieService] Update categorie response:', response.data);
       return response.data;
     } catch (error: any) {
       console.error('[categorieService] Error updating categorie:', error);
@@ -63,11 +60,10 @@ const categorieService = {
     }
   },
 
-  // Supprimer une catégorie
+  // Supprimer une catÃ©gorie
   async deleteCategorie(id: string): Promise<CategorieDetailResponse> {
     try {
       const response = await apiClient.delete<CategorieDetailResponse>(`/Categorie/${id}`);
-      console.log('[categorieService] Delete categorie response:', response.data);
       return response.data;
     } catch (error: any) {
       console.error('[categorieService] Error deleting categorie:', error);

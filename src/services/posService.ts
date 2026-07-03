@@ -1,6 +1,6 @@
-import { apiClient } from './apiClient';
+﻿import { apiClient } from './apiClient';
 
-// ─── Request types ───────────────────────────────────────────────────────────
+// â”€â”€â”€ Request types â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 export interface CreatePosFactureRequest {
   idTable?: string;
@@ -73,7 +73,7 @@ export interface ConfirmPosPaymentRequest {
   articles: ConfirmPaymentArticle[];
 }
 
-// ─── Response / domain types ──────────────────────────────────────────────────
+// â”€â”€â”€ Response / domain types â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 export interface PosFacture {
   id?: string;
@@ -161,14 +161,13 @@ export interface PosStatistiquesJour {
   messages: string[];
 }
 
-// ─── Service ──────────────────────────────────────────────────────────────────
+// â”€â”€â”€ Service â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 const posService = {
-  // POST /api/Pos/factures — Créer une nouvelle facture POS
+  // POST /api/Pos/factures â€” CrÃ©er une nouvelle facture POS
   async createFacture(request: CreatePosFactureRequest): Promise<PosApiResponse> {
     try {
       const response = await apiClient.post<PosApiResponse>('/Pos/factures', request);
-      console.log('[posService] Create facture response:', response.data);
       return response.data;
     } catch (error: any) {
       console.error('[posService] Error creating facture:', error);
@@ -176,11 +175,10 @@ const posService = {
     }
   },
 
-  // GET /api/Pos/factures/{id} — Récupérer une facture par ID
+  // GET /api/Pos/factures/{id} â€” RÃ©cupÃ©rer une facture par ID
   async getFactureById(id: string): Promise<PosFacture | null> {
     try {
       const response = await apiClient.get<PosApiResponse>(`/Pos/factures/${id}`);
-      console.log('[posService] Get facture by ID response:', response.data);
       return response.data.facture || response.data.data || null;
     } catch (error: any) {
       console.error('[posService] Error fetching facture by ID:', error);
@@ -188,11 +186,10 @@ const posService = {
     }
   },
 
-  // POST /api/Pos/factures/{idFacture}/details — Ajouter un détail à une facture
+  // POST /api/Pos/factures/{idFacture}/details â€” Ajouter un dÃ©tail Ã  une facture
   async addDetail(idFacture: string, detail: AddPosDetailRequest): Promise<PosApiResponse> {
     try {
       const response = await apiClient.post<PosApiResponse>(`/Pos/factures/${idFacture}/details`, detail);
-      console.log('[posService] Add detail response:', response.data);
       return response.data;
     } catch (error: any) {
       console.error('[posService] Error adding detail:', error);
@@ -200,11 +197,10 @@ const posService = {
     }
   },
 
-  // PUT /api/Pos/factures/{idFacture}/put-on-hold — Mettre une facture en attente
+  // PUT /api/Pos/factures/{idFacture}/put-on-hold â€” Mettre une facture en attente
   async putOnHold(idFacture: string, request: PutOnHoldRequest): Promise<PosApiResponse> {
     try {
       const response = await apiClient.put<PosApiResponse>(`/Pos/factures/${idFacture}/put-on-hold`, request);
-      console.log('[posService] Put on hold response:', response.data);
       return response.data;
     } catch (error: any) {
       console.error('[posService] Error putting facture on hold:', error);
@@ -212,11 +208,10 @@ const posService = {
     }
   },
 
-  // PUT /api/Pos/put-on-hold — Mettre en attente intelligente (crée la facture si idFacture est null)
+  // PUT /api/Pos/put-on-hold â€” Mettre en attente intelligente (crÃ©e la facture si idFacture est null)
   async putOnHoldSmart(request: PutOnHoldSmartRequest): Promise<PosApiResponse> {
     try {
       const response = await apiClient.put<PosApiResponse>('/Pos/put-on-hold', request);
-      console.log('[posService] Put on hold smart response:', response.data);
       return response.data;
     } catch (error: any) {
       console.error('[posService] Error putting on hold smart:', error);
@@ -224,11 +219,10 @@ const posService = {
     }
   },
 
-  // GET /api/Pos/factures/en-attente — Récupérer les factures en attente
+  // GET /api/Pos/factures/en-attente â€” RÃ©cupÃ©rer les factures en attente
   async getFacturesEnAttente(): Promise<PosFacture[]> {
     try {
       const response = await apiClient.get<any>('/Pos/factures/en-attente');
-      console.log('[posService] Get factures en attente response:', response.data);
       // Response body: { data: { success, factures: [], details: [] } }
       const inner = response.data?.data ?? response.data;
       const factures: PosFacture[] = inner?.factures || [];
@@ -243,11 +237,10 @@ const posService = {
     }
   },
 
-  // PUT /api/Pos/factures/{idFacture}/resume — Reprendre une facture en attente
+  // PUT /api/Pos/factures/{idFacture}/resume â€” Reprendre une facture en attente
   async resumeFacture(idFacture: string): Promise<PosApiResponse> {
     try {
       const response = await apiClient.put<PosApiResponse>(`/Pos/factures/${idFacture}/resume`);
-      console.log('[posService] Resume facture response:', response.data);
       return response.data;
     } catch (error: any) {
       console.error('[posService] Error resuming facture:', error);
@@ -255,11 +248,10 @@ const posService = {
     }
   },
 
-  // PUT /api/Pos/factures/{idFacture}/cancel — Annuler une facture
+  // PUT /api/Pos/factures/{idFacture}/cancel â€” Annuler une facture
   async cancelFacture(idFacture: string, request: CancelFactureRequest): Promise<PosApiResponse> {
     try {
       const response = await apiClient.put<PosApiResponse>(`/Pos/factures/${idFacture}/cancel`, request);
-      console.log('[posService] Cancel facture response:', response.data);
       return response.data;
     } catch (error: any) {
       console.error('[posService] Error cancelling facture:', error);
@@ -267,11 +259,10 @@ const posService = {
     }
   },
 
-  // GET /api/Pos/payment-types — Récupérer les types de paiement disponibles
+  // GET /api/Pos/payment-types â€” RÃ©cupÃ©rer les types de paiement disponibles
   async getPaymentTypes(): Promise<PaymentType[]> {
     try {
       const response = await apiClient.get<PosApiResponse>('/Pos/payment-types');
-      console.log('[posService] Get payment types response:', response.data);
       return response.data.data || [];
     } catch (error: any) {
       console.error('[posService] Error fetching payment types:', error);
@@ -279,11 +270,10 @@ const posService = {
     }
   },
 
-  // GET /api/Pos/statistiques/jour — Statistiques de vente du jour
+  // GET /api/Pos/statistiques/jour â€” Statistiques de vente du jour
   async getStatistiquesJour(): Promise<PosStatistiquesJour | null> {
     try {
       const response = await apiClient.get<any>('/Pos/statistiques/jour');
-      console.log('[posService] Get statistiques jour response:', response.data);
       return response.data?.data ?? response.data ?? null;
     } catch (error: any) {
       console.error('[posService] Error fetching statistiques jour:', error);
@@ -291,11 +281,10 @@ const posService = {
     }
   },
 
-  // POST /api/Pos/factures/confirm-payment — Confirmer le paiement (crée la facture si idFacture est null)
+  // POST /api/Pos/factures/confirm-payment â€” Confirmer le paiement (crÃ©e la facture si idFacture est null)
   async confirmPayment(request: ConfirmPosPaymentRequest): Promise<PosApiResponse> {
     try {
       const response = await apiClient.post<PosApiResponse>('/Pos/confirm-payment', request);
-      console.log('[posService] Confirm payment response:', response.data);
       return response.data;
     } catch (error: any) {
       console.error('[posService] Error confirming payment:', error);

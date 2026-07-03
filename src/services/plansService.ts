@@ -1,4 +1,4 @@
-import { apiClient } from './apiClient';
+﻿import { apiClient } from './apiClient';
 
 export interface PlanDto {
   id?: string;
@@ -80,27 +80,23 @@ const transformApiPlansToDto = (apiResponse: ApiPlansListResponse): ApplicationP
 export const plansService = {
   list: async (): Promise<ApplicationPlansDto[] | PlanDto[]> => {
     try {
-      console.log('[plansService] Fetching plans from API...');
       
       // Try with Axios first
       try {
         const { data } = await apiClient.get<ApiPlansListResponse>('plans');
-        console.log('[plansService] Axios success:', data);
         
         if (data.success && data.plans) {
           const transformed = transformApiPlansToDto(data);
-          console.log('[plansService] Transformed response:', transformed);
           return transformed;
         }
       } catch (axiosError: any) {
         console.warn('[plansService] Axios failed with status', axiosError.response?.status);
         
         // Fallback: try with fetch API (like the browser does)
-        console.log('[plansService] Trying with fetch API...');
         const response = await fetch('http://https://api.buildtch.uk/api/plans', {
           method: 'GET',
           headers: {
-            'ApiKey': 'VotreCléSecrèteTrèsLongueEtSécurisée123!@#$%^&*()',
+            'ApiKey': 'VotreClÃ©SecrÃ¨teTrÃ¨sLongueEtSÃ©curisÃ©e123!@#$%^&*()',
           },
         });
         
@@ -109,11 +105,9 @@ export const plansService = {
         }
         
         const data = await response.json() as ApiPlansListResponse;
-        console.log('[plansService] Fetch success:', data);
         
         if (data.success && data.plans) {
           const transformed = transformApiPlansToDto(data);
-          console.log('[plansService] Transformed response:', transformed);
           return transformed;
         }
       }

@@ -1,4 +1,4 @@
-import { apiClient } from './apiClient';
+﻿import { apiClient } from './apiClient';
 
 export interface Article {
   id?: string;
@@ -27,11 +27,10 @@ export interface ArticleDetailResponse {
 }
 
 const articleService = {
-  // Récupérer tous les articles de l'entreprise (depuis le token)
+  // RÃ©cupÃ©rer tous les articles de l'entreprise (depuis le token)
   async getArticles(): Promise<ArticleResponse> {
     try {
       const response = await apiClient.get<ArticleResponse>('/Article');
-      console.log('[articleService] Get articles response:', response.data);
       return response.data;
     } catch (error: any) {
       console.error('[articleService] Error fetching articles:', error);
@@ -39,11 +38,10 @@ const articleService = {
     }
   },
 
-  // Créer un nouvel article
+  // CrÃ©er un nouvel article
   async createArticle(article: Article): Promise<ArticleDetailResponse> {
     try {
       const response = await apiClient.post<ArticleDetailResponse>('/Article', article);
-      console.log('[articleService] Create article response:', response.data);
       return response.data;
     } catch (error: any) {
       console.error('[articleService] Error creating article:', error);
@@ -51,11 +49,10 @@ const articleService = {
     }
   },
 
-  // Mettre à jour un article
+  // Mettre Ã  jour un article
   async updateArticle(id: string, article: Partial<Article>): Promise<ArticleDetailResponse> {
     try {
       const response = await apiClient.put<ArticleDetailResponse>(`/Article/${id}`, article);
-      console.log('[articleService] Update article response:', response.data);
       return response.data;
     } catch (error: any) {
       console.error('[articleService] Error updating article:', error);
@@ -67,7 +64,6 @@ const articleService = {
   async deleteArticle(id: string): Promise<ArticleDetailResponse> {
     try {
       const response = await apiClient.delete<ArticleDetailResponse>(`/Article/${id}`);
-      console.log('[articleService] Delete article response:', response.data);
       return response.data;
     } catch (error: any) {
       console.error('[articleService] Error deleting article:', error);

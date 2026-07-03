@@ -1,4 +1,4 @@
-import { apiClient } from './apiClient';
+﻿import { apiClient } from './apiClient';
 
 export interface StockItem {
   idEntreprise: string;
@@ -44,7 +44,7 @@ export interface StockFilters {
 }
 
 const stockService = {
-  // GET /api/Articles/stock/view - Récupérer les stocks avec filtres et pagination
+  // GET /api/Articles/stock/view - RÃ©cupÃ©rer les stocks avec filtres et pagination
   async getStocks(filters: StockFilters = {}): Promise<StockListResponse> {
     try {
       const params = new URLSearchParams();
@@ -61,7 +61,6 @@ const stockService = {
       const url = `/stock${queryString ? '?' + queryString : ''}`;
       
       const response = await apiClient.get<StockListResponse>(url);
-      console.log('[stockService] Get stocks response:', response.data);
       return response.data;
     } catch (error: any) {
       console.error('[stockService] Error fetching stocks:', error);
@@ -69,11 +68,10 @@ const stockService = {
     }
   },
 
-  // GET /api/Articles/stock/view/{id} - Récupérer le détail du stock d'un article
+  // GET /api/Articles/stock/view/{id} - RÃ©cupÃ©rer le dÃ©tail du stock d'un article
   async getStockById(articleId: string): Promise<StockItem | null> {
     try {
       const response = await apiClient.get<{ success: boolean; data?: StockItem }>(`/stock/${articleId}`);
-      console.log('[stockService] Get stock by ID response:', response.data);
       return response.data.data || null;
     } catch (error: any) {
       console.error('[stockService] Error fetching stock by ID:', error);
@@ -81,11 +79,10 @@ const stockService = {
     }
   },
 
-  // PUT /api/Articles/stock/{id} - Mettre à jour le stock d'un article
+  // PUT /api/Articles/stock/{id} - Mettre Ã  jour le stock d'un article
   async updateStock(articleId: string, stockData: { stockActuel: number; seuilStock?: number }): Promise<StockItem | null> {
     try {
       const response = await apiClient.put<{ success: boolean; data?: StockItem }>(`/stock/${articleId}`, stockData);
-      console.log('[stockService] Update stock response:', response.data);
       return response.data.data || null;
     } catch (error: any) {
       console.error('[stockService] Error updating stock:', error);

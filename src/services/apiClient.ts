@@ -6,7 +6,7 @@ const isDev = import.meta.env.DEV;
 // En prod, on utilise l'URL complète définie dans .env
 const SERVER_URL = isDev
   ? '/api/'
-  : (import.meta.env.VITE_API_SERVER_URL ?? 'http://localhost:5292/api/');
+  : (import.meta.env.VITE_API_SERVER_URL ?? 'https://api.buildtch.uk/api/');
 
 const API_KEY = import.meta.env.VITE_API_KEY ?? '';
 

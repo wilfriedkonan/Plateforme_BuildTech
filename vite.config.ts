@@ -10,7 +10,7 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'http://localhost:5292',
+        target: 'https://api.buildtch.uk/api/',
         changeOrigin: true,
         rewrite: (path) => path,
       },

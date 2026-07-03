@@ -100,7 +100,7 @@ export const plansService = {
         const response = await fetch('http://https://api.buildtch.uk/api/plans', {
           method: 'GET',
           headers: {
-            'ApiKey': 'VotreCléAPISecrète123!',
+            'ApiKey': 'VotreCléSecrèteTrèsLongueEtSécurisée123!@#$%^&*()',
           },
         });
         

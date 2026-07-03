@@ -97,7 +97,7 @@ export const plansService = {
         
         // Fallback: try with fetch API (like the browser does)
         console.log('[plansService] Trying with fetch API...');
-        const response = await fetch('http://localhost:5292/api/plans', {
+        const response = await fetch('http://https://api.buildtch.uk/api/plans', {
           method: 'GET',
           headers: {
             'ApiKey': 'VotreCléAPISecrète123!',

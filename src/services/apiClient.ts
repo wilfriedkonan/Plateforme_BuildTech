@@ -1,12 +1,12 @@
 import axios from 'axios';
 
 const isDev = import.meta.env.DEV;
-
+console.log('isDev:',isDev)
 // En dev, on passe par le proxy Vite (/api → http://localhost:5292/api)
 // En prod, on utilise l'URL complète définie dans .env
 const SERVER_URL = isDev
-  ? '/api/'
-  : (import.meta.env.VITE_API_SERVER_URL ?? 'https://api.buildtch.uk/api/');
+  ? 'http://localhost:5292/api/'
+  : (import.meta.env.VITE_API_SERVER_URL ?? 'http://localhost:5292/api/');
 
 const API_KEY = import.meta.env.VITE_API_KEY ?? '';
 

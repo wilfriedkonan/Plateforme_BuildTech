@@ -79,50 +79,11 @@ const transformApiPlansToDto = (apiResponse: ApiPlansListResponse): ApplicationP
 
 export const plansService = {
   list: async (): Promise<ApplicationPlansDto[] | PlanDto[]> => {
-    try {
-      console.log('[plansService] Fetching plans from API...');
-      
-      // Try with Axios first
-      try {
-        const { data } = await apiClient.get<ApiPlansListResponse>('plans');
-        console.log('[plansService] Axios success:', data);
-        
-        if (data.success && data.plans) {
-          const transformed = transformApiPlansToDto(data);
-          console.log('[plansService] Transformed response:', transformed);
-          return transformed;
-        }
-      } catch (axiosError: any) {
-        console.warn('[plansService] Axios failed with status', axiosError.response?.status);
-        
-        // Fallback: try with fetch API (like the browser does)
-        console.log('[plansService] Trying with fetch API...');
-        const response = await fetch('https://api.buildtch.uk/api/plans', {
-          method: 'GET'/* ,
-          headers: {
-            'ApiKey': 'VotreCléAPISecrète123!',
-          }, */
-        });
-        
-        if (!response.ok) {
-          throw new Error(`Fetch failed with status ${response.status}`);
-        }
-        
-        const data = await response.json() as ApiPlansListResponse;
-        console.log('[plansService] Fetch success:', data);
-        
-        if (data.success && data.plans) {
-          const transformed = transformApiPlansToDto(data);
-          console.log('[plansService] Transformed response:', transformed);
-          return transformed;
-        }
-      }
-      
-      throw new Error('API response missing success or plans');
-    } catch (error: any) {
-      console.error('[plansService] Error fetching plans:', error.message);
-      throw error;
+    const { data } = await apiClient.get<ApiPlansListResponse>('plans');
+    if (data.success && data.plans) {
+      return transformApiPlansToDto(data);
     }
+    throw new Error('API response missing success or plans');
   },
 
   getById: async (id: string): Promise<PlanDto> => {

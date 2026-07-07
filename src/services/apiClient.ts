@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const isDev = import.meta.env.DEV;
+const isDev = false /* import.meta.env.DEV; */
 console.log('isDev:',isDev)
 // En dev, on passe par le proxy Vite (/api → http://localhost:5292/api)
 // En prod, on utilise l'URL complète définie dans .env
@@ -9,16 +9,16 @@ const SERVER_URL = isDev
   : (import.meta.env.VITE_API_SERVER_URL ?? 'http://localhost:5292/api/');
 
 const API_KEY = import.meta.env.VITE_API_KEY ?? '';
-
+console.log('meta.env.VITE_API_SERVER_URL :',import.meta.env.VITE_API_SERVER_URL , 'API_KEY: ',import.meta.env.VITE_API_KEY )
 export const apiClient = axios.create({
   baseURL: SERVER_URL,
   timeout: 10000,
 });
 
 // En prod, le proxy Vite n'est pas actif donc on envoie la clé directement
-if (!isDev) {
+/* if (!isDev) {
   apiClient.defaults.headers.common['ApiKey'] = API_KEY;
-}
+} */
 
 apiClient.interceptors.request.use(
   (config) => {

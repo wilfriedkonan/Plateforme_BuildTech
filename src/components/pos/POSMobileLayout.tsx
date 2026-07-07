@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Plus, Clock, Package, ShoppingBag, TrendingUp } from 'lucide-react';
+import { Plus, Clock, Package, ShoppingBag, TrendingUp, X } from 'lucide-react';
 import { usePOS } from '../../hooks/usePOS';
 import { usePosFactures } from '../../hooks/usePosFactures';
 import { PosFacture } from '../../services/posService';
@@ -30,8 +30,15 @@ const POSMobileLayout: React.FC = () => {
         setShowStats(false);
       }
     };
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setShowStats(false);
+    };
     document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    document.addEventListener('keydown', handleEscape);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('keydown', handleEscape);
+    };
   }, [showStats]);
 
   useEffect(() => {
@@ -204,18 +211,33 @@ const POSMobileLayout: React.FC = () => {
       </div>
 
       {/* Bouton flottant Stats */}
-      <div ref={statsRef} className="fixed bottom-6 left-4 z-40 flex flex-col items-start gap-2">
+      <div ref={statsRef} className="fixed bottom-6 left-4 z-40">
         {showStats && (
-          <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-3 w-72 animate-in slide-in-from-bottom-2 duration-200">
-            <POSStats key={statsRefreshKey} />
+          <div className="mb-1 animate-in slide-in-from-bottom-2 duration-200">
+            <div className="bg-white rounded-2xl shadow-2xl border border-gray-100 w-64 overflow-hidden">
+              <div className="flex items-center justify-between px-4 py-2.5 bg-gray-50 border-b border-gray-100">
+                <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Aujourd'hui</span>
+                <button
+                  onClick={() => setShowStats(false)}
+                  className="w-5 h-5 rounded-full flex items-center justify-center text-gray-400 hover:text-gray-600 hover:bg-gray-200 transition-colors"
+                >
+                  <X className="w-3 h-3" />
+                </button>
+              </div>
+              <div className="p-3">
+                <POSStats compact key={statsRefreshKey} />
+              </div>
+            </div>
+            {/* Flèche vers le bouton */}
+            <div className="ml-[18px]" style={{ width: 0, height: 0, borderLeft: '7px solid transparent', borderRight: '7px solid transparent', borderTop: '7px solid #f9fafb' }} />
           </div>
         )}
         <button
           onClick={() => setShowStats(v => !v)}
-          className={`w-12 h-12 rounded-full shadow-lg flex items-center justify-center transition-all ${
+          className={`w-12 h-12 rounded-full shadow-lg flex items-center justify-center transition-all duration-200 ${
             showStats
-              ? 'bg-gray-900 text-white scale-110'
-              : 'bg-white text-gray-700 border border-gray-200 hover:bg-gray-50'
+              ? 'bg-gray-900 text-white scale-110 shadow-gray-900/25'
+              : 'bg-white text-gray-700 border border-gray-200 hover:bg-gray-50 hover:scale-105'
           }`}
         >
           <TrendingUp className="w-5 h-5" />

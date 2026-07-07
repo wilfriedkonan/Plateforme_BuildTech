@@ -2,7 +2,11 @@ import React, { useEffect } from 'react';
 import { TrendingUp, DollarSign, ShoppingCart, Loader2 } from 'lucide-react';
 import { usePosFactures } from '../../hooks/usePosFactures';
 
-const POSStats: React.FC = () => {
+interface POSStatsProps {
+  compact?: boolean;
+}
+
+const POSStats: React.FC<POSStatsProps> = ({ compact }) => {
   const { statistiquesJour, loading, fetchStatistiquesJour } = usePosFactures();
 
   useEffect(() => {
@@ -12,13 +16,53 @@ const POSStats: React.FC = () => {
   const fmt = (value: number) =>
     value.toLocaleString('fr-FR', { maximumFractionDigits: 0 });
 
-  const monnaie =  'F';
+  const monnaie = 'F';
 
   if (loading && !statistiquesJour) {
     return (
       <div className="flex items-center justify-center h-14 gap-2 text-gray-400 text-sm">
         <Loader2 className="w-4 h-4 animate-spin" />
-        <span>Chargement des statistiques...</span>
+        <span>Chargement...</span>
+      </div>
+    );
+  }
+
+  if (compact) {
+    return (
+      <div className="grid grid-cols-3 divide-x divide-gray-100 text-center">
+        <div className="px-3 py-1">
+          <div className="flex justify-center mb-1.5">
+            <div className="w-7 h-7 rounded-lg bg-green-100 flex items-center justify-center">
+              <TrendingUp className="w-3.5 h-3.5 text-green-600" />
+            </div>
+          </div>
+          <p className="text-lg font-bold text-gray-900 leading-tight">
+            {statistiquesJour?.nombreVentes ?? 0}
+          </p>
+          <p className="text-xs text-gray-500 mt-0.5">Ventes</p>
+        </div>
+        <div className="px-3 py-1">
+          <div className="flex justify-center mb-1.5">
+            <div className="w-7 h-7 rounded-lg bg-blue-100 flex items-center justify-center">
+              <DollarSign className="w-3.5 h-3.5 text-blue-600" />
+            </div>
+          </div>
+          <p className="text-lg font-bold text-gray-900 leading-tight">
+            {fmt(statistiquesJour?.chiffreAffaires ?? 0)}
+          </p>
+          <p className="text-xs text-gray-500 mt-0.5">CA ({monnaie})</p>
+        </div>
+        <div className="px-3 py-1">
+          <div className="flex justify-center mb-1.5">
+            <div className="w-7 h-7 rounded-lg bg-orange-100 flex items-center justify-center">
+              <ShoppingCart className="w-3.5 h-3.5 text-orange-600" />
+            </div>
+          </div>
+          <p className="text-lg font-bold text-gray-900 leading-tight">
+            {fmt(statistiquesJour?.panierMoyen ?? 0)}
+          </p>
+          <p className="text-xs text-gray-500 mt-0.5">Panier ({monnaie})</p>
+        </div>
       </div>
     );
   }

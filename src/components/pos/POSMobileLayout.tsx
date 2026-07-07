@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Plus, Clock, Package, ShoppingBag } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { Plus, Clock, Package, ShoppingBag, TrendingUp } from 'lucide-react';
 import { usePOS } from '../../hooks/usePOS';
 import { usePosFactures } from '../../hooks/usePosFactures';
 import { PosFacture } from '../../services/posService';
@@ -20,6 +20,19 @@ const POSMobileLayout: React.FC = () => {
   const [showMettreEnAttente, setShowMettreEnAttente] = useState(false);
   const [showAjouterClient, setShowAjouterClient] = useState(false);
   const [statsRefreshKey, setStatsRefreshKey] = useState(0);
+  const [showStats, setShowStats] = useState(false);
+  const statsRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!showStats) return;
+    const handleClickOutside = (e: MouseEvent) => {
+      if (statsRef.current && !statsRef.current.contains(e.target as Node)) {
+        setShowStats(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [showStats]);
 
   useEffect(() => {
     fetchFacturesEnAttente();
@@ -190,9 +203,23 @@ const POSMobileLayout: React.FC = () => {
         </div>
       </div>
 
-      {/* Stats */}
-      <div className="bg-white border-t border-gray-100 px-4 py-3">
-        <POSStats key={statsRefreshKey} />
+      {/* Bouton flottant Stats */}
+      <div ref={statsRef} className="fixed bottom-6 left-4 z-40 flex flex-col items-start gap-2">
+        {showStats && (
+          <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-3 w-72 animate-in slide-in-from-bottom-2 duration-200">
+            <POSStats key={statsRefreshKey} />
+          </div>
+        )}
+        <button
+          onClick={() => setShowStats(v => !v)}
+          className={`w-12 h-12 rounded-full shadow-lg flex items-center justify-center transition-all ${
+            showStats
+              ? 'bg-gray-900 text-white scale-110'
+              : 'bg-white text-gray-700 border border-gray-200 hover:bg-gray-50'
+          }`}
+        >
+          <TrendingUp className="w-5 h-5" />
+        </button>
       </div>
 
       {/* Modales */}

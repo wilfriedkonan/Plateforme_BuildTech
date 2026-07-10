@@ -76,7 +76,7 @@ const RapportVentesQuantite: React.FC<RapportVentesQuantiteProps> = ({ onDownloa
             <button
               onClick={chargerRapport}
               disabled={loading}
-              className="flex-1 bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+              className="flex-1 bg-gray-800 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
             >
               {loading ? <RefreshCw className="w-4 h-4 animate-spin" /> : null}
               Charger
@@ -98,7 +98,7 @@ const RapportVentesQuantite: React.FC<RapportVentesQuantiteProps> = ({ onDownloa
             <div className="text-2xl font-bold text-gray-900">{formatNombre(rapport.montantTotalVendu)}</div>
             <div className="text-xs text-gray-500">FCFA</div>
           </div>
-          <div className="bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl shadow p-4 text-white">
+          <div className="bg-gradient-to-br from-gray-800 to-gray-600 rounded-xl shadow p-4 text-white">
             <div className="text-sm opacity-90">Panier moyen</div>
             <div className="text-2xl font-bold">
               {rapport.quantiteTotalVendue > 0

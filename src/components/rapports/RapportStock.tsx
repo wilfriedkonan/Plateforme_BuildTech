@@ -57,7 +57,7 @@ const RapportStock: React.FC<RapportStockProps> = ({ onDownload }) => {
           <button
             onClick={() => chargerRapport(page)}
             disabled={loading}
-            className="bg-orange-600 text-white px-4 py-2 rounded-lg hover:bg-orange-700 transition-colors disabled:opacity-50 flex items-center gap-2"
+            className="bg-gray-800 text-white px-4 py-2 rounded-lg hover:bg-orange-700 transition-colors disabled:opacity-50 flex items-center gap-2"
           >
             {loading ? <RefreshCw className="w-4 h-4 animate-spin" /> : null}
             Actualiser
@@ -65,7 +65,7 @@ const RapportStock: React.FC<RapportStockProps> = ({ onDownload }) => {
           <button
             onClick={handleDownloadPDF}
             disabled={downloadingPDF || !rapport}
-            className="bg-orange-600 text-white px-4 py-2 rounded-lg hover:bg-orange-700 transition-colors disabled:opacity-50 flex items-center gap-2"
+            className="bg-gray-800 text-white px-4 py-2 rounded-lg hover:bg-orange-700 transition-colors disabled:opacity-50 flex items-center gap-2"
           >
             <Download className="w-4 h-4" />
             Télécharger PDF
@@ -75,7 +75,7 @@ const RapportStock: React.FC<RapportStockProps> = ({ onDownload }) => {
 
       {/* Résumé stock */}
       {rapport && (
-        <div className="bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl shadow p-4 text-white">
+        <div className="bg-gradient-to-br from-orange-500 to-gray-600 rounded-xl shadow p-4 text-white">
           <div className="flex justify-between items-center">
             <div>
               <div className="text-sm opacity-90">Stock total d'articles</div>

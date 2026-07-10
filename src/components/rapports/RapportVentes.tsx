@@ -81,7 +81,7 @@ const RapportVentes: React.FC<RapportVentesProps> = ({ onDownload }) => {
             <button
               onClick={chargerRapport}
               disabled={loading}
-              className="flex-1 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+              className="flex-1 bg-gray-800 text-white px-4 py-2 rounded-lg hover:bg-gray-300 transition-colors  disabled:opacity-50 flex items-center justify-center gap-2"
             >
               {loading ? <RefreshCw className="w-4 h-4 animate-spin" /> : null}
               Charger
@@ -103,7 +103,7 @@ const RapportVentes: React.FC<RapportVentesProps> = ({ onDownload }) => {
             <div className="text-2xl font-bold text-gray-900">{formatNombre(rapport.totalTVA)}</div>
             <div className="text-xs text-gray-500">FCFA</div>
           </div>
-          <div className="bg-gradient-to-br from-green-500 to-green-600 rounded-xl shadow p-4 text-white">
+          <div className="bg-gradient-to-br from-gray-800 to-gray-600 rounded-xl shadow p-4 text-white">
             <div className="text-sm opacity-90">TOTAL GÉNÉRAL</div>
             <div className="text-2xl font-bold">{formatNombre(rapport.totalGeneral)}</div>
             <div className="text-xs opacity-75">FCFA</div>

@@ -81,11 +81,13 @@ export const useReports = () => {
       setLoading(true);
       setError(null);
       try {
-        const params: Record<string, string> = { page: String(page), downloadPDF: 'false' };
+        const params: Record<string, string> = {};
         if (dateDebut) params.dateDebut = toDateParam(dateDebut);
         if (dateFin) params.dateFin = toDateParam(dateFin);
+        params.page = String(page);
+        params.downloadPDF = 'false';
 
-        const response = await apiClient.get('/pos/rapports/ventes', { params });
+        const response = await apiClient.get('/Pos/rapports/ventes', { params });
         return unwrap(response.data);
       } catch (err: any) {
         handleError(err, 'Erreur lors du chargement du rapport ventes');
@@ -103,11 +105,13 @@ export const useReports = () => {
       setLoading(true);
       setError(null);
       try {
-        const params: Record<string, string> = { page: String(page), downloadPDF: 'false' };
+        const params: Record<string, string> = {};
         if (dateDebut) params.dateDebut = toDateParam(dateDebut);
         if (dateFin) params.dateFin = toDateParam(dateFin);
+        params.page = String(page);
+        params.downloadPDF = 'false';
 
-        const response = await apiClient.get('/pos/rapports/ventes-quantite', { params });
+        const response = await apiClient.get('/Pos/rapports/ventes-quantite', { params });
         return unwrap(response.data);
       } catch (err: any) {
         handleError(err, 'Erreur lors du chargement du rapport ventes-quantité');
@@ -125,7 +129,7 @@ export const useReports = () => {
       setLoading(true);
       setError(null);
       try {
-        const response = await apiClient.get('/pos/rapports/stock', {
+        const response = await apiClient.get('/Pos/rapports/stock', {
           params: { page: String(page), downloadPDF: 'false' },
         });
         return unwrap(response.data);
@@ -143,11 +147,13 @@ export const useReports = () => {
   const downloadReportPDF = useCallback(
     async (reportType: ReportType, dateDebut?: Date, dateFin?: Date, page = 1) => {
       try {
-        const params: Record<string, string> = { downloadPDF: 'true', page: String(page) };
+        const params: Record<string, string> = {};
         if (dateDebut) params.dateDebut = toDateParam(dateDebut);
         if (dateFin) params.dateFin = toDateParam(dateFin);
+        params.page = String(page);
+        params.downloadPDF = 'true';
 
-        const response = await apiClient.get(`/pos/rapports/${reportType}`, {
+        const response = await apiClient.get(`/Pos/rapports/${reportType}`, {
           params,
           responseType: 'blob',
         });

@@ -11,25 +11,25 @@ const Features: React.FC = () => {
     },
     {
       icon: Download,
-      title: 'Téléchargements contrôlés',
-      description: 'Gérez les téléchargements de vos utilisateurs avec un système de suivi complet et des liens sécurisés.',
+      title: 'Téléchargements de vos rapports',
+      description: 'Gérez les téléchargements de vos rapports d\'activité pour vous offrire un suivi complet .',
       color: 'from-orange-500 to-orange-600'
     },
     {
       icon: Users,
       title: 'Gestion des utilisateurs',
-      description: 'Interface d\'administration complète pour gérer vos clients et leurs abonnements en temps réel.',
+      description: 'Interface d\'administration complète pour gérer vos utilisateurs et leurs.',
       color: 'from-purple-500 to-orange-500'
     },
     {
       icon: Zap,
       title: 'Déploiement instantané',
-      description: 'Mettez à jour vos applications et déployez les nouvelles versions en quelques clics seulement.',
+      description: 'Mis à jour et déployez les nouvelles versions en quelques clics seulement.',
       color: 'from-orange-500 to-purple-600'
     },
     {
       icon: Clock,
-      title: 'Support 24/7',
+      title: 'Support 7/7',
       description: 'Équipe technique disponible en permanence pour vous accompagner et résoudre vos problèmes.',
       color: 'from-purple-600 to-orange-500'
     },

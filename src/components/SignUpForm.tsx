@@ -31,7 +31,7 @@ const SignUpForm: React.FC<SignUpFormProps> = ({ onSignUp, selectedPlan }) => {
         email: formData.email,
         telephone: formData.phone,
         password: formData.password,
-        nom: 'User',
+        nom: 'Administrateur / Administratrice',
         prenom: 'User',
         entrepriseName: formData.companyName,
         contact: formData.phone,
@@ -87,7 +87,7 @@ const SignUpForm: React.FC<SignUpFormProps> = ({ onSignUp, selectedPlan }) => {
                 <p className="text-purple-600 font-medium">Plan {selectedPlan.plan}</p>
               </div>
               <div className="text-right">
-                <p className="text-sm text-gray-600">SÃ©lectionnÃ©</p>
+                <p className="text-sm text-gray-600">Sélectionné</p>
                 <Check className="w-6 h-6 text-green-500 ml-auto" />
               </div>
             </div>
@@ -118,7 +118,7 @@ const SignUpForm: React.FC<SignUpFormProps> = ({ onSignUp, selectedPlan }) => {
 
               <div>
                 <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-2">
-                  NumÃ©ro de tÃ©lÃ©phone *
+                  Numéro de téléphone whatsapp *
                 </label>
                 <div className="relative">
                   <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
@@ -130,7 +130,7 @@ const SignUpForm: React.FC<SignUpFormProps> = ({ onSignUp, selectedPlan }) => {
                     onChange={handleChange}
                     required
                     className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-transparent transition-all"
-                    placeholder="+225 06 12 34 56 78"
+                    placeholder="225 06 12 34 56 78"
                   />
                 </div>
               </div>
@@ -168,14 +168,15 @@ const SignUpForm: React.FC<SignUpFormProps> = ({ onSignUp, selectedPlan }) => {
                   onChange={handleChange}
                   required
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-transparent transition-all"
-                  placeholder="Votre mot de passe sÃ©curisÃ©"
+                  placeholder="Votre mot de passe sécurisé"
                 />
               </div>
             </div>
 
             <div>
               <label htmlFor="otpMethod" className="block text-sm font-medium text-gray-700 mb-2">
-                MÃ©thode de vÃ©rification *
+                {/* Méthode de vérification * */}
+                Méthode de validation *
               </label>
               <select
                 id="otpMethod"
@@ -185,11 +186,12 @@ const SignUpForm: React.FC<SignUpFormProps> = ({ onSignUp, selectedPlan }) => {
                 required
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-transparent transition-all"
               >
-                <option value="email">Email</option>
+               {/*  <option value="email">Email</option> */}
                 <option value="whatsapp">WhatsApp</option>
               </select>
               <p className="text-xs text-gray-500 mt-1">
-                Choisissez comment vous souhaitez recevoir votre code de vÃ©rification
+              {/*   Choisissez comment vous souhaitez recevoir votre code de vérification */}
+              ⏱️ *Note:* Pour le moment, nous effectuons les activations manuelles. Votre compte sera activé dans les 24 heures suivant la réception du paiement.
               </p>
             </div>
 
@@ -202,8 +204,8 @@ const SignUpForm: React.FC<SignUpFormProps> = ({ onSignUp, selectedPlan }) => {
             <div className="bg-purple-50 border border-purple-200 rounded-lg p-4">
               <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
                 <p className="text-sm text-gray-700">
-                  <strong>VÃ©rification requise :</strong> AprÃ¨s inscription, vous recevrez un code de vÃ©rification 
-                  via la mÃ©thode sÃ©lectionnÃ©e pour valider votre compte.
+                  <strong>Vérification requise :</strong> Après inscription, vous recevrez un code de vérification 
+                  via la méthode sélectionnée pour valider votre compte.
                 </p>
               </div>
             </div>
@@ -226,7 +228,7 @@ const SignUpForm: React.FC<SignUpFormProps> = ({ onSignUp, selectedPlan }) => {
               </a>{' '}
               et notre{' '}
               <a href="#" className="text-gray-700 hover:text-gray-900">
-                politique de confidentialitÃ©
+                politique de confidentialité
               </a>
               .
             </p>

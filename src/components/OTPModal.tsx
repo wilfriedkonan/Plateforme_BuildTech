@@ -1,8 +1,7 @@
-﻿import React, { useState } from 'react';
-import { X, MessageCircle, Mail } from 'lucide-react';
-import { useOTP } from '../hooks/useOTP';
-import { otpService } from '../services/otpService';
+import React from 'react';
+import { X, MessageCircle, CheckCircle } from 'lucide-react';
 
+/* ── Interface conservée pour compatibilité avec les appelants ─────────────── */
 interface OTPModalProps {
   onVerify: (otp: string, userData?: { email: string; phone: string; nomEntreprise?: string }, planData?: { app: string; plan: string; idPlan: string }) => void;
   onClose: () => void;
@@ -13,150 +12,85 @@ interface OTPModalProps {
   planData?: { app: string; plan: string; idPlan: string };
 }
 
-const OTPModal: React.FC<OTPModalProps> = ({ onVerify, onClose, email, phone, deliveryMethod, userData, planData }) => {
+/* ── Ancien contenu OTP commenté ──────────────────────────────────────────────
+import { Mail } from 'lucide-react';
+import { useOTP } from '../hooks/useOTP';
+import { otpService } from '../services/otpService';
+
   const { validate, isLoading, error: otpError, remainingAttempts } = useOTP();
   const [otp, setOtp] = useState(['', '', '', '']);
   const [error, setError] = useState(otpError || '');
   const [isResending, setIsResending] = useState(false);
 
-  const handleChange = (index: number, value: string) => {
-    if (value.length <= 1 && /^\d*$/.test(value)) {
-      const newOtp = [...otp];
-      newOtp[index] = value;
-      setOtp(newOtp);
-      setError('');
+  const handleChange = (index: number, value: string) => { ... };
+  const handleSubmit = async (e: React.FormEvent) => { ... };
+  const handleBackspace = (index: number, e: React.KeyboardEvent) => { ... };
+  const resendOTP = async () => { ... };
+────────────────────────────────────────────────────────────────────────────── */
 
-      // Auto-focus next input
-      if (value && index < 3) {
-        const nextInput = document.getElementById(`otp-${index + 1}`);
-        nextInput?.focus();
-      }
-    }
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const otpValue = otp.join('');
-    if (otpValue.length !== 4) {
-      setError('Veuillez saisir le code Ã  4 chiffres');
-      return;
-    }
-
-    try {
-      const response = await validate({ email, code: otpValue });
-      if (response.isValid) {
-        onVerify(otpValue, { email, phone, nomEntreprise: userData?.nomEntreprise }, planData);
-      } else {
-        setError(response.message || 'Code OTP invalide');
-      }
-    } catch (e: any) {
-      setError(e?.response?.data?.message || 'Erreur lors de la validation du code OTP');
-    }
-  };
-
-  const handleBackspace = (index: number, e: React.KeyboardEvent) => {
-    if (e.key === 'Backspace' && !otp[index] && index > 0) {
-      const prevInput = document.getElementById(`otp-${index - 1}`);
-      prevInput?.focus();
-    }
-  };
-
-  const resendOTP = async () => {
-    setIsResending(true);
-    setError('');
-    try {
-      await otpService.resend({
-        email,
-        method: deliveryMethod,
-      });
-      setOtp(['', '', '', '']);
-      setError('');
-    } catch (e: any) {
-      setError(e?.response?.data?.message || 'Erreur lors du renvoi du code OTP');
-    } finally {
-      setIsResending(false);
-    }
-  };
+const OTPModal: React.FC<OTPModalProps> = ({ onClose, userData }) => {
+  const nomEntreprise = userData?.nomEntreprise ?? '';
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-      <div className="bg-white rounded-2xl p-8 max-w-md w-full">
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="text-2xl font-bold text-gray-900">VÃ©rification OTP</h2>
+    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-end sm:items-center justify-center z-50 p-0 sm:p-4">
+      <div className="bg-white w-full sm:max-w-md rounded-t-3xl sm:rounded-2xl shadow-2xl">
+
+        {/* Trait de poignée mobile */}
+        <div className="flex justify-center pt-3 pb-1 sm:hidden">
+          <div className="w-10 h-1 bg-gray-300 rounded-full" />
+        </div>
+
+        <div className="px-6 pt-4 pb-10 sm:p-8">
+          {/* Bouton fermer */}
+          <div className="flex justify-end mb-2">
+            <button
+              onClick={onClose}
+              className="p-2 hover:bg-gray-100 rounded-full transition-colors touch-manipulation"
+            >
+              <X className="w-5 h-5 text-gray-400" />
+            </button>
+          </div>
+
+          {/* Icône succès */}
+          <div className="flex justify-center mb-6">
+            <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center">
+              <CheckCircle className="w-10 h-10 text-green-600" />
+            </div>
+          </div>
+
+          {/* Message */}
+          <div className="text-center space-y-4">
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-900">
+              Inscription validée !
+            </h2>
+
+            <p className="text-gray-700 text-sm sm:text-base leading-relaxed">
+              Cher administrateur / Chère administratrice
+              {nomEntreprise && (
+                <span className="font-semibold text-gray-900"> {nomEntreprise}</span>
+              )},
+            </p>
+
+            <p className="text-gray-600 text-sm sm:text-base leading-relaxed">
+              Votre inscription a été validée avec succès.
+              Vous recevrez prochainement un message{' '}
+              <span className="inline-flex items-center gap-1 font-semibold text-green-700">
+                <MessageCircle className="w-4 h-4" />
+                WhatsApp
+              </span>{' '}
+              pour vous indiquer le mode de paiement.
+            </p>
+
+            <p className="text-gray-400 text-sm italic">
+              Merci de nous faire confiance.
+            </p>
+          </div>
+
           <button
             onClick={onClose}
-            className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+            className="mt-8 w-full bg-gray-900 text-white py-3.5 rounded-xl font-semibold hover:bg-gray-700 active:scale-[0.98] transition-all duration-200 touch-manipulation"
           >
-            <X className="w-5 h-5 text-gray-500" />
-          </button>
-        </div>
-
-        <div className="text-center mb-8">
-          <div className="flex justify-center mb-4">
-            <div className="w-16 h-16 bg-gray-800 rounded-full flex items-center justify-center">
-              {deliveryMethod === 'email' ? (
-                <Mail className="w-8 h-8 text-white" />
-              ) : (
-                <MessageCircle className="w-8 h-8 text-white" />
-              )}
-            </div>
-          </div>
-          <h3 className="text-lg font-semibold text-gray-900 mb-2">
-            Code envoyÃ© via {deliveryMethod === 'email' ? 'Email' : 'WhatsApp'}
-          </h3>
-          <p className="text-gray-600 mb-2">
-            Nous avons envoyÃ© un code de vÃ©rification Ã  4 chiffres sur votre{' '}
-            {deliveryMethod === 'email' ? 'adresse email' : 'numÃ©ro WhatsApp'}.
-          </p>
-          <p className="text-sm text-gray-500">
-            {deliveryMethod === 'email' ? `Email : ${email}` : `WhatsApp : ${phone}`}
-          </p>
-        </div>
-
-        <form onSubmit={handleSubmit}>
-          <div className="flex justify-center space-x-4 mb-6">
-            {otp.map((digit, index) => (
-              <input
-                key={index}
-                id={`otp-${index}`}
-                type="text"
-                value={digit}
-                onChange={(e) => handleChange(index, e.target.value)}
-                onKeyDown={(e) => handleBackspace(index, e)}
-                className="w-12 h-12 text-center text-xl font-bold border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-transparent transition-all"
-                maxLength={1}
-              />
-            ))}
-          </div>
-
-          {error && (
-            <div className="text-red-500 text-sm text-center mb-4">
-              {error}
-              {remainingAttempts > 0 && (
-                <p className="text-xs mt-2">Tentatives restantes : {remainingAttempts}</p>
-              )}
-            </div>
-          )}
-
-          <button
-            type="submit"
-            disabled={isLoading}
-            className="w-full bg-gray-800 text-white py-3 px-6 rounded-lg font-semibold hover:shadow-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {isLoading ? 'VÃ©rification en cours...' : 'VÃ©rifier le code'}
-          </button>
-        </form>
-
-        <div className="mt-6 text-center">
-          <p className="text-sm text-gray-600 mb-2">
-            Vous n'avez pas reÃ§u le code ?
-          </p>
-          <button 
-            onClick={resendOTP}
-            disabled={isResending}
-            className="text-gray-700 hover:text-gray-900 font-medium text-sm disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {isResending ? 'Envoi en cours...' : `Renvoyer via ${deliveryMethod === 'email' ? 'Email' : 'WhatsApp'}`}
+            Fermer
           </button>
         </div>
       </div>

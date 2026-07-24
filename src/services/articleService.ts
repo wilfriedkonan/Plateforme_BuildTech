@@ -1,4 +1,5 @@
 ﻿import { apiClient } from './apiClient';
+import { publicApiClient } from './publicApiClient';
 
 export interface Article {
   id?: string;
@@ -18,6 +19,7 @@ export interface Article {
   estStockable?: boolean;
   estEnStock?: boolean | null;
   estEnPorter?: boolean | null;
+  estVisibleCatalogue?: boolean | null;
   stock?: number;
   stockActuel?: number;
   seuilAlerte?: number;
@@ -80,11 +82,74 @@ export interface UpdateArticleRequest {
   prixPromo?: number;
   estComposer?: boolean;
   estVendableSansComposition?: boolean;
+  estVisibleCatalogue?: boolean;
   tauxTva?: number;
   stock?: number;
   seuilAlerte?: number;
   imageURL?: string;
   statut?: boolean;
+}
+
+// ─── Types catalogue public ────────────────────────────────────────────────
+
+export interface PublicCategorie {
+  idCategorie: string;
+  nomCategorie: string;
+  ordreCategorie: number;
+  imageURL?: string;
+  description?: string;
+  nombreArticles: number;
+  nombreArticlesPromo: number;
+  prixMin: number;
+  prixMax: number;
+  prixMoyen: number;
+}
+
+export interface PublicArticle {
+  idArticle: string;
+  codeArticle: string;
+  nomArticle: string;
+  descriptionArticle?: string;
+  codeBarre?: string;
+  prixVente: number;
+  prixAchat?: number | null;
+  prixExterieur?: number | null;
+  prixPromo?: number | null;
+  estPromo: boolean;
+  stock: number;
+  seuilAlerte?: number | null;
+  estStockable: boolean;
+  estPos: boolean;
+  afficherStockPOS: boolean;
+  imageURL?: string;
+  position: number;
+  tauxTva: number;
+  nomCategorie?: string | null;
+  idCategorie: string;
+  dateCreate: string;
+  dateLastUpdate: string;
+}
+
+export interface PublicCatalogueParams {
+  page?: number;
+  pageSize?: number;
+  orderBy?: string;
+  orderDirection?: 'asc' | 'desc';
+}
+
+export interface PublicCategorieListResponse {
+  success: boolean;
+  total: number;
+  pagination: ArticlePagination;
+  data: PublicCategorie[];
+}
+
+export interface PublicArticleListResponse {
+  success: boolean;
+  categoryName?: string;
+  total: number;
+  pagination: ArticlePagination;
+  data: PublicArticle[];
 }
 
 export interface ArticleListResponse {
@@ -94,6 +159,40 @@ export interface ArticleListResponse {
   totalEnAlerte?: number;
   data?: Article[];
   articles?: Article[];
+}
+
+export interface ArticlePagination {
+  currentPage: number;
+  pageSize: number;
+  totalPages: number;
+  totalRecords: number;
+  hasPrevious: boolean;
+  hasNext: boolean;
+}
+
+export interface ArticleListPaginatedResponse {
+  success: boolean;
+  total: number;
+  totalStockables?: number;
+  totalEnAlerte?: number;
+  pagination: ArticlePagination;
+  data: Article[];
+}
+
+export interface ArticleListParams {
+  page?: number;
+  pageSize?: number;
+  searchTerm?: string;
+  idCategorie?: string;
+  estStockable?: boolean;
+  estVisibleCatalogue?: boolean;
+  estPos?: boolean;
+  estPromo?: boolean;
+  etat?: string;
+  prixVenteMin?: number;
+  prixVenteMax?: number;
+  orderBy?: string;
+  orderDirection?: 'asc' | 'desc';
 }
 
 export interface ArticleDetailResponse {
@@ -203,7 +302,7 @@ const articleService = {
     }
   },
 
-  // GET /api/Articles/codebarre/{codeBarre} - RÃ©cupÃ©rer un article par code barre
+  // GET /api/Articles/codebarre/{codeBarre} - Récupérer un article par code barre
   async getArticleByCodeBarre(codeBarre: string): Promise<Article | null> {
     try {
       const response = await apiClient.get<ArticleDetailResponse>(`/Articles/codebarre/${codeBarre}`);
@@ -212,7 +311,68 @@ const articleService = {
       console.error('[articleService] Error fetching article by code barre:', error);
       throw error;
     }
-  }
+  },
+
+  // GET /api/Articles/public/categories — catégories publiques (sans auth)
+  async getPublicCategories(params?: PublicCatalogueParams): Promise<PublicCategorieListResponse> {
+    try {
+      const query: Record<string, string> = {};
+      if (params?.page !== undefined)      query.page = String(params.page);
+      if (params?.pageSize !== undefined)  query.pageSize = String(params.pageSize);
+      if (params?.orderBy)                 query.orderBy = params.orderBy;
+      if (params?.orderDirection)          query.orderDirection = params.orderDirection;
+      const response = await publicApiClient.get<PublicCategorieListResponse>('/Articles/public/categories', { params: query });
+      return response.data;
+    } catch (error: any) {
+      console.error('[articleService] Error fetching public categories:', error);
+      throw error;
+    }
+  },
+
+  // GET /api/Articles/public/categories/{idCategorie}/articles — articles d'une catégorie publique (sans auth)
+  async getPublicArticlesByCategory(idCategorie: string, params?: PublicCatalogueParams): Promise<PublicArticleListResponse> {
+    try {
+      const query: Record<string, string> = {};
+      if (params?.page !== undefined)      query.page = String(params.page);
+      if (params?.pageSize !== undefined)  query.pageSize = String(params.pageSize);
+      if (params?.orderBy)                 query.orderBy = params.orderBy;
+      if (params?.orderDirection)          query.orderDirection = params.orderDirection;
+      const response = await publicApiClient.get<PublicArticleListResponse>(
+        `/Articles/public/categories/${idCategorie}/articles`,
+        { params: query }
+      );
+      return response.data;
+    } catch (error: any) {
+      console.error('[articleService] Error fetching public articles by category:', error);
+      throw error;
+    }
+  },
+
+  // GET /api/Articles/list - Liste paginée avec filtres
+  async getArticlesList(params?: ArticleListParams): Promise<ArticleListPaginatedResponse> {
+    try {
+      const query: Record<string, string> = {};
+      if (params?.page !== undefined)               query.page = String(params.page);
+      if (params?.pageSize !== undefined)           query.pageSize = String(params.pageSize);
+      if (params?.searchTerm)                       query.searchTerm = params.searchTerm;
+      if (params?.idCategorie)                      query.idCategorie = params.idCategorie;
+      if (params?.estStockable !== undefined)       query.estStockable = String(params.estStockable);
+      if (params?.estVisibleCatalogue !== undefined) query.estVisibleCatalogue = String(params.estVisibleCatalogue);
+      if (params?.estPos !== undefined)             query.estPos = String(params.estPos);
+      if (params?.estPromo !== undefined)           query.estPromo = String(params.estPromo);
+      if (params?.etat)                             query.etat = params.etat;
+      if (params?.prixVenteMin !== undefined)       query.prixVenteMin = String(params.prixVenteMin);
+      if (params?.prixVenteMax !== undefined)       query.prixVenteMax = String(params.prixVenteMax);
+      if (params?.orderBy)                          query.orderBy = params.orderBy;
+      if (params?.orderDirection)                   query.orderDirection = params.orderDirection;
+
+      const response = await apiClient.get<ArticleListPaginatedResponse>('/Articles/list', { params: query });
+      return response.data;
+    } catch (error: any) {
+      console.error('[articleService] Error fetching articles list:', error);
+      throw error;
+    }
+  },
 };
 
 export default articleService;

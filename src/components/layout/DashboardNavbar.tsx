@@ -23,8 +23,8 @@ const DashboardNavbar: React.FC<DashboardNavbarProps> = ({ user, activeTab, onTa
     { id: 'administration', label: 'Administration', icon: '⚙️' },
     { id: 'pos', label: 'POS', icon: '🧾' },
   /*   { id: 'achat', label: 'Achat', icon: '🛒' },
-    { id: 'client', label: 'Client', icon: '👥' },
-    { id: 'catalogue', label: 'Catalogue', icon: '📋' }, */
+    { id: 'client', label: 'Client', icon: '👥' },*/
+    { id: 'catalogue', label: 'Catalogue', icon: '📋' }, 
   ] as const;
 
   const getUserInitials = () => {

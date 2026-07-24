@@ -1,4 +1,5 @@
 ﻿import { apiClient } from './apiClient';
+import { publicApiClient } from './publicApiClient';
 
 export interface PlanDto {
   id?: string;
@@ -79,7 +80,7 @@ const transformApiPlansToDto = (apiResponse: ApiPlansListResponse): ApplicationP
 
 export const plansService = {
   list: async (): Promise<ApplicationPlansDto[] | PlanDto[]> => {
-    const { data } = await apiClient.get<ApiPlansListResponse>('plans');
+    const { data } = await publicApiClient.get<ApiPlansListResponse>('plans');
     if (data.success && data.plans) {
       return transformApiPlansToDto(data);
     }

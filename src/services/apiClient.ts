@@ -9,7 +9,7 @@ const SERVER_URL = isDev
   : (import.meta.env.VITE_API_SERVER_URL ?? 'http://localhost:5292/api/');
 
 const API_KEY = import.meta.env.VITE_API_KEY ?? '';
-console.log('meta.env.VITE_API_SERVER_URL :',import.meta.env.VITE_API_SERVER_URL , 'API_KEY: ',import.meta.env.VITE_API_KEY )
+
 export const apiClient = axios.create({
   baseURL: SERVER_URL,
   timeout: 10000,

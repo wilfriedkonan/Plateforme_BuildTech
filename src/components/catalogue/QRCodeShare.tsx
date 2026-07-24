@@ -4,15 +4,13 @@ import { QRCodeSVG } from 'qrcode.react';
 
 interface QRCodeShareProps {
   onClose: () => void;
+  catalogueUrl: string;
+  boutiqueName?: string;
 }
 
-const QRCodeShare: React.FC<QRCodeShareProps> = ({ onClose }) => {
+const QRCodeShare: React.FC<QRCodeShareProps> = ({ onClose, catalogueUrl, boutiqueName }) => {
   const [copied, setCopied] = useState(false);
   const qrRef = useRef<HTMLDivElement>(null);
-
-  const catalogueSlug = import.meta.env.VITE_CATALOGUE_SLUG || 'demo-restaurant';
-  const baseUrl = window.location.origin;
-  const catalogueUrl = `${baseUrl}/catalogue/${catalogueSlug}`;
 
   const handleCopyLink = async () => {
     try {
@@ -47,7 +45,10 @@ const QRCodeShare: React.FC<QRCodeShareProps> = ({ onClose }) => {
             const url = URL.createObjectURL(blob);
             const link = document.createElement('a');
             link.href = url;
-            link.download = `catalogue-qr-${catalogueSlug}.png`;
+            const slug = boutiqueName
+      ? boutiqueName.toLowerCase().replace(/\s+/g, '-')
+      : 'boutique';
+    link.download = `catalogue-qr-${slug}.png`;
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
@@ -72,7 +73,9 @@ const QRCodeShare: React.FC<QRCodeShareProps> = ({ onClose }) => {
 
         <div className="text-center mb-6">
           <h3 className="text-2xl font-bold text-gray-900 mb-2">Partager le catalogue</h3>
-          <p className="text-gray-600">Partagez votre catalogue avec vos clients</p>
+          <p className="text-gray-600">
+            {boutiqueName ? `Catalogue de ${boutiqueName}` : 'Partagez votre catalogue avec vos clients'}
+          </p>
         </div>
 
         <div className="flex justify-center mb-6" ref={qrRef}>

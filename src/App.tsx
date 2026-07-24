@@ -11,7 +11,9 @@ import OTPModal from './components/OTPModal';
 import LoginModal from './components/LoginModal';
 import AdminApp from './components/admin/AdminApp';
 import StorePage from './components/store/StorePage';
+import RestaurantPage from './components/catalogue/RestaurantPage';
 import DashboardNavbar from './components/layout/DashboardNavbar';
+import type { CatalogueSource } from './hooks/usePublicCatalogue';
 import { useAuth } from './hooks/useAuth';
 
 export interface User {
@@ -31,8 +33,32 @@ export interface User {
 
 function App() {
   const { login } = useAuth();
-  const [isAdminMode, setIsAdminMode] = useState(false);
-  const [isStoreMode, setIsStoreMode] = useState(false);
+  // Initialisation synchrone depuis l'URL — évite un flash au premier render
+  const [isAdminMode] = useState(() => {
+    const p = window.location.pathname;
+    return p === '/admin' || p.startsWith('/admin/');
+  });
+  const [isStoreMode] = useState(() => {
+    const p = window.location.pathname;
+    return p === '/boutique' || p.startsWith('/boutique/');
+  });
+  const [publicRoute] = useState<CatalogueSource | null>(() => {
+    const p = window.location.pathname;
+    // /r/{code}  — scan QR, mode consultation
+    if (p.startsWith('/r/')) {
+      const code = p.replace('/r/', '').split('/')[0];
+      if (code) return { type: 'qr', code };
+    }
+    // /restaurant/{slug}/menu — lien direct, mode commande
+    const restaurantMatch = p.match(/^\/restaurant\/([^/]+)\/menu/);
+    if (restaurantMatch) return { type: 'direct', typeBoutique: 'Restaurant', slug: restaurantMatch[1] };
+    // /catalogue/{slug} — rétrocompat
+    if (p.startsWith('/catalogue/')) {
+      const slug = p.replace('/catalogue/', '').split('/')[0];
+      if (slug) return { type: 'legacy', slug };
+    }
+    return null;
+  });
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [showOTPModal, setShowOTPModal] = useState(false);
@@ -44,15 +70,8 @@ function App() {
   const [isLoggingIn, setIsLoggingIn] = useState(false);
   const [activeTab, setActiveTab] = useState<'overview' | 'reports' | 'articles' | 'administration' | 'pos' | 'achat' | 'client' | 'catalogue'>('overview');
 
-  // VÃ©rifier si on est en mode admin via l'URL et restaurer la session depuis localStorage
+  // Restaurer la session depuis localStorage au montage
   React.useEffect(() => {
-    const path = window.location.pathname;
-    if (path === '/admin' || path.startsWith('/admin/')) {
-      setIsAdminMode(true);
-    } else if (path === '/boutique' || path.startsWith('/boutique/')) {
-      setIsStoreMode(true);
-    }
-
     // Restaurer la session depuis localStorage
     const savedSession = localStorage.getItem('userSession');
     if (savedSession) {
@@ -86,6 +105,11 @@ function App() {
   // Si on est en mode boutique, afficher la boutique
   if (isStoreMode) {
     return <StorePage />;
+  }
+
+  // Pages publiques — sans authentification
+  if (publicRoute) {
+    return <RestaurantPage source={publicRoute} />;
   }
   useEffect(()=>{
   },[pendingUser])

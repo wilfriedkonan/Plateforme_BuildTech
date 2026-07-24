@@ -63,11 +63,11 @@ const OverviewTab: React.FC<OverviewTabProps> = ({ user, handleDownload }) => {
           ))}
         </div>
       ) : activityData && (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <div className="bg-white rounded-2xl shadow-lg p-6">
+        <div className="grid grid-cols-1  md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          <div className="bg-white rounded-2xl border-2 border-dashed border-gray-500 shadow-lg p-6">
             <div className="flex items-center justify-between mb-4">
-              <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
-                <TrendingUp className="w-6 h-6 text-green-600" />
+              <div className="w-12 h-12 bg-bg-white-100 rounded-lg flex items-center justify-center">
+                <TrendingUp className="w-6 h-6 text-bg-white-600" />
               </div>
               <span className={`text-sm font-medium px-2 py-1 rounded-full ${
                 activityData.sales.growth > 0 ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
@@ -84,10 +84,10 @@ const OverviewTab: React.FC<OverviewTabProps> = ({ user, handleDownload }) => {
             </p>
           </div>
 
-          <div className="bg-white rounded-2xl shadow-lg p-6">
+          <div className="bg-white rounded-2xl border-2 border-dashed border-gray-500 shadow-lg p-6">
             <div className="flex items-center justify-between mb-4">
-              <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-                <DollarSign className="w-6 h-6 text-blue-600" />
+              <div className="w-12 h-12 bg-white-100 rounded-lg flex items-center justify-center">
+                <DollarSign className="w-6 h-6 text-white-600" />
               </div>
               <span className={`text-sm font-medium px-2 py-1 rounded-full ${
                 activityData.revenue.growth > 0 ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
@@ -104,10 +104,10 @@ const OverviewTab: React.FC<OverviewTabProps> = ({ user, handleDownload }) => {
             </p>
           </div>
 
-          <div className="bg-white rounded-2xl shadow-lg p-6">
+          <div className="bg-white rounded-2xl border-2 border-dashed border-gray-500 shadow-lg p-6">
             <div className="flex items-center justify-between mb-4">
-              <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
-                <Users className="w-6 h-6 text-purple-600" />
+              <div className="w-12 h-12 bg-white-100 rounded-lg flex items-center justify-center">
+                <Users className="w-6 h-6 text-white-600" />
               </div>
               <span className={`text-sm font-medium px-2 py-1 rounded-full ${
                 activityData.customers.growth > 0 ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
@@ -124,10 +124,10 @@ const OverviewTab: React.FC<OverviewTabProps> = ({ user, handleDownload }) => {
             </p>
           </div>
 
-          <div className="bg-white rounded-2xl shadow-lg p-6">
+          <div className="bg-white rounded-2xl border-2 border-dashed border-gray-500 shadow-lg p-6">
             <div className="flex items-center justify-between mb-4">
-              <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center">
-                <Package className="w-6 h-6 text-orange-600" />
+              <div className="w-12 h-12 bg-white-100 rounded-lg flex items-center justify-center">
+                <Package className="w-6 h-6 text-white-600" />
               </div>
               <span className={`text-sm font-medium px-2 py-1 rounded-full ${
                 activityData.inventory.outOfStock > 0 ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800'

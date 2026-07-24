@@ -68,7 +68,7 @@ export const usePlans = () => {
 
       const raw = await plansService.list();
       const normalized = normalizePlansResponse(raw);
-      setState({ data: normalized, loading: false, error: normalized ? null : 'Format de rÃ©ponse API inattendu' });
+      setState({ data: normalized, loading: false, error: normalized ? null : 'Format de réponse API inattendu' });
     } catch (e: any) {
       console.error('[usePlans] API Error, falling back to mock data:', e?.message);
       setState({ data: mockPlansData, loading: false, error: null });

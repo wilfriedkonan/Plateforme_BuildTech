@@ -28,7 +28,7 @@ const POSMettreEnAttente: React.FC<POSMettreEnAttenteProps> = ({
 
     setIsLoading(true);
     setApiError(null);
-
+console.log('factureId :',factureId )
     const session = JSON.parse(localStorage.getItem('userSession') || '{}');
     const userId: string | null = session?.user?.id ?? null;
     const nomCaisse: string = session?.user?.nomEntreprise ?? '';

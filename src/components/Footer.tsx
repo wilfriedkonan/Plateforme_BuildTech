@@ -17,12 +17,12 @@ const Footer: React.FC = () => {
               </span>
             </div>
             <p className="text-gray-400 mb-6 leading-relaxed">
-              Votre plateforme de distribution d'applications Windows professionnelles. 
+              Votre plateforme de distribution d'applications de gestion professionnelles. 
               Nous offrons des solutions sécurisées et innovantes pour optimiser votre 
               productivité et celle de votre équipe.
             </p>
             <div className="flex space-x-4">
-              <a href="#" className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-gray-600 transition-colors">
+              <a href="https://www.facebook.com/profile.php?id=100075980717246" className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-gray-600 transition-colors">
                 <Facebook className="w-5 h-5" />
               </a>
               <a href="#" className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-gray-600 transition-colors">
@@ -71,11 +71,11 @@ const Footer: React.FC = () => {
               </div>
               <div className="flex items-center space-x-3">
                 <Phone className="w-5 h-5 text-purple-400" />
-                <span className="text-gray-400">+33 1 23 45 67 89</span>
+                <span className="text-gray-400">+225 05 96 21 55 39</span>
               </div>
               <div className="flex items-center space-x-3">
                 <MapPin className="w-5 h-5 text-purple-400" />
-                <span className="text-gray-400">Paris, France</span>
+                <span className="text-gray-400">Abidjan, Côte d'Ivoire</span>
               </div>
             </div>
           </div>

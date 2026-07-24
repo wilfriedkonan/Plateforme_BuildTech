@@ -32,7 +32,7 @@ const CategorieTable: React.FC<CategorieTableProps> = ({ categories: propCategor
       )}
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-4 border border-blue-200">
+        <div className="bg-gradient-to-br from-blue-50 to-purple-100 rounded-xl p-4 border border-blue-200">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-blue-700 mb-1">Total catégories</p>
@@ -44,7 +44,7 @@ const CategorieTable: React.FC<CategorieTableProps> = ({ categories: propCategor
           </div>
         </div>
 
-        <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-xl p-4 border border-green-200">
+        <div className="bg-gradient-to-br from-green-50 to-purple-100 rounded-xl p-4 border border-green-200">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-green-700 mb-1">Catégories actives</p>

@@ -20,6 +20,7 @@ interface RapportVentes {
     numeroFacture: string;
     designation: string;
     montantTotal: number;
+    nomUtilisateur?: string;
   }>;
 }
 

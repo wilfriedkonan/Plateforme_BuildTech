@@ -135,6 +135,7 @@ const RapportVentes: React.FC<RapportVentesProps> = ({ onDownload }) => {
                 <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">DATE</th>
                 <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">N°FACTURE</th>
                 <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">DESIGNATION</th>
+                <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">UTILISATEUR</th>
                 <th className="px-4 py-3 text-right text-sm font-semibold text-gray-700">MONTANT</th>
               </tr>
             </thead>
@@ -144,6 +145,7 @@ const RapportVentes: React.FC<RapportVentesProps> = ({ onDownload }) => {
                   <td className="px-4 py-3 text-sm text-gray-900">{formatDate(ligne.date)}</td>
                   <td className="px-4 py-3 text-sm font-medium text-gray-900">{ligne.numeroFacture}</td>
                   <td className="px-4 py-3 text-sm text-gray-600">{ligne.designation}</td>
+                  <td className="px-4 py-3 text-sm text-gray-500">{ligne.nomUtilisateur ?? '—'}</td>
                   <td className="px-4 py-3 text-sm font-semibold text-right text-gray-900">
                     {formatNombre(ligne.montantTotal)} FCFA
                   </td>

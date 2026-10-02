@@ -10,7 +10,7 @@ import CrmManager from './crm/CrmManager';
 type SubTab = 'tables' | 'domaine' | 'livreurs' | 'utilisateurs' | 'tarifs' | 'crm';
 
 const AdminManager: React.FC = () => {
-  const [activeSubTab, setActiveSubTab] = useState<SubTab>('tables');
+  const [activeSubTab, setActiveSubTab] = useState<SubTab>('utilisateurs');
   const [onNewAction, setOnNewAction] = useState<(() => void) | null>(null);
 
   const renderSubTabContent = () => {
@@ -20,7 +20,8 @@ const AdminManager: React.FC = () => {
       case 'domaine':
         return <DomaineManager onRegisterNewAction={setOnNewAction} />;
       case 'livreurs':
-        return <LivreurManager onRegisterNewAction={setOnNewAction} />; 
+        return <LivreurManager onRegisterNewAction={setOnNewAction} />;
+      case 'utilisateurs':
         return <UtilisateurManager onRegisterNewAction={setOnNewAction} />;
       case 'tarifs':
         return <TarifLivraisonManager onRegisterNewAction={setOnNewAction} />;

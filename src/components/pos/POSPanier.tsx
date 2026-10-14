@@ -84,7 +84,7 @@ const POSPanier: React.FC<POSPanierProps> = ({
     <div className="flex flex-col h-full bg-white rounded-xl shadow-sm">
 
       {/* Header */}
-      <div className="p-4 border-b border-gray-100">
+      <div className="p-3 border-b border-gray-100">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <h3 className="font-bold text-gray-900 text-base">Panier actuel</h3>
@@ -126,12 +126,12 @@ const POSPanier: React.FC<POSPanierProps> = ({
       </div>
 
       {/* Lignes */}
-      <div className="flex-1 overflow-auto p-4">
+      <div className="flex-1 overflow-auto p-2.5">
         {panier.length === 0 ? (
-          <div className="flex flex-col items-center justify-center h-full text-center py-12">
-            <ShoppingCart className="w-16 h-16 text-gray-300 mb-4" />
-            <p className="text-gray-400 text-lg font-medium mb-1">Panier vide</p>
-            <p className="text-gray-400 text-sm">Ajoutez des produits pour commencer</p>
+          <div className="flex flex-col items-center justify-center h-full text-center py-6">
+            <ShoppingCart className="w-10 h-10 text-gray-300 mb-3" />
+            <p className="text-gray-400 text-sm font-medium mb-0.5">Panier vide</p>
+            <p className="text-gray-400 text-xs">Ajoutez des produits pour commencer</p>
           </div>
         ) : (
           <div className="space-y-2">
@@ -151,7 +151,7 @@ const POSPanier: React.FC<POSPanierProps> = ({
 
       {/* Footer totaux + actions */}
       {panier.length > 0 && (
-        <div className="p-4 border-t border-gray-100 space-y-4">
+        <div className="p-3 border-t border-gray-100 space-y-3">
 
           {/* Remise globale */}
           <div>
@@ -173,21 +173,21 @@ const POSPanier: React.FC<POSPanierProps> = ({
           </div>
 
           {/* Totaux */}
-          <div className="space-y-2">
-            <div className="flex justify-between text-sm text-gray-600">
+          <div className="space-y-1.5">
+            <div className="flex justify-between text-xs text-gray-600">
               <span>Sous-total</span>
               <span>{totaux.sousTotal.toLocaleString('fr-FR')} F</span>
             </div>
             {remiseGlobale > 0 && (
-              <div className="flex justify-between text-sm text-red-600 font-medium">
+              <div className="flex justify-between text-xs text-red-600 font-medium">
                 <span>Remise (-{remiseGlobale}%)</span>
                 <span>-{(totaux.sousTotal - totaux.apresRemise).toLocaleString('fr-FR')} F</span>
               </div>
             )}
-            <div className="pt-2 border-t border-gray-200">
+            <div className="pt-1.5 border-t border-gray-200">
               <div className="flex justify-between items-center">
-                <span className="text-base font-bold text-gray-900">Total</span>
-                <span className="text-2xl font-bold text-gray-900">{totaux.total.toLocaleString('fr-FR')} F</span>
+                <span className="text-sm font-bold text-gray-900">Total</span>
+                <span className="text-xl font-bold text-gray-900">{totaux.total.toLocaleString('fr-FR')} F</span>
               </div>
             </div>
           </div>

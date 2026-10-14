@@ -1,7 +1,8 @@
-import React from 'react';
-import { Printer, CheckCircle } from 'lucide-react';
+import React, { useState } from 'react';
+import { Printer, CheckCircle, Loader2, AlertCircle, WifiOff } from 'lucide-react';
 import { TransactionPOS } from '../lib/mock/pos';
 import { PosFacture } from '../../services/posService';
+import { usePrinter } from '../../hooks/usePrinter';
 
 interface POSTicketProps {
   transaction: TransactionPOS;
@@ -20,6 +21,8 @@ const Row: React.FC<{ label: string; value: string; bold?: boolean }> = ({ label
 );
 
 const POSTicket: React.FC<POSTicketProps> = ({ transaction, facture, onNouvelleVente, onFermer }) => {
+  const printer = usePrinter();
+  const [printError, setPrintError] = useState<string | null>(null);
   const titre = facture?.caisse?.trim() || 'CAISSE POS';
 
   const numero = facture?.numeroFacture || transaction.numero;
@@ -60,7 +63,19 @@ const POSTicket: React.FC<POSTicketProps> = ({ transaction, facture, onNouvelleV
 
   const fmt = (n: number) => n.toLocaleString('fr-FR', { maximumFractionDigits: 0 });
 
-  const handleImprimer = () => {
+  /** Impression ESC/POS directe, avec fallback sur window.print() */
+  const handleImprimer = async () => {
+    setPrintError(null);
+
+    // Tentative ESC/POS si imprimante configurée
+    if (printer.connected) {
+      const ok = await printer.print(transaction, facture);
+      if (ok) return;
+      // En cas d'échec, affiche l'erreur et propose le fallback
+      setPrintError(printer.error || "Erreur impression ESC/POS. Tentative via navigateur...");
+    }
+
+    // Fallback : impression via boîte de dialogue navigateur
     const win = window.open('', '_blank', 'width=320,height=700');
     if (!win) return;
 
@@ -208,14 +223,34 @@ const POSTicket: React.FC<POSTicketProps> = ({ transaction, facture, onNouvelleV
         <p className="text-center text-gray-400">Merci de votre visite !</p>
       </div>
 
+      {/* Erreur impression */}
+      {printError && (
+        <div className="flex gap-2 px-3 py-2.5 bg-amber-50 border border-amber-200 rounded-lg text-xs text-amber-700">
+          <AlertCircle className="w-3.5 h-3.5 shrink-0 mt-0.5" />
+          <p>{printError}</p>
+        </div>
+      )}
+
+      {/* Statut imprimante */}
+      {!printer.connected && (
+        <div className="flex items-center gap-1.5 text-xs text-gray-400 justify-center">
+          <WifiOff className="w-3 h-3" />
+          <span>Imprimante non configurée — impression via navigateur</span>
+        </div>
+      )}
+
       {/* Actions */}
       <div className="flex gap-3">
         <button
           onClick={handleImprimer}
-          className="flex-1 px-4 py-3 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors font-medium flex items-center justify-center gap-2"
+          disabled={printer.printing}
+          className="flex-1 px-4 py-3 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors font-medium flex items-center justify-center gap-2 disabled:opacity-50"
         >
-          <Printer className="w-4 h-4" />
-          Imprimer
+          {printer.printing
+            ? <Loader2 className="w-4 h-4 animate-spin" />
+            : <Printer className="w-4 h-4" />
+          }
+          {printer.printing ? 'Impression...' : 'Imprimer'}
         </button>
         <button
           onClick={onNouvelleVente}

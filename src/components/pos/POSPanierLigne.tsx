@@ -42,9 +42,9 @@ const POSPanierLigne: React.FC<POSPanierLigneProps> = ({
   };
 
   return (
-    <div className="py-3 border-b border-gray-100 last:border-0 animate-in slide-in-from-right duration-200">
-      <div className="flex items-start gap-3">
-        <div className="text-2xl">{ligne.produit.emoji}</div>
+    <div className="py-2 border-b border-gray-100 last:border-0 animate-in slide-in-from-right duration-200">
+      <div className="flex items-start gap-2">
+        <div className="text-xl">{ligne.produit.emoji}</div>
 
         <div className="flex-1 min-w-0">
           <button

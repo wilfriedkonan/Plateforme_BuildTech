@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Plus, Clock, TrendingUp, X } from 'lucide-react';
+import { Plus, Clock, TrendingUp, X, Printer } from 'lucide-react';
 import { usePOS } from '../../hooks/usePOS';
 import { usePosFactures } from '../../hooks/usePosFactures';
 import { PosFacture } from '../../services/posService';
@@ -16,6 +16,8 @@ import POSRemiseLigne from './POSRemiseLigne';
 import POSMettreEnAttente from './POSMettreEnAttente';
 import POSStats from './POSStats';
 import POSBonLivraison from './POSBonLivraison';
+import POSPrinterConfig from './POSPrinterConfig';
+import { usePrinter } from '../../hooks/usePrinter';
 
 const POSContent: React.FC = () => {
   const pos = usePOS();
@@ -23,10 +25,13 @@ const POSContent: React.FC = () => {
   const { commandes: commandesEnLigne, loading: loadingEnLigne, refetch: refetchEnLigne } =
     useCommandes(undefined, undefined, 1, 50);
 
-  const [showMettreEnAttente, setShowMettreEnAttente] = useState(false);
-  const [statsRefreshKey, setStatsRefreshKey]         = useState(0);
-  const [showStats, setShowStats]                     = useState(false);
+  const [showMettreEnAttente, setShowMettreEnAttente]   = useState(false);
+  const [statsRefreshKey, setStatsRefreshKey]           = useState(0);
+  const [showStats, setShowStats]                       = useState(false);
+  const [showPrinterConfig, setShowPrinterConfig]       = useState(false);
   const statsRef = useRef<HTMLDivElement>(null);
+
+  const printerConnected = usePrinter().connected;
 
   // ── Commande en ligne active dans le panier ────────────────────────────────
   const [commandeEnLigneActive, setCommandeEnLigneActive] = useState<CommandeDto | null>(null);
@@ -208,11 +213,24 @@ const POSContent: React.FC = () => {
               </span>
             )}
           </button>
+
+          {/* Imprimante */}
+          <button
+            onClick={() => setShowPrinterConfig(true)}
+            title="Configurer l'imprimante"
+            className={`w-9 h-9 rounded-lg flex items-center justify-center border transition-all duration-200 ${
+              printerConnected
+                ? 'border-green-200 bg-green-50 text-green-600 hover:bg-green-100'
+                : 'border-gray-200 bg-white text-gray-400 hover:bg-gray-50'
+            }`}
+          >
+            <Printer className="w-4 h-4" />
+          </button>
         </div>
       </div>
 
-      <div className="flex-1 overflow-hidden p-6">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 h-full">
+      <div className="flex-1 overflow-hidden p-3">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3 h-full">
           <div className="md:col-span-2 h-full overflow-hidden">
             <POSCatalogue
               produits={pos.produitsFiltres}
@@ -337,6 +355,10 @@ const POSContent: React.FC = () => {
           lignes={bonLivraison.lignes}
           onClose={() => setBonLivraison(null)}
         />
+      )}
+
+      {showPrinterConfig && (
+        <POSPrinterConfig onClose={() => setShowPrinterConfig(false)} />
       )}
     </div>
   );

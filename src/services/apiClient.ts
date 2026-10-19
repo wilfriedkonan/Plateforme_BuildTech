@@ -1,28 +1,21 @@
 import axios from 'axios';
+import { getToken, clearToken } from '../lib/authStorage';
 
-const isDev = import.meta.env.DEV; 
-console.log('isDev:',isDev)
 // En dev, on passe par le proxy Vite (/api → http://localhost:5292/api)
 // En prod, on utilise l'URL complète définie dans .env
+const isDev = import.meta.env.DEV;
 const SERVER_URL = isDev
   ? 'http://localhost:5292/api/'
   : (import.meta.env.VITE_API_SERVER_URL ?? 'http://localhost:5292/api/');
-
-const API_KEY = import.meta.env.VITE_API_KEY ?? '';
 
 export const apiClient = axios.create({
   baseURL: SERVER_URL,
   timeout: 10000,
 });
 
-// En prod, le proxy Vite n'est pas actif donc on envoie la clé directement
-/* if (!isDev) {
-  apiClient.defaults.headers.common['ApiKey'] = API_KEY;
-} */
-
 apiClient.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('authToken');
+    const token = getToken();
     if (token) {
       config.headers.Authorization = `bearer ${token}`;
     }
@@ -42,6 +35,11 @@ apiClient.interceptors.response.use(
       message: error.message,
       data: error.response?.data,
     });
+    // 401 : token expiré ou invalide — on efface la session et on redirige
+    if (error.response?.status === 401) {
+      clearToken();
+      window.location.href = '/';
+    }
     return Promise.reject(error);
   }
 );

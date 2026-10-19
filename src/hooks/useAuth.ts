@@ -1,5 +1,6 @@
 ﻿import { useCallback, useMemo, useState } from 'react';
 import { authService, type LoginPayload, type RegistrationPayload } from '../services/authService';
+import { setToken, clearToken } from '../lib/authStorage';
 
 type UseAuthState = {
   isLoading: boolean;
@@ -53,7 +54,7 @@ export const useAuth = () => {
       if (response.success) {
         // Store token if provided
         if (response.accessToken) {
-          localStorage.setItem('authToken', response.accessToken);
+          setToken(response.accessToken);
         }
         
         setState({
@@ -83,7 +84,7 @@ export const useAuth = () => {
     setState((prev) => ({ ...prev, isLoading: true }));
     try {
       await authService.logout();
-      localStorage.removeItem('authToken');
+      clearToken();
       setState({
         isLoading: false,
         error: null,

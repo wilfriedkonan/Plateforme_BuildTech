@@ -6,6 +6,7 @@
  */
 
 import { useState, useEffect } from 'react';
+import { getToken } from './authStorage';
 
 // ─── Base URL ─────────────────────────────────────────────────────────────────
 
@@ -105,7 +106,7 @@ export interface UpdateBoutiqueRequest {
 // ─── Helpers auth ─────────────────────────────────────────────────────────────
 
 function adminHeaders(extra?: Record<string, string>): Record<string, string> {
-  const token = localStorage.getItem('authToken');
+  const token = getToken();
   return {
     'Content-Type': 'application/json',
     ...(token ? { Authorization: `bearer ${token}` } : {}),

@@ -6,6 +6,7 @@ import { UserDto } from '../../services/userService';
 import { Utilisateur } from '../lib/mock/utilisateurs';
 import UtilisateurForm from './forms/utilisateurs/UtilisateurForm';
 import { UtilisateurDeleteModal } from './forms/utilisateurs/UtilisateurDeleteModal';
+import { getToken } from '../../lib/authStorage';
 
 interface UtilisateurManagerProps {
   onRegisterNewAction?: (action: () => void) => void;
@@ -16,7 +17,7 @@ const ROLES_ADMIN = ['owner', 'Owner', 'manager', 'Manager', 'admin', 'Admin'];
 
 function decodeJwtPayload(): Record<string, any> | null {
   try {
-    const token = localStorage.getItem('authToken');
+    const token = getToken();
     if (!token) return null;
     return JSON.parse(atob(token.split('.')[1]));
   } catch {

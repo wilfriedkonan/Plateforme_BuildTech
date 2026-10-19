@@ -9,6 +9,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import type { PaginationMetadata } from './boutiqueAdminApi';
+import { getToken } from './authStorage';
 
 // ─── Base URL ─────────────────────────────────────────────────────────────────
 
@@ -84,7 +85,7 @@ export interface UpdateEtatRequest {
 // ─── Helper auth ──────────────────────────────────────────────────────────────
 
 function adminHeaders(): Record<string, string> {
-  const token = localStorage.getItem('authToken');
+  const token = getToken();
   return {
     'Content-Type': 'application/json',
     ...(token ? { Authorization: `bearer ${token}` } : {}),

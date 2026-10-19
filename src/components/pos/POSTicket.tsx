@@ -3,6 +3,7 @@ import { Printer, CheckCircle, Loader2, AlertCircle, WifiOff } from 'lucide-reac
 import { TransactionPOS } from '../lib/mock/pos';
 import { PosFacture } from '../../services/posService';
 import { usePrinter } from '../../hooks/usePrinter';
+import { escapeHtml as esc } from '../../lib/escapeHtml';
 
 interface POSTicketProps {
   transaction: TransactionPOS;
@@ -81,7 +82,7 @@ const POSTicket: React.FC<POSTicketProps> = ({ transaction, facture, onNouvelleV
 
     const lignesHTML = articles.map(a => `
       <div style="margin-bottom:5px">
-        <div style="font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${a.nom}</div>
+        <div style="font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(a.nom)}</div>
         <div style="display:flex;justify-content:space-between;color:#555">
           <span>${a.quantite} &times; ${fmt(a.prixUnitaire)} F${a.remise > 0 ? ` (-${a.remise}%)` : ''}</span>
           <span style="font-weight:600;color:#111">${fmt(a.montantLigne)} F</span>
@@ -91,7 +92,7 @@ const POSTicket: React.FC<POSTicketProps> = ({ transaction, facture, onNouvelleV
     const html = `<!DOCTYPE html>
 <html><head>
 <meta charset="utf-8"/>
-<title>Ticket ${numero}</title>
+<title>Ticket ${esc(numero)}</title>
 <style>
   @page { size: 58mm auto; margin: 3mm; }
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -105,15 +106,15 @@ const POSTicket: React.FC<POSTicketProps> = ({ transaction, facture, onNouvelleV
 </style>
 </head><body>
 <div class="c" style="margin-bottom:8px">
-  <div class="b" style="font-size:13px;text-transform:uppercase;letter-spacing:1px">${titre}</div>
+  <div class="b" style="font-size:13px;text-transform:uppercase;letter-spacing:1px">${esc(titre)}</div>
   <div class="g">Point de vente</div>
 </div>
 <hr class="sep"/>
 <div class="c" style="margin-bottom:6px">
-  <div class="b">N° ${numero}</div>
+  <div class="b">N° ${esc(numero)}</div>
   <div>${date}</div>
-  <div>Caissier : ${caissier}</div>
-  ${clientNom ? `<div>Client : ${clientNom}</div>` : ''}
+  <div>Caissier : ${esc(caissier)}</div>
+  ${clientNom ? `<div>Client : ${esc(clientNom)}</div>` : ''}
 </div>
 <hr class="sep"/>
 <div style="margin-bottom:6px">${lignesHTML}</div>
@@ -126,7 +127,7 @@ const POSTicket: React.FC<POSTicketProps> = ({ transaction, facture, onNouvelleV
 </div>
 <hr class="sep"/>
 <div class="c" style="margin-bottom:6px">
-  <div>Payé par : <strong>${modePaiement}</strong></div>
+  <div>Payé par : <strong>${esc(modePaiement)}</strong></div>
   ${montantVerser != null && montantVerser > 0 ? `
     <div>Reçu : ${fmt(montantVerser)} F</div>
     <div>Rendu : ${fmt(monnaieRemis)} F</div>` : ''}

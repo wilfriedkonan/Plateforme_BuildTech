@@ -1,6 +1,7 @@
 import React from 'react';
 import { X, Smartphone, MapPin, ExternalLink, Printer, Truck } from 'lucide-react';
 import { CommandeDto, DetailCommandeDto } from '../../lib/commandeAdminApi';
+import { escapeHtml as esc } from '../../lib/escapeHtml';
 
 interface POSBonLivraisonProps {
   commande: CommandeDto;
@@ -24,14 +25,14 @@ const POSBonLivraison: React.FC<POSBonLivraisonProps> = ({ commande, lignes, onC
     if (!win) return;
     const lignesHTML = lignes.map(l => `
       <div style="margin-bottom:6px">
-        <div style="font-weight:600">${l.nomArticle}</div>
+        <div style="font-weight:600">${esc(l.nomArticle)}</div>
         <div style="display:flex;justify-content:space-between;color:#555">
           <span>${l.quantite} &times; ${fmt(l.prixUnitaire)} F</span>
           <span style="font-weight:600;color:#111">${fmt(l.sousTotalLigne)} F</span>
         </div>
       </div>`).join('');
     const adresse = commande.livraisonTexte
-      ? `<div style="margin-bottom:6px"><div style="font-weight:bold">Adresse&nbsp;:</div><div>${commande.livraisonTexte}</div></div><hr class="sep"/>`
+      ? `<div style="margin-bottom:6px"><div style="font-weight:bold">Adresse&nbsp;:</div><div>${esc(commande.livraisonTexte)}</div></div><hr class="sep"/>`
       : '';
     const html = `<!DOCTYPE html><html><head><meta charset="utf-8"/>
 <title>Bon livraison</title>
@@ -46,9 +47,9 @@ const POSBonLivraison: React.FC<POSBonLivraisonProps> = ({ commande, lignes, onC
 <div class="c b" style="font-size:14px;margin-bottom:6px;text-transform:uppercase;letter-spacing:1px">Bon de livraison</div>
 <hr class="sep"/>
 <div class="c" style="margin-bottom:6px">
-  ${commande.numeroCommande ? `<div class="b">N° ${commande.numeroCommande}</div>` : ''}
+  ${commande.numeroCommande ? `<div class="b">N° ${esc(commande.numeroCommande)}</div>` : ''}
   <div>${date}</div>
-  <div style="font-weight:600;margin-top:2px">${commande.clientWhatsApp}</div>
+  <div style="font-weight:600;margin-top:2px">${esc(commande.clientWhatsApp)}</div>
 </div>
 <hr class="sep"/>
 ${adresse}

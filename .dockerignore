@@ -1,0 +1,49 @@
+# Dépendances — reconstruites dans l'image
+node_modules
+
+# Sortie de build — reconstruite dans l'image
+dist
+.next
+
+# Git
+.git
+.gitignore
+.gitattributes
+
+# Variables d'environnement — ne jamais inclure dans l'image
+.env
+.env.*
+*.env
+
+# Logs
+*.log
+npm-debug.log*
+
+# Infrastructure Docker — inutile dans l'image
+Dockerfile
+Dockerfile.*
+docker-compose*.yml
+docker-compose*.yaml
+.dockerignore
+
+# Fichiers de développement
+*.md
+README*
+CHANGELOG*
+.editorconfig
+.eslintrc*
+.eslintignore
+.prettierrc*
+.prettierignore
+
+# Tests
+*.test.ts
+*.test.tsx
+*.spec.ts
+*.spec.tsx
+__tests__
+coverage
+
+# OS
+.DS_Store
+Thumbs.db

@@ -1,6 +1,6 @@
 ﻿import { useCallback, useMemo, useState } from 'react';
 import { authService, type LoginPayload, type RegistrationPayload } from '../services/authService';
-import { setToken, clearToken } from '../lib/authStorage';
+import { clearCsrfToken } from '../lib/authStorage';
 
 type UseAuthState = {
   isLoading: boolean;
@@ -21,7 +21,7 @@ export const useAuth = () => {
     setState((prev) => ({ ...prev, isLoading: true, error: null }));
     try {
       const response = await authService.register(payload);
-      
+
       if (response.success) {
         setState({
           isLoading: false,
@@ -50,13 +50,10 @@ export const useAuth = () => {
     setState((prev) => ({ ...prev, isLoading: true, error: null }));
     try {
       const response = await authService.login(payload);
-      
+
       if (response.success) {
-        // Store token if provided
-        if (response.accessToken) {
-          setToken(response.accessToken);
-        }
-        
+        // Mode cookie : pas d'accessToken à stocker — le JWT est dans le cookie HttpOnly.
+        // Le csrfToken est capturé automatiquement par l'intercepteur apiClient.
         setState({
           isLoading: false,
           error: null,
@@ -84,16 +81,11 @@ export const useAuth = () => {
     setState((prev) => ({ ...prev, isLoading: true }));
     try {
       await authService.logout();
-      clearToken();
-      setState({
-        isLoading: false,
-        error: null,
-        isAuthenticated: false,
-        user: null,
-      });
     } catch (e: any) {
       console.error('[useAuth] Logout error:', e.message);
-      // Still clear local state even if logout API fails
+    } finally {
+      // Efface le token CSRF en mémoire quelle que soit l'issue du logout
+      clearCsrfToken();
       setState({
         isLoading: false,
         error: null,

@@ -6,7 +6,7 @@ import { UserDto } from '../../services/userService';
 import { Utilisateur } from '../lib/mock/utilisateurs';
 import UtilisateurForm from './forms/utilisateurs/UtilisateurForm';
 import { UtilisateurDeleteModal } from './forms/utilisateurs/UtilisateurDeleteModal';
-import { getToken } from '../../lib/authStorage';
+import { authService } from '../../services/authService';
 
 interface UtilisateurManagerProps {
   onRegisterNewAction?: (action: () => void) => void;
@@ -15,29 +15,8 @@ interface UtilisateurManagerProps {
 // Rôles autorisés à voir tous les utilisateurs
 const ROLES_ADMIN = ['owner', 'Owner', 'manager', 'Manager', 'admin', 'Admin'];
 
-function decodeJwtPayload(): Record<string, any> | null {
-  try {
-    const token = getToken();
-    if (!token) return null;
-    return JSON.parse(atob(token.split('.')[1]));
-  } catch {
-    return null;
-  }
-}
-
-function getCurrentUserInfo() {
-  const p = decodeJwtPayload();
-  if (!p) return { role: '', email: '', id: '', isSuperAdmin: false };
-  const role: string =
-    p.role ?? p.roleName ?? p.RoleName ??
-    p['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'] ?? '';
-  const email: string =
-    p.email ?? p['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress'] ?? '';
-  const id: string =
-    p.sub ?? p.nameid ?? p['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'] ?? '';
-  const isSuperAdmin: boolean = p.isSuperAdmin === true || p.IsSuperAdmin === 'true';
-  return { role, email, id, isSuperAdmin };
-}
+type CurrentUserInfo = { role: string; email: string; id: string; isSuperAdmin: boolean };
+const EMPTY_USER: CurrentUserInfo = { role: '', email: '', id: '', isSuperAdmin: false };
 
 // Adapte un UserDto vers l'interface Utilisateur attendue par les formulaires existants
 function toUtilisateur(u: UserDto): Utilisateur {
@@ -58,7 +37,22 @@ const UtilisateurManager: React.FC<UtilisateurManagerProps> = ({ onRegisterNewAc
   const { users, loading, error, total, fetchUsers, createUser, updateUser, deleteUser } = useUsers();
   const { roles } = useRoles();
 
-  const currentUser = getCurrentUserInfo();
+  // En mode cookie HttpOnly, le JWT n'est plus lisible depuis JS.
+  // On récupère les infos de session via Auth/me au montage du composant.
+  const [currentUser, setCurrentUser] = useState<CurrentUserInfo>(EMPTY_USER);
+  useEffect(() => {
+    authService.getSession().then(session => {
+      if (session) {
+        setCurrentUser({
+          role: session.role ?? '',
+          email: session.email,
+          id: session.id,
+          isSuperAdmin: session.isSuperAdmin,
+        });
+      }
+    });
+  }, []);
+
   const canManageAll = currentUser.isSuperAdmin || ROLES_ADMIN.includes(currentUser.role);
 
   // Les rôles non-admin ne voient que leur propre compte

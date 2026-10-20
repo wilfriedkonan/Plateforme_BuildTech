@@ -1,4 +1,4 @@
-﻿import React, { useEffect, useState } from 'react';
+﻿import React, { useState } from 'react';
 import Header from './components/Header';
 import Hero from './components/Hero';
 import Features from './components/Features';
@@ -15,6 +15,7 @@ import RestaurantPage from './components/catalogue/RestaurantPage';
 import DashboardNavbar from './components/layout/DashboardNavbar';
 import type { CatalogueSource } from './hooks/usePublicCatalogue';
 import { useAuth } from './hooks/useAuth';
+import { authService } from './services/authService';
 
 export interface User {
   id: string;
@@ -32,7 +33,9 @@ export interface User {
 }
 
 function App() {
-  const { login } = useAuth();
+  // Tous les hooks doivent être déclarés avant tout return anticipé
+  const { login, logout: authLogout } = useAuth();
+
   // Initialisation synchrone depuis l'URL — évite un flash au premier render
   const [isAdminMode] = useState(() => {
     const p = window.location.pathname;
@@ -44,21 +47,23 @@ function App() {
   });
   const [publicRoute] = useState<CatalogueSource | null>(() => {
     const p = window.location.pathname;
-    // /r/{code}  — scan QR, mode consultation
     if (p.startsWith('/r/')) {
       const code = p.replace('/r/', '').split('/')[0];
       if (code) return { type: 'qr', code };
     }
-    // /restaurant/{slug}/menu — lien direct, mode commande
     const restaurantMatch = p.match(/^\/restaurant\/([^/]+)\/menu/);
     if (restaurantMatch) return { type: 'direct', typeBoutique: 'Restaurant', slug: restaurantMatch[1] };
-    // /catalogue/{slug} — rétrocompat
     if (p.startsWith('/catalogue/')) {
       const slug = p.replace('/catalogue/', '').split('/')[0];
       if (slug) return { type: 'legacy', slug };
     }
     return null;
   });
+
+  // isSessionLoading démarre à true uniquement pour la branche principale
+  const isBranchSeparee = isAdminMode || isStoreMode || publicRoute !== null;
+  const [isSessionLoading, setIsSessionLoading] = useState(!isBranchSeparee);
+
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [showOTPModal, setShowOTPModal] = useState(false);
@@ -70,49 +75,58 @@ function App() {
   const [isLoggingIn, setIsLoggingIn] = useState(false);
   const [activeTab, setActiveTab] = useState<'overview' | 'reports' | 'articles' | 'administration' | 'pos' | 'achat' | 'client' | 'catalogue'>('overview');
 
-  // Restaurer la session depuis localStorage au montage
+  // Vérifier la session auprès du serveur (branche principale uniquement)
   React.useEffect(() => {
-    // Restaurer la session depuis localStorage
-    const savedSession = localStorage.getItem('userSession');
-    if (savedSession) {
-      try {
-        const session = JSON.parse(savedSession);
+    if (isBranchSeparee) return;
+    let cancelled = false;
+    authService.getSession()
+      .then(session => {
+        if (cancelled || !session) return;
+        // N'utilise les données localStorage que si elles correspondent à la session active
+        const saved = (() => {
+          try { return JSON.parse(localStorage.getItem('userSession') ?? '{}'); } catch { return {}; }
+        })();
+        const savedUser: User | undefined = saved?.user;
+        const isSameUser = savedUser && (savedUser.id === session.id || savedUser.email === session.email);
         setIsAuthenticated(true);
-        setCurrentUser(session.user);
-        setActiveTab(/* session.activeTab ||  */'overview');
-      } catch (error) {
-        console.error('Erreur lors de la restauration de la session:', error);
-        localStorage.removeItem('userSession');
-      }
-    }
+        setCurrentUser(isSameUser ? savedUser : {
+          id: session.id,
+          email: session.email,
+          // Les champs d'affichage non renvoyés par Auth/me restent vides
+          // → enrichir Auth/me côté API pour les obtenir
+          nomEntreprise: '',
+          phone: '',
+          isSubscribed: false,
+          subscriptionPlan: '',
+          downloadHistory: [],
+        });
+        setActiveTab(isSameUser ? (saved.activeTab ?? 'overview') : 'overview');
+      })
+      .finally(() => { if (!cancelled) setIsSessionLoading(false); });
+    return () => { cancelled = true; };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Sauvegarder l'onglet actif quand il change
+  // Sauvegarder l'onglet actif quand il change (données d'affichage non-sensibles)
   React.useEffect(() => {
     if (isAuthenticated && currentUser) {
-      localStorage.setItem('userSession', JSON.stringify({
-        user: currentUser,
-        activeTab: activeTab
-      }));
+      localStorage.setItem('userSession', JSON.stringify({ user: currentUser, activeTab }));
     }
   }, [activeTab, isAuthenticated, currentUser]);
 
-  // Si on est en mode admin, afficher l'interface admin
-  if (isAdminMode) {
-    return <AdminApp />;
-  }
+  // Branches séparées — pas de check de session, pas de loader
+  if (isAdminMode) return <AdminApp />;
+  if (isStoreMode) return <StorePage />;
+  if (publicRoute) return <RestaurantPage source={publicRoute} />;
 
-  // Si on est en mode boutique, afficher la boutique
-  if (isStoreMode) {
-    return <StorePage />;
+  // Branche principale — attend la vérification de session pour éviter le flash
+  if (isSessionLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-white">
+        <div className="w-6 h-6 border-2 border-gray-300 border-t-gray-700 rounded-full animate-spin" />
+      </div>
+    );
   }
-
-  // Pages publiques — sans authentification
-  if (publicRoute) {
-    return <RestaurantPage source={publicRoute} />;
-  }
-  useEffect(()=>{
-  },[pendingUser])
 
   const handleSignUp = (userData: { companyName: string; email: string; phone: string; otpMethod: 'email' | 'whatsapp' }, planData?: {app: string, plan: string, idPlan: string}) => {
     setPendingUser(userData);
@@ -205,11 +219,11 @@ function App() {
     }));
   };
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    await authLogout(); // invalide le cookie côté serveur + clearCsrfToken()
     setIsAuthenticated(false);
     setCurrentUser(null);
     setActiveTab('overview');
-    // Supprimer la session du localStorage
     localStorage.removeItem('userSession');
   };
 

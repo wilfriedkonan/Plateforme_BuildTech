@@ -1,5 +1,5 @@
-﻿// Test file to debug API issues
-// Run this in browser console to test different request formats
+﻿/* eslint-disable */
+// Fichier de debug — ne pas importer dans l'app. Usage : copier-coller dans la console navigateur.
 
 export const testApiRequests = async () => {
   const baseUrl = 'http://localhost:5292/api/plans';
@@ -39,5 +39,4 @@ export const testApiRequests = async () => {
   }
 };
 
-// Call in browser console: window.testApiRequests?.()
-(window as any).testApiRequests = testApiRequests;
+// Usage : copier-coller testApiRequests() dans la console du navigateur (ne pas importer dans l'app)

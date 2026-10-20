@@ -1,18 +1,11 @@
 /**
  * boutiqueAdminApi.ts
  * CRUD boutique côté admin — tous les endpoints [Authorize].
- * Réutilise le token stocké dans localStorage('authToken')
- * via l'intercepteur de apiClient (même mécanique, appliquée ici en fetch natif).
+ * Passe par apiClient (cookie HttpOnly + CSRF) — aucun token manipulé ici.
  */
 
 import { useState, useEffect } from 'react';
-import { getToken } from './authStorage';
-
-// ─── Base URL ─────────────────────────────────────────────────────────────────
-
-const API_ORIGIN = (import.meta.env.VITE_API_SERVER_URL as string | undefined)
-  ?.replace(/\/api\/?$/, '')
-  ?? 'http://localhost:5292';
+import { apiClient } from '../services/apiClient';
 
 // ─── Enveloppes ───────────────────────────────────────────────────────────────
 
@@ -103,123 +96,89 @@ export interface UpdateBoutiqueRequest {
   permitRetrait?: boolean;
 }
 
-// ─── Helpers auth ─────────────────────────────────────────────────────────────
+// ─── Fonctions fetch (via apiClient — cookie HttpOnly + CSRF automatique) ─────
 
-function adminHeaders(extra?: Record<string, string>): Record<string, string> {
-  const token = getToken();
-  return {
-    'Content-Type': 'application/json',
-    ...(token ? { Authorization: `bearer ${token}` } : {}),
-    ...extra,
-  };
-}
-
-async function parseEnvelope<T>(res: Response): Promise<ApiEnvelope<T>> {
-  const json = await res.json().catch(() => ({ success: false, message: 'Réponse invalide' }));
-  if (!res.ok) {
-    console.error('[boutiqueAdminApi] HTTP', res.status, res.url, json);
-  }
-  return json as ApiEnvelope<T>;
-}
-
-async function parseListEnvelope<T>(res: Response): Promise<ApiListEnvelope<T>> {
-  const json = await res.json().catch(() => ({
-    success: false, message: 'Réponse invalide', total: 0,
-  }));
-  if (!res.ok) {
-    console.error('[boutiqueAdminApi] HTTP', res.status, res.url, json);
-  }
-  return json as ApiListEnvelope<T>;
-}
-
-// ─── Fonctions fetch ──────────────────────────────────────────────────────────
-
-export async function fetchBoutiques(page = 1, pageSize = 20) {
-  const qs = new URLSearchParams({ page: String(page), pageSize: String(pageSize) });
-  const res = await fetch(`${API_ORIGIN}/api/Boutique?${qs}`, {
-    headers: adminHeaders(),
+export async function fetchBoutiques(page = 1, pageSize = 20): Promise<ApiListEnvelope<BoutiqueAdminDto>> {
+  const { data } = await apiClient.get<ApiListEnvelope<BoutiqueAdminDto>>('Boutique', {
+    params: { page, pageSize },
   });
-  return parseListEnvelope<BoutiqueAdminDto>(res);
+  return data;
 }
 
 export async function fetchBoutiqueSearch(
   nom?: string, type?: string, page = 1, pageSize = 20,
-) {
-  const qs = new URLSearchParams({ page: String(page), pageSize: String(pageSize) });
-  if (nom)  qs.set('nom', nom);
-  if (type) qs.set('type', type);
-  const res = await fetch(`${API_ORIGIN}/api/Boutique/search?${qs}`, {
-    headers: adminHeaders(),
+): Promise<ApiListEnvelope<BoutiqueAdminDto>> {
+  const { data } = await apiClient.get<ApiListEnvelope<BoutiqueAdminDto>>('Boutique/search', {
+    params: { page, pageSize, ...(nom ? { nom } : {}), ...(type ? { type } : {}) },
   });
-  return parseListEnvelope<BoutiqueAdminDto>(res);
+  return data;
 }
 
 export async function fetchBoutiqueTypes(): Promise<TypeBoutiqueDto[]> {
-  const res = await fetch(`${API_ORIGIN}/api/Boutique/types`, {
-    headers: adminHeaders(),
-  });
-  const json = await res.json().catch(() => []);
-  if (!res.ok) {
-    console.error('[boutiqueAdminApi] fetchBoutiqueTypes HTTP', res.status, json);
+  try {
+    const { data } = await apiClient.get<TypeBoutiqueDto[] | ApiEnvelope<TypeBoutiqueDto[]>>('Boutique/types');
+    // Peut retourner directement un tableau ou une enveloppe selon le backend
+    return Array.isArray(data) ? data : ((data as ApiEnvelope<TypeBoutiqueDto[]>).data ?? []);
+  } catch (e) {
+    console.error('[boutiqueAdminApi] fetchBoutiqueTypes', e);
     return [];
   }
-  // Peut retourner directement un tableau ou une enveloppe selon le backend
-  return Array.isArray(json) ? json : (json.data ?? []);
 }
 
 export async function fetchBoutiqueById(id: string): Promise<BoutiqueAdminDto | null> {
-  const res = await fetch(`${API_ORIGIN}/api/Boutique/${id}`, {
-    headers: adminHeaders(),
-  });
-  const envelope = await parseEnvelope<BoutiqueAdminDto>(res);
-  if (!res.ok || !envelope.success) return null;
-  return envelope.data ?? null;
+  try {
+    const { data } = await apiClient.get<ApiEnvelope<BoutiqueAdminDto>>(`Boutique/${id}`);
+    return data.success ? (data.data ?? null) : null;
+  } catch {
+    return null;
+  }
 }
 
 export async function createBoutique(
   payload: CreateBoutiqueRequest,
 ): Promise<BoutiqueAdminDto | null> {
-  const res = await fetch(`${API_ORIGIN}/api/Boutique`, {
-    method: 'POST',
-    headers: adminHeaders(),
-    body: JSON.stringify(payload),
-  });
-  const envelope = await parseEnvelope<BoutiqueAdminDto>(res);
-  if (!res.ok || !envelope.success) {
-    console.error('[boutiqueAdminApi] createBoutique', envelope.message);
+  try {
+    const { data } = await apiClient.post<ApiEnvelope<BoutiqueAdminDto>>('Boutique', payload);
+    if (!data.success) {
+      console.error('[boutiqueAdminApi] createBoutique', data.message);
+      return null;
+    }
+    return data.data ?? null;
+  } catch (e) {
+    console.error('[boutiqueAdminApi] createBoutique', e);
     return null;
   }
-  return envelope.data ?? null;
 }
 
 export async function updateBoutique(
   id: string,
   payload: UpdateBoutiqueRequest,
 ): Promise<BoutiqueAdminDto | null> {
-  const res = await fetch(`${API_ORIGIN}/api/Boutique/${id}`, {
-    method: 'PUT',
-    headers: adminHeaders(),
-    body: JSON.stringify(payload),
-  });
-  const envelope = await parseEnvelope<BoutiqueAdminDto>(res);
-  if (!res.ok || !envelope.success) {
-    console.error('[boutiqueAdminApi] updateBoutique', envelope.message);
+  try {
+    const { data } = await apiClient.put<ApiEnvelope<BoutiqueAdminDto>>(`Boutique/${id}`, payload);
+    if (!data.success) {
+      console.error('[boutiqueAdminApi] updateBoutique', data.message);
+      return null;
+    }
+    return data.data ?? null;
+  } catch (e) {
+    console.error('[boutiqueAdminApi] updateBoutique', e);
     return null;
   }
-  return envelope.data ?? null;
 }
 
 export async function deleteBoutique(id: string): Promise<boolean> {
-  const res = await fetch(`${API_ORIGIN}/api/Boutique/${id}`, {
-    method: 'DELETE',
-    headers: adminHeaders(),
-  });
-  const envelope = await parseEnvelope<never>(res);
-  if (!res.ok || !envelope.success) {
-    console.error('[boutiqueAdminApi] deleteBoutique', envelope.message);
+  try {
+    const { data } = await apiClient.delete<ApiEnvelope<never>>(`Boutique/${id}`);
+    if (!data.success) {
+      console.error('[boutiqueAdminApi] deleteBoutique', data.message);
+      return false;
+  }
+    return true;
+  } catch (e) {
+    console.error('[boutiqueAdminApi] deleteBoutique', e);
     return false;
   }
-  return true;
 }
 
 // ─── Hooks de lecture (query) ─────────────────────────────────────────────────

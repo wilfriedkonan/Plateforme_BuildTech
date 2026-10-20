@@ -38,7 +38,10 @@ export interface LoginPayload {
 export interface LoginResponse {
   success: boolean;
   message: string;
-  accessToken?: string;
+  // Mode cookie : plus d'accessToken dans le corps (il est dans un cookie HttpOnly).
+  // csrfToken est capturé automatiquement par apiClient.
+  csrfToken?: string;
+  expiresAt?: string;
   user?: {
     id: string;
     email: string;
@@ -48,6 +51,17 @@ export interface LoginResponse {
     telephone?: string;
   };
   data?: any;
+}
+
+export interface SessionResponse {
+  success: boolean;
+  user: {
+    id: string;
+    email: string;
+    entrepriseId: string;
+    isSuperAdmin: boolean;
+    role?: string;
+  };
 }
 
 export const authService = {
@@ -77,6 +91,19 @@ export const authService = {
     } catch (error: any) {
       console.error('[authService] Logout error:', error.message);
       // Don't throw on logout - it's a cleanup operation
+    }
+  },
+
+  /**
+   * Vérifie la session au démarrage de l'app (remplace la lecture du token dans sessionStorage).
+   * Renvoie null si l'utilisateur n'est pas connecté. Tente un refresh silencieux avant d'abandonner.
+   */
+  getSession: async (): Promise<SessionResponse['user'] | null> => {
+    try {
+      const { data } = await apiClient.get<SessionResponse>('Auth/me', { skipAuthRedirect: true });
+      return data.success ? data.user : null;
+    } catch {
+      return null;
     }
   },
 };

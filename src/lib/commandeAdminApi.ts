@@ -1,7 +1,7 @@
 /**
  * commandeAdminApi.ts
  * Gestion des commandes côté POS/admin — [Authorize].
- * Réutilise le token stocké dans localStorage('authToken').
+ * Passe par apiClient (cookie HttpOnly + CSRF) — aucun token manipulé ici.
  *
  * Note : useCommandes expose refetch() pour le polling manuel côté POS
  * (setInterval(() => refetch(), 15000)) en attendant l'implémentation SignalR.
@@ -9,13 +9,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import type { PaginationMetadata } from './boutiqueAdminApi';
-import { getToken } from './authStorage';
-
-// ─── Base URL ─────────────────────────────────────────────────────────────────
-
-const API_ORIGIN = (import.meta.env.VITE_API_SERVER_URL as string | undefined)
-  ?.replace(/\/api\/?$/, '')
-  ?? 'http://localhost:5292';
+import { apiClient } from '../services/apiClient';
 
 // ─── Enveloppes ───────────────────────────────────────────────────────────────
 
@@ -82,17 +76,7 @@ export interface UpdateEtatRequest {
   etat: EtatCommande;
 }
 
-// ─── Helper auth ──────────────────────────────────────────────────────────────
-
-function adminHeaders(): Record<string, string> {
-  const token = getToken();
-  return {
-    'Content-Type': 'application/json',
-    ...(token ? { Authorization: `bearer ${token}` } : {}),
-  };
-}
-
-// ─── Fonctions fetch ──────────────────────────────────────────────────────────
+// ─── Fonctions fetch (via apiClient — cookie HttpOnly + CSRF automatique) ─────
 
 const ETATS_EXCLUS: EtatCommande[] = ['Annulee', 'Terminee'];
 
@@ -102,56 +86,44 @@ export async function fetchCommandes(
   page = 1,
   pageSize = 20,
 ): Promise<ApiListEnvelope<CommandeDto>> {
-  const qs = new URLSearchParams({ page: String(page), pageSize: String(pageSize) });
-  if (idBoutique) qs.set('idBoutique', idBoutique);
-  if (etat)       qs.set('etat', etat);
-
-  const res = await fetch(`${API_ORIGIN}/api/commandes?${qs}`, {
-    headers: adminHeaders(),
+  const { data } = await apiClient.get<ApiListEnvelope<CommandeDto>>('commandes', {
+    params: {
+      page,
+      pageSize,
+      ...(idBoutique ? { idBoutique } : {}),
+      ...(etat ? { etat } : {}),
+    },
   });
-  const json = await res.json().catch(() => ({
-    success: false, message: 'Réponse invalide', total: 0,
-  }));
-  if (!res.ok) {
-    console.error('[commandeAdminApi] fetchCommandes HTTP', res.status, json);
-  }
-  return json as ApiListEnvelope<CommandeDto>;
+  return data;
 }
 
 export async function fetchCommandeDetail(
   id: string,
 ): Promise<CommandeDetailDto | null> {
-  const res = await fetch(`${API_ORIGIN}/api/commandes/${id}`, {
-    headers: adminHeaders(),
-  });
-  const json: ApiEnvelope<CommandeDetailDto> = await res
-    .json()
-    .catch(() => ({ success: false, message: 'Réponse invalide' }));
-  if (!res.ok || !json.success) {
-    console.error('[commandeAdminApi] fetchCommandeDetail HTTP', res.status, json);
+  try {
+    const { data } = await apiClient.get<ApiEnvelope<CommandeDetailDto>>(`commandes/${id}`);
+    return data.success ? (data.data ?? null) : null;
+  } catch (e) {
+    console.error('[commandeAdminApi] fetchCommandeDetail', e);
     return null;
   }
-  return json.data ?? null;
 }
 
 export async function putCommandeEtat(
   id: string,
   etat: EtatCommande,
 ): Promise<boolean> {
-  const body: UpdateEtatRequest = { etat };
-  const res = await fetch(`${API_ORIGIN}/api/commandes/${id}/etat`, {
-    method: 'PUT',
-    headers: adminHeaders(),
-    body: JSON.stringify(body),
-  });
-  const json: ApiEnvelope<never> = await res
-    .json()
-    .catch(() => ({ success: false, message: 'Réponse invalide' }));
-  if (!res.ok || !json.success) {
-    console.error('[commandeAdminApi] putCommandeEtat HTTP', res.status, json);
+  try {
+    const { data } = await apiClient.put<ApiEnvelope<never>>(`commandes/${id}/etat`, { etat } as UpdateEtatRequest);
+    if (!data.success) {
+      console.error('[commandeAdminApi] putCommandeEtat', data.message);
+      return false;
+    }
+    return true;
+  } catch (e) {
+    console.error('[commandeAdminApi] putCommandeEtat', e);
     return false;
   }
-  return true;
 }
 
 // ─── Hooks de lecture (query) ─────────────────────────────────────────────────

@@ -1,5 +1,5 @@
 ﻿import { useCallback, useMemo, useState } from 'react';
-import { authService, type LoginPayload, type RegistrationPayload } from '../services/authService';
+import { authService, type LoginPayload, type RegistrationPayload, type RegistrationForEntreprisePayload } from '../services/authService';
 import { clearCsrfToken } from '../lib/authStorage';
 
 type UseAuthState = {
@@ -45,6 +45,42 @@ export const useAuth = () => {
       throw e;
     }
   }, []);
+
+  const registerForEntreprise = useCallback(
+    async (payload: RegistrationForEntreprisePayload) => {
+      setState((prev) => ({ ...prev, isLoading: true, error: null }));
+      try {
+        const response = await authService.registerForEntreprise(payload);
+        if (!response.success) {
+          throw Object.assign(new Error(response.message), { response: { status: 400, data: response } });
+        }
+        // L'opérateur crée le compte d'un autre : sa propre session ne change pas
+        setState((prev) => ({ ...prev, isLoading: false, error: null }));
+        return response;
+      } catch (e: any) {
+        const status: number | undefined = e?.response?.status;
+        const data = e?.response?.data;
+        const apiMessage: string | undefined = data?.message;
+        const byCode: Record<string, string> = {
+          ENTREPRISE_SUPPRIMEE: 'Cette entreprise a été supprimée de la plateforme.',
+          ORGANISATION_INTROUVABLE: 'L\'organisation indiquée est introuvable.',
+          PLAN_INVALIDE: 'Plan d\'abonnement invalide.',
+          PROPRIETAIRE_EXISTANT: 'Un compte propriétaire existe déjà pour cette entreprise. Le propriétaire doit créer les autres comptes.',
+          EMAIL_UTILISE: 'Cet email est déjà utilisé.',
+        };
+        const errorMessage =
+          (data?.errorCode && byCode[data.errorCode]) ||
+          ((status === 401 || status === 403) && 'Code opérateur invalide ou accès refusé.') ||
+          (status === 429 && 'Trop de tentatives. Réessayez dans quelques minutes.') ||
+          apiMessage ||
+          'Erreur lors de la création du compte.';
+        console.error('[useAuth] RegistrationForEntreprise error:', errorMessage);
+        setState((prev) => ({ ...prev, isLoading: false, error: errorMessage }));
+        throw e;
+      }
+    },
+    []
+  );
 
   const login = useCallback(async (payload: LoginPayload) => {
     setState((prev) => ({ ...prev, isLoading: true, error: null }));
@@ -105,8 +141,9 @@ export const useAuth = () => {
     isAuthenticated: state.isAuthenticated,
     user: state.user,
     register,
+    registerForEntreprise,
     login,
     logout,
     clearError,
-  }), [state.isLoading, state.error, state.isAuthenticated, state.user, register, login, logout, clearError]);
+  }), [state.isLoading, state.error, state.isAuthenticated, state.user, register, registerForEntreprise, login, logout, clearError]);
 };

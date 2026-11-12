@@ -1,17 +1,25 @@
-import React, { useState } from 'react';
-import { Utensils, Globe, Truck, Users, DollarSign, Plus, RefreshCw, Handshake } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+import { Utensils, Globe, Truck, Users, DollarSign, Plus, RefreshCw, Handshake, Building2 } from 'lucide-react';
 import TableManager from './TableManager';
 import DomaineManager from './DomaineManager';
 import LivreurManager from './LivreurManager';
 import UtilisateurManager from './UtilisateurManager';
+import EntrepriseManager from './EntrepriseManager';
+import { authService } from '../../services/authService';
 import TarifLivraisonManager from './TarifLivraisonManager';
 import CrmManager from './crm/CrmManager';
 
-type SubTab = 'tables' | 'domaine' | 'livreurs' | 'utilisateurs' | 'tarifs' | 'crm';
+type SubTab = 'tables' | 'domaine' | 'livreurs' | 'utilisateurs' | 'entreprises' | 'tarifs' | 'crm';
 
 const AdminManager: React.FC = () => {
   const [activeSubTab, setActiveSubTab] = useState<SubTab>('utilisateurs');
   const [onNewAction, setOnNewAction] = useState<(() => void) | null>(null);
+  const [isSuperAdmin, setIsSuperAdmin] = useState(false);
+
+  // Onglet Entreprises : affichage réservé aux super-admins (l'API revérifie)
+  useEffect(() => {
+    authService.getSession().then(session => setIsSuperAdmin(session?.isSuperAdmin === true));
+  }, []);
 
   const renderSubTabContent = () => {
     switch (activeSubTab) {
@@ -23,6 +31,8 @@ const AdminManager: React.FC = () => {
         return <LivreurManager onRegisterNewAction={setOnNewAction} />;
       case 'utilisateurs':
         return <UtilisateurManager onRegisterNewAction={setOnNewAction} />;
+      case 'entreprises':
+        return isSuperAdmin ? <EntrepriseManager onRegisterNewAction={setOnNewAction} /> : null;
       case 'tarifs':
         return <TarifLivraisonManager onRegisterNewAction={setOnNewAction} />;
       case 'crm':
@@ -48,6 +58,8 @@ const AdminManager: React.FC = () => {
         return 'Nouveau Livreur'; 
       case 'utilisateurs':
         return 'Nouvel Utilisateur';
+      case 'entreprises':
+        return 'Nouvelle Entreprise';
        case 'tarifs':
         return 'Nouveau Tarif';
       case 'crm':
@@ -125,6 +137,19 @@ const AdminManager: React.FC = () => {
             <Users className="w-5 h-5" />
             <span>Utilisateurs</span>
           </button>
+          {isSuperAdmin && (
+            <button
+              onClick={() => setActiveSubTab('entreprises')}
+              className={`flex items-center space-x-2 px-6 py-3 font-medium transition-all border-b-2 ${
+                activeSubTab === 'entreprises'
+                  ? 'border-gray-900 text-gray-900'
+                  : 'border-transparent text-gray-500 hover:text-gray-700'
+              }`}
+            >
+              <Building2 className="w-5 h-5" />
+              <span>Entreprises</span>
+            </button>
+          )}
       {/*     <button
             onClick={() => setActiveSubTab('tarifs')}
             className={`flex items-center space-x-2 px-6 py-3 font-medium transition-all border-b-2 ${

@@ -15,6 +15,18 @@ interface StockManagerProps {
 
 type StockView = 'etat' | 'mouvements';
 
+// Libellés renvoyés par l'API pour les mouvements automatiques, ramenés aux types standards
+const normalizeTypeMouvement = (type: string): string => {
+  switch (type) {
+    case 'Entree':
+      return 'Entree';
+    case 'Sortie':
+      return 'Sortie';
+    default:
+      return type;
+  }
+};
+
 const StockManager: React.FC<StockManagerProps> = ({ onUpdateStock }) => {
   const { stocks, loading, error, pagination, totals, fetchStocks } = useStock();
   const { categories, fetchCategories } = useCategories();
@@ -510,51 +522,63 @@ const StockManager: React.FC<StockManagerProps> = ({ onUpdateStock }) => {
                           <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Date</th>
                           <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Article</th>
                           <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Type</th>
-                          <th className="px-4 py-3 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">Quantité</th>
+                          <th className="px-4 py-3 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">Quantité</th>                      
                           <th className="px-4 py-3 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">Prix Unitaire</th>
                           <th className="px-4 py-3 text-right text-xs font-semibold text-gray-600 uppercase tracking-wider">Montant</th>
+                          <th className="px-4 py-3 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">Quantité Avant</th>
+                          <th className="px-4 py-3 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">Quantité Après</th>
                           <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Référence</th>
                           <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Commentaire</th>
                         </tr>
                       </thead>
                       <tbody className="bg-white divide-y divide-gray-100">
-                        {mouvements.map((mouvement) => (
+                        {mouvements.map((mouvement) => {
+                          const type = normalizeTypeMouvement(mouvement.typeMouvement);
+                          const isPositive = type === 'Entree' || type === 'Retour';
+                          return (
                           <tr key={mouvement.id} className="hover:bg-gray-50 transition-colors">
                             <td className="px-4 py-3 text-sm text-gray-700">
-                              {new Date(mouvement.dateTransaction).toLocaleString('fr-FR')}
+                              {mouvement.dateTransaction ? new Date(mouvement.dateTransaction).toLocaleString('fr-FR') : '—'}
                             </td>
                             <td className="px-4 py-3">
                               <span className="font-semibold text-gray-900">{mouvement.nomArticle}</span>
                             </td>
                             <td className="px-4 py-3">
-                              {mouvement.typeMouvement === 'Entree' && (
+                              {type === 'Entree' && (
                                 <span className="inline-flex items-center px-2 py-1 bg-green-100 text-green-700 text-xs font-medium rounded">🟢 Entrée</span>
                               )}
-                              {mouvement.typeMouvement === 'Sortie' && (
+                              {type === 'Sortie' && (
                                 <span className="inline-flex items-center px-2 py-1 bg-orange-100 text-orange-700 text-xs font-medium rounded">🟠 Sortie</span>
                               )}
-                              {mouvement.typeMouvement === 'Ajustement' && (
+                              {type === 'Ajustement' && (
                                 <span className="inline-flex items-center px-2 py-1 bg-blue-100 text-blue-700 text-xs font-medium rounded">🔵 Ajustement</span>
                               )}
-                              {mouvement.typeMouvement === 'Retour' && (
+                              {type === 'Retour' && (
                                 <span className="inline-flex items-center px-2 py-1 bg-red-100 text-red-700 text-xs font-medium rounded">🔴 Retour</span>
                               )}
                             </td>
                             <td className="px-4 py-3 text-center">
-                              <span className={`font-bold ${mouvement.typeMouvement === 'Entree' || mouvement.typeMouvement === 'Retour' ? 'text-green-600' : 'text-orange-600'}`}>
-                                {mouvement.typeMouvement === 'Entree' || mouvement.typeMouvement === 'Retour' ? '+' : '-'}{mouvement.quantite}
+                              <span className={`font-bold ${isPositive ? 'text-green-600' : 'text-orange-600'}`}>
+                                {isPositive ? '+' : '-'}{mouvement.quantite}
                               </span>
                             </td>
                             <td className="px-4 py-3 text-center text-sm text-gray-700">
-                              {mouvement.prixUnitaire.toLocaleString('fr-FR')} F
+                              {(mouvement.prixUnitaire ?? 0).toLocaleString('fr-FR')} F
                             </td>
                             <td className="px-4 py-3 text-right font-medium text-gray-900">
-                              {mouvement.montant.toLocaleString('fr-FR')} F
+                              {(mouvement.montant ?? 0).toLocaleString('fr-FR')} F
+                            </td>
+                             <td className="px-4 py-3 text-right font-medium text-gray-900">
+                              {(mouvement.quantiteAvant ?? 0)}
+                            </td>
+                             <td className="px-4 py-3 text-right font-medium text-gray-900">
+                              {(mouvement.quantiteApres ?? 0)}
                             </td>
                             <td className="px-4 py-3 text-sm text-gray-700">{mouvement.reference}</td>
                             <td className="px-4 py-3 text-sm text-gray-600">{mouvement.commentaire}</td>
                           </tr>
-                        ))}
+                          );
+                        })}
                       </tbody>
                     </table>
                   </div>

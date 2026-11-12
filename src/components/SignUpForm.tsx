@@ -1,48 +1,40 @@
 ﻿import React, { useState } from 'react';
 import { Building, Mail, Phone, ArrowRight, Check } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
+import { validatePhone, validatePassword, GUID_REGEX } from '../utils/validators';
+import type { RegistrationResponse } from '../services/authService';
 
-// Indicatifs pays ITU valides (1–3 chiffres)
-const COUNTRY_CODES = [
-  '1','7',
-  '20','27','30','31','32','33','34','36','39','40','41','43','44','45','46','47','48','49',
-  '51','52','53','54','55','56','57','58','60','61','62','63','64','65','66',
-  '81','82','84','86','90','91','92','93','94','95','98',
-  '212','213','216','218','220','221','222','223','224','225','226','227','228','229',
-  '230','231','232','233','234','235','236','237','238','239','240','241','242','243',
-  '244','245','246','247','248','249','250','251','252','253','254','255','256','257',
-  '258','260','261','262','263','264','265','266','267','268','269','291','297','298','299',
-  '350','351','352','353','354','355','356','357','358','359','370','371','372','373',
-  '374','375','376','377','378','380','381','382','385','386','387','389',
-  '420','421','423',
-  '500','501','502','503','504','505','506','507','508','509',
-  '590','591','592','593','594','595','596','597','598','599',
-  '670','672','673','674','675','676','677','678','679','680','681','682','683','685',
-  '686','687','688','689','690','691','692',
-  '850','852','853','855','856','880','886',
-  '960','961','962','963','964','965','966','967','968','970','971','972','973','974',
-  '975','976','977','992','993','994','995','996','998',
-];
+const INPUT_CLASS =
+  'w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-transparent transition-all';
 
-const validatePhone = (phone: string): string | null => {
-  const digits = phone.replace(/\D/g, '');
-  if (digits.length < 8 || digits.length > 15) {
-    return 'Le numéro doit contenir entre 8 et 15 chiffres (indicatif inclus)';
-  }
-  const hasValidCode = COUNTRY_CODES.some(code => digits.startsWith(code));
-  if (!hasValidCode) {
-    return 'Indicatif pays non reconnu. Exemple : 225XXXXXXXXX pour la Côte d\'Ivoire';
-  }
-  return null;
+const EMPTY_EXISTING_FORM = {
+  idEntreprise: '',
+  nom: '',
+  prenom: '',
+  email: '',
+  password: '',
+  phone: '',
+  entrepriseName: '',
+  organisationName: '',
+  durationMonths: '',
+  operatorKey: '',
 };
 
 interface SignUpFormProps {
   onSignUp: (userData: { companyName: string; email: string; phone: string; otpMethod: 'email' | 'whatsapp' }) => void;
   selectedPlan?: { app: string; plan: string; idPlan: string };
+  /** 'existing' : création d'un compte pour une entreprise via son Id (super-admin ; l'API vérifie les droits). */
+  mode?: 'new' | 'existing';
+  onExistingCreated?: (response: RegistrationResponse) => void;
 }
 
-const SignUpForm: React.FC<SignUpFormProps> = ({ onSignUp, selectedPlan }) => {
-  const { register, isLoading, error: authError } = useAuth();
+const SignUpForm: React.FC<SignUpFormProps> = ({ onSignUp, selectedPlan, mode = 'new', onExistingCreated }) => {
+  const [useExisting, setUseExisting] = useState(false);
+  const isExisting = mode === 'existing' || useExisting;
+  const { register, registerForEntreprise, isLoading, error: authError } = useAuth();
+  const [existingData, setExistingData] = useState(EMPTY_EXISTING_FORM);
+  const [existingError, setExistingError] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
   const [formData, setFormData] = useState({
     companyName: '',
     email: '',
@@ -101,20 +93,194 @@ const SignUpForm: React.FC<SignUpFormProps> = ({ onSignUp, selectedPlan }) => {
     }));
   };
 
+  const handleExistingChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setExistingData(prev => ({ ...prev, [e.target.name]: e.target.value }));
+  };
+
+  const handleExistingSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setSuccessMessage('');
+    const d = existingData;
+    const idEntreprise = d.idEntreprise.trim();
+
+    if (!GUID_REGEX.test(idEntreprise)) {
+      setExistingError('Identifiant d\'entreprise invalide (GUID attendu)');
+      return;
+    }
+    if (!d.nom.trim() || !d.prenom.trim() || !d.email.trim() || !d.password) {
+      setExistingError('Veuillez renseigner le nom, le prénom, l\'email et le mot de passe');
+      return;
+    }
+    const passwordError = validatePassword(d.password);
+    if (passwordError) {
+      setExistingError(passwordError);
+      return;
+    }
+    if (d.phone.trim()) {
+      const phoneError = validatePhone(d.phone);
+      if (phoneError) {
+        setExistingError(phoneError);
+        return;
+      }
+    }
+    const months = d.durationMonths.trim() ? Number(d.durationMonths) : undefined;
+    if (months !== undefined && (!Number.isInteger(months) || months <= 0)) {
+      setExistingError('La durée doit être un nombre entier de mois supérieur à 0');
+      return;
+    }
+
+    setExistingError('');
+    try {
+      const response = await registerForEntreprise({
+        idEntreprise,
+        email: d.email.trim(),
+        telephone: d.phone.trim(),
+        password: d.password,
+        nom: d.nom.trim(),
+        prenom: d.prenom.trim(),
+        entrepriseName: d.entrepriseName.trim(),
+        organisationName: d.organisationName.trim() || undefined,
+        contact: d.phone.trim(),
+        localisation: '',
+        pays: '',
+        ville: '',
+        commune: '',
+        operatorKey: d.operatorKey.trim() || undefined,
+        // Souscription uniquement si le plan ET la durée sont renseignés
+        ...(selectedPlan?.idPlan && months !== undefined
+          ? { idPlan: selectedPlan.idPlan, subscriptionDurationMonths: months }
+          : {}),
+      });
+      setSuccessMessage(
+        `Compte créé. ${response.entrepriseCreee ? 'Entreprise et organisation créées automatiquement. ' : ''}` +
+        (response.codeEntreprise ? `Code entreprise : ${response.codeEntreprise}` : '')
+      );
+      setExistingData(EMPTY_EXISTING_FORM);
+      onExistingCreated?.(response);
+    } catch {
+      // Le message mappé est exposé par le hook (authError)
+    }
+  };
+
+  const existingErrorMessage = existingError || authError;
+
+  const existingForm = (
+    <form onSubmit={handleExistingSubmit} className="space-y-6">
+      <div>
+        <label htmlFor="idEntreprise" className="block text-sm font-medium text-gray-700 mb-2">
+          Identifiant de l'entreprise (GUID) *
+        </label>
+        <input
+          type="text"
+          id="idEntreprise"
+          name="idEntreprise"
+          value={existingData.idEntreprise}
+          onChange={handleExistingChange}
+          required
+          className={INPUT_CLASS}
+          placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+        />
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <label htmlFor="nom" className="block text-sm font-medium text-gray-700 mb-2">Nom *</label>
+          <input type="text" id="nom" name="nom" value={existingData.nom} onChange={handleExistingChange} required className={INPUT_CLASS} />
+        </div>
+        <div>
+          <label htmlFor="prenom" className="block text-sm font-medium text-gray-700 mb-2">Prénom *</label>
+          <input type="text" id="prenom" name="prenom" value={existingData.prenom} onChange={handleExistingChange} required className={INPUT_CLASS} />
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">Adresse email *</label>
+          <input type="email" id="email" name="email" value={existingData.email} onChange={handleExistingChange} required className={INPUT_CLASS} placeholder="contact@votre-entreprise.com" />
+        </div>
+        <div>
+          <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">Mot de passe *</label>
+          <input type="password" id="password" name="password" value={existingData.password} onChange={handleExistingChange} required className={INPUT_CLASS} placeholder="10 caractères min., lettre et chiffre" />
+        </div>
+      </div>
+
+      <div>
+        <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-2">Numéro de téléphone</label>
+        <input type="tel" id="phone" name="phone" value={existingData.phone} onChange={handleExistingChange} className={INPUT_CLASS} placeholder="22507123456" />
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <label htmlFor="entrepriseName" className="block text-sm font-medium text-gray-700 mb-2">Nom de l'entreprise</label>
+          <input type="text" id="entrepriseName" name="entrepriseName" value={existingData.entrepriseName} onChange={handleExistingChange} className={INPUT_CLASS} />
+        </div>
+        <div>
+          <label htmlFor="organisationName" className="block text-sm font-medium text-gray-700 mb-2">Nom de l'organisation</label>
+          <input type="text" id="organisationName" name="organisationName" value={existingData.organisationName} onChange={handleExistingChange} className={INPUT_CLASS} />
+        </div>
+      </div>
+      <p className="text-xs text-gray-500 -mt-4">
+        Obligatoire si l'entreprise n'existe pas encore : elle sera créée avec une organisation générée automatiquement
+      </p>
+
+      <div>
+        <label htmlFor="durationMonths" className="block text-sm font-medium text-gray-700 mb-2">Durée de l'abonnement (mois)</label>
+        <input type="number" min={1} step={1} id="durationMonths" name="durationMonths" value={existingData.durationMonths} onChange={handleExistingChange} className={INPUT_CLASS} />
+        <p className="text-xs text-gray-500 mt-1">
+          La souscription n'est créée que si un plan est sélectionné et une durée renseignée.
+        </p>
+      </div>
+
+      <div>
+        <label htmlFor="operatorKey" className="block text-sm font-medium text-gray-700 mb-2">Code opérateur</label>
+        <input
+          type="password"
+          id="operatorKey"
+          name="operatorKey"
+          autoComplete="off"
+          value={existingData.operatorKey}
+          onChange={handleExistingChange}
+          className={INPUT_CLASS}
+        />
+        <p className="text-xs text-gray-500 mt-1">Réservé à l'équipe Build Tech. Non conservé.</p>
+      </div>
+
+      {existingErrorMessage && (
+        <div className="text-red-500 text-sm text-center bg-red-50 p-3 rounded-lg">{existingErrorMessage}</div>
+      )}
+      {successMessage && (
+        <div className="text-green-700 text-sm text-center bg-green-50 p-3 rounded-lg">{successMessage}</div>
+      )}
+
+      <button
+        type="submit"
+        disabled={isLoading}
+        className="w-full bg-gray-800 text-white py-4 px-6 rounded-lg font-semibold hover:shadow-lg transition-all duration-300 flex items-center justify-center group disabled:opacity-50 disabled:cursor-not-allowed"
+      >
+        {isLoading ? 'Création en cours...' : 'Créer le compte'}
+        {!isLoading && <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />}
+      </button>
+    </form>
+  );
+
   return (
     <section id="signup" className="py-20 bg-gradient-to-br from-purple-50 to-orange-50">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-            {selectedPlan ? `Finaliser votre abonnement` : 'CrÃ©ez votre compte'}{' '}
+            {isExisting
+              ? 'Créer un compte pour une entreprise'
+              : (selectedPlan ? `Finaliser votre abonnement` : 'Créez votre compte')}{' '}
             <span className="text-gray-800">
-              {selectedPlan ? selectedPlan.plan : 'professionnel'}
+              {isExisting ? '' : (selectedPlan ? selectedPlan.plan : 'professionnel')}
             </span>
           </h2>
           <p className="text-xl text-gray-600">
-            {selectedPlan 
+            {isExisting
+              ? 'Rattachez un compte propriétaire à une entreprise via son identifiant'
+              : selectedPlan
               ? `Vous avez choisi le plan ${selectedPlan.plan} pour ${selectedPlan.app}`
-              : 'Rejoignez des centaines d\'entreprises qui font confiance Ã  Build Tech Solutions'
+              : 'Rejoignez des centaines d\'entreprises qui font confiance à Build Tech Solutions'
             }
           </p>
         </div>
@@ -135,6 +301,18 @@ const SignUpForm: React.FC<SignUpFormProps> = ({ onSignUp, selectedPlan }) => {
         )}
 
         <div className="bg-white rounded-2xl shadow-2xl p-8 md:p-12">
+          {mode !== 'existing' && (
+            <label className="flex items-center gap-2 mb-6 text-sm font-medium text-gray-700 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={useExisting}
+                onChange={(e) => { setUseExisting(e.target.checked); setExistingError(''); setSuccessMessage(''); }}
+                className="w-4 h-4 rounded border-gray-300"
+              />
+              Entreprise existante ? (renseigner son identifiant)
+            </label>
+          )}
+          {isExisting ? existingForm : (
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
@@ -262,6 +440,7 @@ const SignUpForm: React.FC<SignUpFormProps> = ({ onSignUp, selectedPlan }) => {
               {!isLoading && <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />}
             </button>
           </form>
+          )}
 
           <div className="mt-8 text-center">
             <p className="text-sm text-gray-600">

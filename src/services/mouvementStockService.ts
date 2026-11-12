@@ -3,8 +3,10 @@
 export interface Mouvement {
   id: string;
   dateTransaction: string;
-  typeMouvement: 'Entree' | 'Sortie' | 'Ajustement' | 'Retour';
+  typeMouvement: 'Entree' | 'Sortie' | 'Ajustement' | 'Retour'|'Entrée stock'|'Sortie Vente'|'Sortie stock';
   quantite: number;
+  quantiteAvant : number;
+  quantiteApres : number;
   prixUnitaire: number;
   montant: number;
   reference: string;

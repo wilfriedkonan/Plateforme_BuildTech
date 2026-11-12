@@ -13,6 +13,7 @@ export interface RegistrationPayload {
   pays: string;
   ville: string;
   commune: string;
+  idEntreprise?: string;
   idOrganisation?: string;
   organisationName?: string;
   idPlan?: string;
@@ -27,7 +28,22 @@ export interface RegistrationResponse {
   userId?: string;
   email?: string;
   data?: any;
+  // Mode "entreprise via son Id" (super-admin)
+  errorCode?: string;
+  organisationId?: string;
+  entrepriseId?: string;
+  codeEntreprise?: string;
+  planName?: string;
+  subscriptionExpiresAt?: string;
+  entrepriseCreee?: boolean;
+  organisationCreee?: boolean;
 }
+
+/** Payload du mode « entreprise existante ». operatorKey part dans l'en-tête X-Operator-Key, jamais dans le corps. */
+export type RegistrationForEntreprisePayload = RegistrationPayload & {
+  idEntreprise: string;
+  operatorKey?: string;
+};
 
 // Login DTOs
 export interface LoginPayload {
@@ -71,6 +87,27 @@ export const authService = {
       return data;
     } catch (error: any) {
       console.error('[authService] Registration error:', error.message);
+      throw error;
+    }
+  },
+
+  /**
+   * Réservé aux super-admins (vérifié par l'API). skipAuthRedirect : un 401/403
+   * doit s'afficher dans le formulaire au lieu de renvoyer vers la page d'accueil.
+   */
+  registerForEntreprise: async (
+    payload: RegistrationForEntreprisePayload
+  ): Promise<RegistrationResponse> => {
+    const { operatorKey, ...body } = payload;
+    try {
+      const { data } = await apiClient.post<RegistrationResponse>('Registration/register', body, {
+        skipAuthRedirect: true,
+        // En-tête ajouté uniquement si un code est saisi ; jamais journalisé
+        ...(operatorKey ? { headers: { 'X-Operator-Key': operatorKey } } : {}),
+      });
+      return data;
+    } catch (error: any) {
+      console.error('[authService] RegistrationForEntreprise error:', error.message);
       throw error;
     }
   },

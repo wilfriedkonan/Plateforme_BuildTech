@@ -14,6 +14,11 @@ RUN npm install
 # Copier le code source
 COPY . .
 
+# URL de l'API : figée dans le bundle au build (Vite). À fournir via --build-arg
+ARG VITE_API_SERVER_URL
+ENV VITE_API_SERVER_URL=$VITE_API_SERVER_URL
+RUN test -n "$VITE_API_SERVER_URL" || (echo "ERREUR: build-arg VITE_API_SERVER_URL manquant (ex: https://api.buildtch.uk/api/)" && exit 1)
+
 # Compiler pour la production
 RUN NODE_ENV=production npm run build
 

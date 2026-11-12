@@ -11,9 +11,11 @@ declare module 'axios' {
 // En dev : API locale directe (CORS : http://localhost:5173 doit être dans AuthCookies:AllowedOrigins)
 // En prod : URL complète définie dans .env
 const isDev = import.meta.env.DEV;
-const SERVER_URL = isDev
-  ? 'http://localhost:5292/api/'
-  : (import.meta.env.VITE_API_SERVER_URL ?? 'http://localhost:5292/api/');
+const PROD_URL = import.meta.env.VITE_API_SERVER_URL;
+if (!isDev && !PROD_URL) {
+  throw new Error("VITE_API_SERVER_URL manquant : URL de l'API non définie au build");
+}
+const SERVER_URL = isDev ? 'http://localhost:5292/api/' : PROD_URL;
 
 const BASE_CONFIG: AxiosRequestConfig = {
   baseURL: SERVER_URL,

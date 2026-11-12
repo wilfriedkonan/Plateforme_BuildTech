@@ -8,9 +8,9 @@ import { useState } from 'react';
 
 // ─── Base URL ─────────────────────────────────────────────────────────────────
 
-const API_ORIGIN = (import.meta.env.VITE_API_SERVER_URL as string | undefined)
-  ?.replace(/\/api\/?$/, '')
-  ?? 'http://localhost:5292';
+const API_ORIGIN = import.meta.env.DEV
+  ? 'http://localhost:5292'
+  : (import.meta.env.VITE_API_SERVER_URL as string).replace(/\/api\/?$/, '');
 
 // ─── Enveloppe générique ──────────────────────────────────────────────────────
 

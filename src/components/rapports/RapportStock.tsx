@@ -6,6 +6,18 @@ interface RapportStockProps {
   onDownload?: (loading: boolean) => void;
 }
 
+// Pages à afficher : première, dernière et voisines de la page courante ('…' pour les trous)
+const getPageNumbers = (current: number, total: number): (number | '…')[] => {
+  const pages = new Set<number>([1, total, current - 1, current, current + 1]);
+  const sorted = [...pages].filter(p => p >= 1 && p <= total).sort((a, b) => a - b);
+  const result: (number | '…')[] = [];
+  sorted.forEach((p, i) => {
+    if (i > 0 && p - sorted[i - 1] > 1) result.push('…');
+    result.push(p);
+  });
+  return result;
+};
+
 const RapportStock: React.FC<RapportStockProps> = ({ onDownload }) => {
   const { getRapportStock, downloadReportPDF, loading, error } = useReports();
   const [rapport, setRapport] = useState<any>(null);
@@ -32,6 +44,8 @@ const RapportStock: React.FC<RapportStockProps> = ({ onDownload }) => {
   };
 
   const handlePageChange = async (newPage: number) => {
+    const totalPages = rapport?.totalPages ?? 1;
+    if (loading || newPage < 1 || newPage > totalPages || newPage === page) return;
     setPage(newPage);
     await chargerRapport(newPage);
   };
@@ -136,34 +150,47 @@ const RapportStock: React.FC<RapportStockProps> = ({ onDownload }) => {
 
       {/* Pagination */}
       {rapport && rapport.totalPages > 1 && (
-        <div className="bg-white rounded-xl shadow p-4 flex justify-center gap-2">
-          <button
-            onClick={() => handlePageChange(page - 1)}
-            disabled={page === 1}
-            className="p-2 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50"
-          >
-            <ChevronLeft className="w-4 h-4" />
-          </button>
-          {Array.from({ length: rapport.totalPages }, (_, i) => i + 1).map((p) => (
+        <div className="bg-white rounded-xl shadow p-4 flex flex-col sm:flex-row items-center justify-between gap-3">
+          <div className="text-sm text-gray-600">
+            Page {page} sur {rapport.totalPages} | {rapport.totalLignes} articles
+          </div>
+          <div className="flex items-center gap-1 flex-wrap justify-center">
             <button
-              key={p}
-              onClick={() => handlePageChange(p)}
-              className={`px-3 py-1 rounded-lg ${
-                p === page
-                  ? 'bg-orange-600 text-white'
-                  : 'border border-gray-300 hover:bg-gray-50'
-              }`}
+              onClick={() => handlePageChange(page - 1)}
+              disabled={page === 1 || loading}
+              className="p-2 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+              aria-label="Page précédente"
             >
-              {p}
+              <ChevronLeft className="w-4 h-4" />
             </button>
-          ))}
-          <button
-            onClick={() => handlePageChange(page + 1)}
-            disabled={page === rapport.totalPages}
-            className="p-2 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50"
-          >
-            <ChevronRight className="w-4 h-4" />
-          </button>
+            {getPageNumbers(page, rapport.totalPages).map((p, i) =>
+              p === '…' ? (
+                <span key={`gap-${i}`} className="px-2 text-gray-400">…</span>
+              ) : (
+                <button
+                  key={p}
+                  onClick={() => handlePageChange(p)}
+                  disabled={loading}
+                  aria-current={p === page ? 'page' : undefined}
+                  className={`px-3 py-1 rounded-lg disabled:cursor-not-allowed ${
+                    p === page
+                      ? 'bg-orange-600 text-white'
+                      : 'border border-gray-300 hover:bg-gray-50'
+                  }`}
+                >
+                  {p}
+                </button>
+              )
+            )}
+            <button
+              onClick={() => handlePageChange(page + 1)}
+              disabled={page === rapport.totalPages || loading}
+              className="p-2 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+              aria-label="Page suivante"
+            >
+              <ChevronRight className="w-4 h-4" />
+            </button>
+          </div>
         </div>
       )}
 
